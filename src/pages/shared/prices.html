@@ -4,9 +4,9 @@
     <div class="crumbs"><a href="{{ prefix }}/">rice.ag</a> / {{ T.nav_prices }}</div>
     <h1>{{ 'ราคาข้าว' if th else 'Rice prices' }}</h1>
     {% if th %}
-    <p class="lead px-lead">ราคาส่งออกข้าวของไทย เวียดนาม สหรัฐฯ อุรุกวัย และปากีสถาน พร้อมราคาข้าวเปลือกและข้าวสารขายส่งในประเทศไทย ทุกรายการแปลงเป็นดอลลาร์สหรัฐต่อตัน และอัปเดตอัตโนมัติทุกวัน</p>
+    <p class="lead px-lead">ราคาส่งออกข้าวของไทย เวียดนาม สหรัฐฯ อุรุกวัย และปากีสถาน พร้อมราคาข้าวเปลือกและข้าวสารขายส่งในประเทศไทย ราคาส่งออกเป็นดอลลาร์สหรัฐต่อตัน ราคาข้าวไทยแสดงเป็นบาทด้วย และอัปเดตอัตโนมัติทุกวัน</p>
     {% else %}
-    <p class="lead px-lead">Export prices for Thai, Vietnamese, US, Uruguayan and Pakistani rice, plus Thai paddy and wholesale prices. Everything is in US dollars per tonne and updates automatically every day.</p>
+    <p class="lead px-lead">Export prices for Thai, Vietnamese, US, Uruguayan and Pakistani rice, plus Thai paddy and wholesale prices. Export prices are in US dollars per tonne, Thai prices are also shown in baht, and everything updates automatically every day.</p>
     {% endif %}
     <p class="fine" id="px-updated"></p>
     <p class="px-status fine">{{ 'กำลังโหลดข้อมูลราคา…' if th else 'Loading prices…' }}</p>
@@ -21,23 +21,29 @@
       </div>
       <div class="card px-card">
         <h2>{{ 'ราคาส่งออกข้าวไทยตามชนิด' if th else 'Thai export grades' }}</h2>
-        <p class="fine">{{ 'ราคา FOB กรุงเทพฯ จากสมาคมผู้ส่งออกข้าวไทย ประกาศทุกวันพุธ' if th else 'FOB Bangkok quotes from the Thai Rice Exporters Association, published every Wednesday.' }}</p>
+        <p class="fine">{{ 'ราคา FOB กรุงเทพฯ จากสมาคมผู้ส่งออกข้าวไทย เป็นบาทต่อตัน แปลงจากดอลลาร์ด้วยอัตราแลกเปลี่ยนของแต่ละวัน (มีตั้งแต่ปี 2542) ชี้ที่กราฟเพื่อดูราคาดอลลาร์' if th else 'FOB Bangkok quotes from the Thai Rice Exporters Association, in baht per tonne, converted from US dollars at each day\'s exchange rate (available from 1999). Hover the chart for the dollar price.' }}</p>
         <div id="px-chart-thai"></div>
       </div>
       <div class="card px-card">
         <h2>{{ 'ราคาในประเทศไทย: ข้าวเปลือกและขายส่ง' if th else 'Thailand domestic: paddy and wholesale' }}</h2>
-        <p class="fine">{{ 'ราคารายวันจากกรมการค้าภายใน แปลงจากบาทด้วยอัตราแลกเปลี่ยนของวันนั้น ข้าวเปลือกยังไม่ได้สี จึงต่ำกว่าราคาข้าวสารเสมอ ดูราคาบาทได้เมื่อชี้ที่กราฟและในตาราง' if th else 'Daily Department of Internal Trade prices, converted from baht at that day\'s exchange rate. Paddy is unmilled, so it always sits below milled prices. Hover the chart or see the table for the baht figure.' }}</p>
+        <p class="fine">{{ 'ราคารายวันจากกรมการค้าภายใน เป็นบาทต่อตัน ข้าวเปลือกยังไม่ได้สี จึงต่ำกว่าราคาข้าวสารเสมอ ชี้ที่กราฟเพื่อดูราคาดอลลาร์' if th else 'Daily Department of Internal Trade prices, in baht per tonne. Paddy is unmilled, so it always sits below milled prices. Hover the chart for the dollar price.' }}</p>
         <div id="px-chart-domestic"></div>
       </div>
       <div class="card px-card">
         <h2>{{ 'ฟิวเจอร์สข้าวเปลือก CBOT (ชิคาโก)' if th else 'CBOT rough rice futures (Chicago)' }}</h2>
         {% if th %}
-        <p class="fine">สัญญาซื้อขายล่วงหน้าข้าวเปลือกเมล็ดยาวของสหรัฐฯ หน่วยเป็นดอลลาร์ต่อ 100 ปอนด์ (cwt) ของ<strong>ข้าวเปลือก</strong> คูณ 22.046 เพื่อแปลงเป็นดอลลาร์ต่อตัน กราฟนี้มาจาก TradingView เพราะข้อมูลของตลาด CME ห้ามนำไปเผยแพร่ซ้ำโดยไม่มีใบอนุญาต</p>
+        <p class="fine">สัญญาซื้อขายล่วงหน้าข้าวเปลือกเมล็ดยาวของสหรัฐฯ ซื้อขายเป็นดอลลาร์ต่อ 100 ปอนด์ (cwt) ของ<strong>ข้าวเปลือก</strong> เราแสดงกราฟที่นี่ไม่ได้ เพราะใบอนุญาตของตลาด CME ห้ามนำราคาไปเผยแพร่ซ้ำ ดูราคาสดได้จากลิงก์ด้านล่าง แล้วใส่ราคาเพื่อแปลงเป็นต่อตัน</p>
         {% else %}
-        <p class="fine">US long-grain <strong>paddy</strong> futures, quoted in USD per hundredweight (cwt). Multiply by 22.046 for USD per tonne of paddy. This chart is embedded from TradingView because CME's licence doesn't allow republishing its prices.</p>
+        <p class="fine">US long-grain <strong>paddy</strong> futures, quoted in USD per hundredweight (cwt). We can't chart them here because CME's licence doesn't allow republishing its prices. Check the live quote at the links below, then type it in to convert it to a per-tonne price.</p>
         {% endif %}
-        <div class="px-tv" id="px-tv" data-symbol="CBOT:ZR1!"></div>
-        <p class="fine"><a href="https://www.tradingview.com/symbols/CBOT-ZR1!/" rel="noopener">TradingView: ZR1!</a> · <a href="https://www.cmegroup.com/markets/agriculture/grains/rough-rice.html" rel="noopener">CME Group: Rough Rice</a></p>
+        <div class="px-conv">
+          <label for="px-cwt">{{ 'ราคา CBOT (USD/cwt)' if th else 'CBOT price (USD/cwt)' }}</label>
+          <input type="number" id="px-cwt" min="0" step="0.01" inputmode="decimal" placeholder="{{ 'เช่น 12.40' if th else 'e.g. 12.40' }}">
+          <output id="px-cwt-out" for="px-cwt" aria-live="polite">–</output>
+        </div>
+        <p class="fine">{{ '1 cwt = 45.36 กก. ราคาต่อตัน = ราคาต่อ cwt × 22.046 ข้าวเปลือก 1 ตันสีได้ข้าวสารราว 0.6–0.7 ตัน' if th else '1 cwt = 45.36 kg, so USD/t = USD/cwt × 22.046. A tonne of paddy mills to roughly 0.6–0.7 t of rice.' }}</p>
+        <p class="fine"><a href="https://www.cmegroup.com/markets/agriculture/grains/rough-rice.html" rel="noopener">CME Group: Rough Rice</a> · <a href="https://www.barchart.com/futures/quotes/ZR*0/overview" rel="noopener">Barchart: ZR</a> · <a href="https://www.tradingview.com/symbols/CBOT-ZR1!/" rel="noopener">TradingView: ZR1!</a></p>
+        <div class="px-upd"><b>{{ 'การอัปเดตข้อมูล' if th else 'Updates' }}</b><ul><li>{{ 'CME: ซื้อขายวันจันทร์ถึงศุกร์ ราคาในลิงก์ด้านบนอาจล่าช้า 10 นาทีขึ้นไป อัตราแลกเปลี่ยนในตัวแปลงอัปเดตทุกวัน' if th else 'CME: trades Monday to Friday; quotes at the links above may be delayed 10+ minutes. The exchange rate used for baht updates daily.' }}</li></ul></div>
       </div>
     </div>
 
@@ -72,20 +78,3 @@
     </div>
   </div>
 </section>
-<script>
-(function(){
-  var box = document.getElementById('px-tv'); if (!box) return;
-  function load(){
-    if (box.dataset.loaded) return; box.dataset.loaded = '1';
-    var dark = document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
-    var w = document.createElement('div'); w.className = 'tradingview-widget-container__widget'; box.appendChild(w);
-    var s = document.createElement('script'); s.async = true;
-    s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-    s.textContent = JSON.stringify({ symbol: box.dataset.symbol, interval: 'D', range: '12M', style: '2', theme: dark ? 'dark' : 'light',
-      locale: document.documentElement.lang === 'th' ? 'th_TH' : 'en', hide_side_toolbar: true, hide_top_toolbar: true,
-      allow_symbol_change: false, save_image: false, autosize: true, support_host: 'https://www.tradingview.com' });
-    box.className += ' tradingview-widget-container'; box.appendChild(s);
-  }
-  if ('IntersectionObserver' in window) { new IntersectionObserver(function(e, o){ if (e[0].isIntersecting) { load(); o.disconnect(); } }, { rootMargin: '300px' }).observe(box); } else load();
-})();
-</script>

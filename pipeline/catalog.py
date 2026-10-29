@@ -11,9 +11,11 @@ To add a line: add it here (and to a GROUP), push, and the next daily run includ
 SOURCES = {
     'trea': {'name': 'Thai Rice Exporters Association', 'url': 'http://www.thairiceexporters.or.th/price_eng.html',
              'freq': 'weekly (Wednesday quotes) + monthly averages',
+             'sched_en': 'new quotes every Wednesday', 'sched_th': 'ราคาใหม่ทุกวันพุธ',
              'terms': 'Public price list; credited and linked.'},
     'fao': {'name': 'FAO GIEWS Food Price Monitoring and Analysis (FPMA)', 'url': 'https://fpma.fao.org/giews/fpmat4/#/dashboard/tool/international',
             'freq': 'weekly / monthly',
+            'sched_en': 'monthly, a few weeks after the month ends', 'sched_th': 'รายเดือน ประมาณสองถึงสี่สัปดาห์หลังสิ้นเดือน',
             'terms': 'FAO data, non-commercial reuse with attribution.',
             'series': [
                 'eb6de409-12ab-4d90-a427-ecaec4c13edb',  # Thailand 5% broken (weekly from 2000)
@@ -28,9 +30,11 @@ SOURCES = {
                 '1351def4-604a-4b21-815f-1e24792a5942',  # Pakistan Super Kernel Basmati 2%
             ]},
     'wb': {'name': 'World Bank Commodity Price Data (Pink Sheet)', 'url': 'https://www.worldbank.org/en/research/commodity-markets',
-           'freq': 'monthly', 'terms': 'CC BY 4.0.'},
+           'freq': 'monthly', 'terms': 'CC BY 4.0.',
+           'sched_en': 'monthly, early in the next month', 'sched_th': 'รายเดือน ต้นเดือนถัดไป'},
     'dit': {'name': 'Department of Internal Trade, Thailand (กรมการค้าภายใน)', 'url': 'https://pricelist.dit.go.th/',
-            'freq': 'daily (business days)', 'terms': 'Thai government public price list; credited and linked.',
+            'freq': 'daily (business days)',
+            'sched_en': 'every business day', 'sched_th': 'ทุกวันทำการ', 'terms': 'Thai government public price list; credited and linked.',
             'series': {
                 'R11057': {'group': 'R11000'},  # ข้าวเปลือกเจ้า
                 'R11055': {'group': 'R11000'},  # ข้าวเปลือกหอมมะลิ
@@ -42,7 +46,8 @@ SOURCES = {
                 'R11018': {'group': 'R11000'},  # ข้าวสารเหนียว กข.6 (wholesale, Bangkok)
             }},
     'fx': {'name': 'European Central Bank reference rates (via Frankfurter)', 'url': 'https://frankfurter.dev/',
-           'freq': 'daily', 'terms': 'Used to convert THB prices to USD.'},
+           'freq': 'daily', 'terms': 'Converts between baht and US dollars.',
+           'sched_en': 'every business day', 'sched_th': 'ทุกวันทำการ'},
 }
 
 FOB = {'en': 'Export, FOB', 'th': 'ส่งออก FOB'}
@@ -113,10 +118,10 @@ GROUPS = [
     {'id': 'thai', 'en': 'Thai export grades', 'th': 'ราคาส่งออกข้าวไทยตามชนิด',
      'desc_en': 'TREA FOB Bangkok quotes for milled rice, USD per tonne.',
      'desc_th': 'ราคาส่งออก FOB กรุงเทพฯ จากสมาคมผู้ส่งออกข้าวไทย ดอลลาร์สหรัฐต่อตัน',
-     'series': ['th_5', 'th_jas', 'th_glu', 'th_100b', 'th_25', 'th_hm', 'th_pb', 'th_a1s'],
+     'unit': 'THB', 'series': ['th_5', 'th_jas', 'th_glu', 'th_100b', 'th_25', 'th_hm', 'th_pb', 'th_a1s'],
      'table_extra': ['th_hmbrk']},
     {'id': 'domestic', 'en': 'Thailand domestic: paddy and wholesale', 'th': 'ราคาในประเทศไทย: ข้าวเปลือกและขายส่ง',
      'desc_en': 'Department of Internal Trade daily prices, converted from baht at the ECB rate. Paddy is unmilled, so it is not comparable with milled prices.',
      'desc_th': 'ราคารายวันจากกรมการค้าภายใน แปลงจากบาทด้วยอัตราแลกเปลี่ยน ECB ข้าวเปลือกยังไม่สี จึงเทียบกับราคาข้าวสารโดยตรงไม่ได้',
-     'series': ['dit_paddy', 'dit_paddy_supan', 'dit_paddy_hm', 'dit_paddy_pathum', 'dit_paddy_glu', 'dit_w5', 'dit_hm', 'dit_glu']},
+     'unit': 'THB', 'series': ['dit_paddy', 'dit_paddy_supan', 'dit_paddy_hm', 'dit_paddy_pathum', 'dit_paddy_glu', 'dit_w5', 'dit_hm', 'dit_glu']},
 ]

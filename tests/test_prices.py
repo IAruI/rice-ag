@@ -139,6 +139,13 @@ def main():
         assert S['dit_paddy']['thb'][-1] == 9150 and abs(S['dit_paddy']['v'][-1] - 9150 / 33.775) < 0.1
         assert S['dit_w5']['thb'][-1] == 15550 and abs(S['dit_w5']['v'][-1] - 15550 / 33.775) < 0.1
         assert all(out['sources'][k]['last_ok'] for k in out['sources']), out['sources']
+        # Thai export grades are also given in baht at the day's rate; pre-FX dates have no baht value
+        assert S['th_5']['thb'][-1] == round(492 * 33.775) and S['th_5']['thb'][0] is None, S['th_5']['thb'][-3:]
+        assert 'thb' not in S['vn_5'], 'non-Thai origins stay USD only'
+        # latest date contributed by each source, for the "updated" notes under each chart
+        assert day('th_5', -1) == (epoch + dt.timedelta(days=S['th_5']['srclast']['trea'])).isoformat()
+        assert set(S['th_5']['srclast']) == {'trea', 'fao', 'wb'}
+        assert out['sources']['trea']['sched_en']
 
         # second run with a broken TREA page: history kept, error recorded, others still OK
         global TREA_WEEKLY

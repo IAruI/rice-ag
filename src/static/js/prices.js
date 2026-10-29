@@ -9,14 +9,16 @@
     loadfail: 'โหลดข้อมูลราคาไม่สำเร็จ ลองรีเฟรชหน้าอีกครั้ง', nodata: 'ยังไม่มีข้อมูล ระบบจะดึงข้อมูลชุดแรกในรอบถัดไป',
     updated: 'อัปเดตข้อมูล', ok: 'ดึงข้อมูลสำเร็จล่าสุด', failed: 'ดึงข้อมูลครั้งล่าสุดไม่สำเร็จ', never: 'ยังไม่เคยดึงสำเร็จ',
     show: 'แสดง/ซ่อน', chartLabel: 'กราฟราคา', noVisible: 'เลือกอย่างน้อยหนึ่งรายการจากด้านบน', stale: 'ข้อมูลอาจไม่เป็นปัจจุบัน',
-    perWeek: 'รายสัปดาห์', perMonth: 'รายเดือน', perDay: 'รายวัน'
+    perWeek: 'รายสัปดาห์', perMonth: 'รายเดือน', perDay: 'รายวัน',
+    upd: 'การอัปเดตข้อมูล', latestv: 'ล่าสุด', histonly: 'ใช้เป็นข้อมูลย้อนหลังถึง', checks: 'rice.ag ตรวจทุกแหล่งข้อมูลทุกวันเวลา 17:37 น. (เวลาไทย)', lastcheck: 'ตรวจล่าสุด', fxnote: 'แปลงสกุลเงินด้วยอัตรา ECB ของแต่ละวัน'
   } : {
     range: 'Range', all: 'All', y: 'Y', latest: 'Latest prices', series: 'Series', market: 'Market', basis: 'Basis',
     usd: 'USD/t', thb: 'THB/t', date: 'Date', m1: '1 mo', y1: '1 yr', src: 'Source', milled: 'milled', paddy: 'paddy',
     loadfail: 'Could not load price data. Try refreshing the page.', nodata: 'No data yet. The first daily pull will fill this in.',
     updated: 'Data updated', ok: 'Last successful pull', failed: 'Last pull failed', never: 'never pulled successfully',
     show: 'Show or hide', chartLabel: 'Price chart', noVisible: 'Pick at least one series above.', stale: 'may be out of date',
-    perWeek: 'weekly', perMonth: 'monthly', perDay: 'daily'
+    perWeek: 'weekly', perMonth: 'monthly', perDay: 'daily',
+    upd: 'Updates', latestv: 'latest', histonly: 'used for older history, up to', checks: 'rice.ag checks every source daily at 17:37 Bangkok time', lastcheck: 'last checked', fxnote: 'baht converted at each day\'s ECB rate'
   };
   var DAY = 864e5;
   var SRCNAME = { trea: 'TREA', fao: 'FAO', wb: 'World Bank', dit: TH ? 'กรมการค้าภายใน' : 'DIT', fx: 'ECB' };
@@ -35,11 +37,12 @@
   function name(s) { return TH ? s.th : s.en; }
 
   // value of series at or before t, if within `tol` days
-  function at(s, t, tol) {
+  function at(s, t, tol, arr) {
+    arr = arr || s.v;
     var d = s.d, lo = 0, hi = d.length - 1, day = t / DAY;
     if (!d.length || d[0] > day) return null;
     while (lo < hi) { var mid = (lo + hi + 1) >> 1; if (d[mid] <= day) lo = mid; else hi = mid - 1; }
-    return day - d[lo] <= tol ? { i: lo, v: s.v[lo], t: d[lo] * DAY } : null;
+    return day - d[lo] <= tol && arr[lo] != null ? { i: lo, v: arr[lo], t: d[lo] * DAY } : null;
   }
   function freqOf(s) {
     var n = s.d.length; if (n < 3) return T.perMonth;
@@ -57,6 +60,8 @@
 
   function chart(group, host) {
     var S = state.data.series, ids = group.series.filter(function (id) { return S[id]; });
+    var baht = group.unit === 'THB';
+    function vals(s) { return baht ? (s.thb || []) : s.v; }
     var on = state.on[group.id] || (DEFAULT_ON[group.id] || ids).filter(function (id) { return S[id]; });
     state.on[group.id] = on;
     host.textContent = '';
@@ -85,7 +90,8 @@
     if (!state.years) vis.forEach(function (id) { tMin = Math.min(tMin, S[id].d[0] * DAY); });
     var lines = vis.map(function (id) {
       var s = S[id], pts = [];
-      for (var i = 0; i < s.d.length; i++) { var t = s.d[i] * DAY; if (t >= tMin) pts.push([t, s.v[i]]); }
+      var arr = vals(s);
+      for (var i = 0; i < s.d.length; i++) { var t = s.d[i] * DAY; if (t >= tMin && arr[i] != null) pts.push([t, arr[i]]); }
       var cap = Math.round((W - M.l - M.r) * 1.2);  // thin long histories to about one point per pixel
       if (pts.length > cap) { var k = Math.ceil(pts.length / cap), th = []; for (var j = 0; j < pts.length; j += k) { var sl = pts.slice(j, j + k), m = 0; sl.forEach(function (p) { m += p[1]; }); th.push([sl[sl.length >> 1][0], m / sl.length]); } th.push(pts[pts.length - 1]); pts = th; }
       return { id: id, s: s, pts: pts, c: 'var(--s' + (group.series.indexOf(id) + 1) + ')' };
@@ -109,7 +115,7 @@
     else { for (var yr = Math.ceil((d0.getUTCFullYear() + 1) / yearStep) * yearStep; Date.UTC(yr, 0, 1) <= tMax; yr += yearStep * (narrow && spanY > 4 ? 2 : 1)) xt.push([Date.UTC(yr, 0, 1), String(TH ? yr + 543 : yr)]); }
     xt.forEach(function (x) { var tx = svg('text', { x: X(x[0]), y: H - 8, class: 'px-tick', 'text-anchor': 'middle' }); tx.textContent = x[1]; g.appendChild(tx); });
     g.appendChild(svg('line', { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b, class: 'px-axis' }));
-    var ylab = svg('text', { x: 4, y: 12, class: 'px-tick' }); ylab.textContent = T.usd; g.appendChild(ylab);
+    var ylab = svg('text', { x: 4, y: 12, class: 'px-tick' }); ylab.textContent = baht ? T.thb : T.usd; g.appendChild(ylab);
     lines.forEach(function (l) {
       var dstr = l.pts.map(function (p, i) { return (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1); }).join('');
       g.appendChild(svg('path', { d: dstr, class: 'px-line', style: 'stroke:' + l.c }));
@@ -141,14 +147,14 @@
       tip.appendChild(el('div', 'px-tip-d', fdate(t)));
       var rows = [];
       lines.forEach(function (l, i) {
-        var hit = at(l.s, t, tolOf(l.s));
+        var hit = at(l.s, t, tolOf(l.s), vals(l.s));
         if (hit && hit.t >= tMin) { dots[i].setAttribute('cx', X(hit.t)); dots[i].setAttribute('cy', Y(hit.v)); dots[i].setAttribute('visibility', 'visible'); rows.push({ l: l, v: hit.v, i: hit.i }); }
         else dots[i].setAttribute('visibility', 'hidden');
       });
       rows.sort(function (a, b) { return b.v - a.v; }).forEach(function (r) {
         var row = el('div', 'px-tip-r'); var k = el('i'); k.style.background = r.l.c; row.appendChild(k);
         row.appendChild(el('b', null, nf0.format(r.v)));
-        var extra = r.l.s.thb && r.l.s.thb[r.i] ? ' (฿' + nf0.format(r.l.s.thb[r.i]) + ')' : '';
+        var extra = baht ? ' ($' + nf0.format(r.l.s.v[r.i]) + ')' : '';
         row.appendChild(el('span', null, name(r.l.s) + extra)); tip.appendChild(row);
       });
       tip.hidden = false;
@@ -172,6 +178,31 @@
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); show(Math.min(allT.length - 1, Math.max(0, cur + (e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? 10 : 1)))); }
       if (e.key === 'Escape') hide();
     });
+  }
+
+  function note(gr, host) {
+    var S = state.data.series, src = state.data.sources, last = {};
+    gr.series.concat(gr.table_extra || []).forEach(function (id) {
+      var s = S[id]; if (!s || !s.srclast) return;
+      Object.keys(s.srclast).forEach(function (k) { last[k] = Math.max(last[k] || 0, s.srclast[k]); });
+    });
+    var keys = ['trea', 'dit', 'fao', 'wb'].filter(function (k) { return last[k]; });
+    if (!keys.length) return;
+    var newest = 0; keys.forEach(function (k) { newest = Math.max(newest, last[k]); });
+    var box = el('div', 'px-upd'); box.appendChild(el('b', null, T.upd));
+    var ul = el('ul'), checked = 0;
+    keys.forEach(function (k) {
+      var info = src[k] || {}, monthly = k === 'fao' || k === 'wb';
+      var latest = fdate(last[k] * DAY, monthly ? { month: 'long', year: 'numeric', timeZone: 'UTC' } : undefined);
+      var sched = (TH ? info.sched_th : info.sched_en) || info.freq || '';
+      // a source that only fills in early years isn't "stale": say what it's used for
+      var text = newest - last[k] > 400 ? T.histonly + ' ' + latest : sched + ' · ' + T.latestv + ' ' + latest;
+      ul.appendChild(el('li', null, (SRCNAME[k] || k) + ': ' + text));
+      if (info.last_ok) checked = Math.max(checked, Date.parse(info.last_ok));
+    });
+    if (gr.unit === 'THB' || gr.id === 'domestic') ul.appendChild(el('li', null, 'ECB: ' + T.fxnote));
+    ul.appendChild(el('li', null, T.checks + (checked ? ' · ' + T.lastcheck + ' ' + fdate(checked) : '')));
+    box.appendChild(ul); host.appendChild(box);
   }
 
   function change(s, days) {
@@ -223,6 +254,19 @@
     host.appendChild(ul);
   }
 
+  function converter() {
+    var inp = document.getElementById('px-cwt'); if (!inp || inp.dataset.wired) return; inp.dataset.wired = '1';
+    var fx = state.data.fx, out = document.getElementById('px-cwt-out');
+    function upd() {
+      var v = parseFloat(inp.value);
+      if (!(v > 0)) { out.textContent = '–'; return; }
+      var usd = v * 22.0462;
+      out.textContent = '$' + nf0.format(usd) + (TH ? ' ต่อตันข้าวเปลือก' : ' per tonne of paddy') +
+        (fx && fx.usd_thb ? ' ≈ ฿' + nf0.format(usd * fx.usd_thb) + (TH ? ' (อัตรา ' : ' (at ') + fx.usd_thb.toFixed(2) + ' THB/USD, ' + fdate(Date.parse(fx.date)) + ')' : '');
+    }
+    inp.addEventListener('input', upd); upd();
+  }
+
   function rangeBar() {
     var bar = document.getElementById('px-range'); if (!bar) return;
     bar.textContent = '';
@@ -237,7 +281,8 @@
 
   function render() {
     rangeBar();
-    state.data.groups.forEach(function (gr) { var h = document.getElementById('px-chart-' + gr.id); if (h) chart(gr, h); });
+    state.data.groups.forEach(function (gr) { var h = document.getElementById('px-chart-' + gr.id); if (h) { chart(gr, h); note(gr, h); } });
+    converter();
     table(document.getElementById('px-table'));
     sources(document.getElementById('px-sources'));
     var up = document.getElementById('px-updated');

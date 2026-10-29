@@ -257,11 +257,16 @@ def fetch_dit(store, backfill):
 
 
 # ---------------------------------------------------------------- FX (ECB via frankfurter)
+FX_FROM = 1999  # first year of ECB THB reference rates; needed to show older Thai export prices in baht
+
+
 def fetch_fx(store, backfill):
-    have = store['series'].get('THB')
-    start = 2015 if backfill or not have else TODAY.year - (1 if TODAY.month == 1 else 0)
+    have = store['series'].get('THB', {})
+    years_have = {d[:4] for d in have}
+    recent = {TODAY.year, TODAY.year - 1 if TODAY.month == 1 else TODAY.year}
+    years = [y for y in range(FX_FROM, TODAY.year + 1) if backfill or str(y) not in years_have or y in recent]
     added = 0
-    for y in range(start, TODAY.year + 1):
+    for y in years:
         j = get(f'https://api.frankfurter.dev/v1/{y}-01-01..{min(dt.date(y, 12, 31), TODAY)}',
                 params={'base': 'USD', 'symbols': 'THB'}).json()
         added += merge(store, 'THB', [(d, r['THB']) for d, r in j.get('rates', {}).items()])
@@ -284,12 +289,26 @@ def to_usd(points, fx):
     return out
 
 
+def fx_lookup(fx):
+    dates = sorted(fx)
+    import bisect
+
+    def at(d):  # rate on d, or the latest before it within 10 days
+        i = bisect.bisect_right(dates, d) - 1
+        if i >= 0 and (dt.date.fromisoformat(d) - dt.date.fromisoformat(dates[i])).days <= 10:
+            return fx[dates[i]]
+        return None
+    return at
+
+
 def assemble(stores):
     fx = stores['fx']['series'].get('THB', {})
+    fx_at = fx_lookup(fx)
+    baht_series = {sid for g in GROUPS if g.get('unit') == 'THB' for sid in g['series'] + g.get('table_extra', [])}
     epoch = dt.date(1970, 1, 1)
     series_out, csv_rows = {}, []
     for sid, meta in SERIES.items():
-        merged, used = {}, []
+        merged, used, srclast = {}, [], {}
         for src, raw_id in meta['from']:  # priority order; lower priority only fills earlier history
             pts = dict(stores[src]['series'].get(raw_id, {}))
             if not pts:
@@ -301,27 +320,32 @@ def assemble(stores):
             if add:
                 merged.update(add)
                 used.append(src)
+                srclast[src] = max(srclast.get(src, ''), max(add))
         if not merged:
             continue
         ds = sorted(merged)
         rec = {k: meta[k] for k in ('en', 'th', 'origin', 'basis', 'market', 'note_en', 'note_th') if k in meta}
         rec['src'] = sorted(set(used), key=used.index)
+        rec['srclast'] = {k: (dt.date.fromisoformat(v) - epoch).days for k, v in srclast.items()}
         rec['d'] = [(dt.date.fromisoformat(d) - epoch).days for d in ds]
         rec['v'] = [round(merged[d], 1) for d in ds]
         if meta.get('currency') == 'THB':
             raw = stores[meta['from'][0][0]]['series'][meta['from'][0][1]]
             rec['thb'] = [round(raw.get(d)) if raw.get(d) is not None else None for d in ds]
+        elif sid in baht_series:  # USD export quote shown in baht at that day's ECB rate
+            rec['thb'] = [round(merged[d] * r) if (r := fx_at(d)) else None for d in ds]
         series_out[sid] = rec
         csv_rows += [(d, sid, meta['en'], round(merged[d], 1)) for d in ds]
 
     sources_out = {}
     for k, s in SOURCES.items():
         st = stores[k].get('status', {})
-        sources_out[k] = {f: s[f] for f in ('name', 'url', 'terms', 'freq') if f in s}
+        sources_out[k] = {f: s[f] for f in ('name', 'url', 'terms', 'freq', 'sched_en', 'sched_th') if f in s}
         sources_out[k].update({f: st.get(f) for f in ('last_ok', 'last_attempt', 'last_error')})
     OUT.mkdir(parents=True, exist_ok=True)
     data = {'generated': dt.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
-            'groups': GROUPS, 'series': series_out, 'sources': sources_out}
+            'groups': GROUPS, 'series': series_out, 'sources': sources_out,
+            'fx': {'date': max(fx), 'usd_thb': fx[max(fx)]} if fx else None}
     (OUT / 'prices.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     with open(OUT / 'prices.csv', 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f)
