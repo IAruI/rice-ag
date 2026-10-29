@@ -256,6 +256,37 @@ def fetch_dit(store, backfill):
     return added
 
 
+# ---------------------------------------------------------------- USDA ERS Rice Yearbook
+USDA_PAGE = 'https://www.ers.usda.gov/data-products/rice-yearbook'
+USDA_CSV = 'export-prices-for-thailand-vietnam-india-and-pakistan.csv'
+MONTHS_LONG = {m: i + 1 for i, m in enumerate(['january', 'february', 'march', 'april', 'may', 'june', 'july',
+                                                 'august', 'september', 'october', 'november', 'december'])}
+
+
+def fetch_usda(store, backfill):
+    """Monthly FOB quotes, Thailand from 1985, Viet Nam / India / Pakistan from 1997.
+    YEAR is the marketing year starting in August: Aug-Dec are in YEAR, Jan-Jul in YEAR+1."""
+    m = re.search(r'href="([^"]*' + re.escape(USDA_CSV) + r'[^"]*)"', get(USDA_PAGE).text)
+    if not m:
+        raise ValueError('USDA export price CSV link not found on the Rice Yearbook page')
+    url = requests.compat.urljoin(USDA_PAGE, m.group(1).replace('&amp;', '&'))
+    rows = list(csv.DictReader(io.StringIO(get(url).content.decode('utf-8-sig'))))
+    if not rows or 'CLASS_DESCRIPTION' not in rows[0]:
+        raise ValueError('USDA CSV layout changed')
+    by = {}
+    for r in rows:
+        mon = MONTHS_LONG.get(r['REFERENCE_PERIOD_DESCRIPTION'].strip().lower())
+        v = num(r['VALUE'])
+        if not mon or v is None or 'DOLLARS PER METRIC TON' not in r['UNIT_DESCRIPTION'].upper():
+            continue
+        y = int(r['YEAR']) + (1 if mon < 8 else 0)
+        sid = f"{slug(r['LOCATION_DESCRIPTION'])}:{slug(r['CLASS_DESCRIPTION'])}"
+        by.setdefault(sid, []).append((f'{y}-{mon:02d}-01', sane_usd(v, lo=50)))
+    if len(by) < 10:
+        raise ValueError(f'only {len(by)} USDA series found')
+    return sum(merge(store, sid, pts) for sid, pts in by.items())
+
+
 # ---------------------------------------------------------------- FX (ECB via frankfurter)
 FX_FROM = 1999  # first year of ECB THB reference rates; needed to show older Thai export prices in baht
 
@@ -270,10 +301,16 @@ def fetch_fx(store, backfill):
         j = get(f'https://api.frankfurter.dev/v1/{y}-01-01..{min(dt.date(y, 12, 31), TODAY)}',
                 params={'base': 'USD', 'symbols': 'THB'}).json()
         added += merge(store, 'THB', [(d, r['THB']) for d, r in j.get('rates', {}).items()])
+    # before ECB's THB rates start (1999): Fed monthly averages from 1981, World Bank annual averages from 1960
+    t = get('https://fred.stlouisfed.org/graph/fredgraph.csv', params={'id': 'EXTHUS'}).text
+    added += merge(store, 'THB_monthly', [(r['observation_date'], num(r['EXTHUS'])) for r in csv.DictReader(io.StringIO(t))
+                                         if num(r.get('EXTHUS'))])
+    j = get('https://api.worldbank.org/v2/country/THA/indicator/PA.NUS.FCRF', params={'format': 'json', 'per_page': 200}).json()
+    added += merge(store, 'THB_annual', [(f"{p['date']}-01-01", p['value']) for p in j[1] if p.get('value')])
     return added
 
 
-FETCHERS = {'trea': fetch_trea, 'fao': fetch_fao, 'wb': fetch_wb, 'dit': fetch_dit, 'fx': fetch_fx}
+FETCHERS = {'trea': fetch_trea, 'fao': fetch_fao, 'wb': fetch_wb, 'usda': fetch_usda, 'dit': fetch_dit, 'fx': fetch_fx}
 
 
 # ---------------------------------------------------------------- assemble
@@ -289,27 +326,33 @@ def to_usd(points, fx):
     return out
 
 
-def fx_lookup(fx):
-    dates = sorted(fx)
+def fx_lookup(fx_store):
+    """USD->THB for any date: ECB daily where it exists, else the Fed's monthly average, else the World Bank annual."""
     import bisect
+    S = fx_store['series']
+    daily, monthly, annual = S.get('THB', {}), S.get('THB_monthly', {}), S.get('THB_annual', {})
+    first_daily = min(daily) if daily else '9999'
+    dd = sorted(daily)
 
-    def at(d):  # rate on d, or the latest before it within 10 days
-        i = bisect.bisect_right(dates, d) - 1
-        if i >= 0 and (dt.date.fromisoformat(d) - dt.date.fromisoformat(dates[i])).days <= 10:
-            return fx[dates[i]]
-        return None
+    def at(d):
+        if d >= first_daily:
+            i = bisect.bisect_right(dd, d) - 1
+            return daily[dd[i]] if i >= 0 and (dt.date.fromisoformat(d) - dt.date.fromisoformat(dd[i])).days <= 10 else None
+        return monthly.get(d[:7] + '-01') or annual.get(d[:4] + '-01-01')
     return at
 
 
 def assemble(stores):
     fx = stores['fx']['series'].get('THB', {})
-    fx_at = fx_lookup(fx)
+    fx_at = fx_lookup(stores['fx'])
     baht_series = {sid for g in GROUPS if g.get('unit') == 'THB' for sid in g['series'] + g.get('table_extra', [])}
     epoch = dt.date(1970, 1, 1)
     series_out, csv_rows = {}, []
     for sid, meta in SERIES.items():
         merged, used, srclast = {}, [], {}
         for src, raw_id in meta['from']:  # priority order; lower priority only fills earlier history
+            if raw_id.endswith('*'):  # prefix match, for names a source spells inconsistently
+                raw_id = next((k for k in sorted(stores[src]['series']) if k.startswith(raw_id[:-1])), raw_id)
             pts = dict(stores[src]['series'].get(raw_id, {}))
             if not pts:
                 continue

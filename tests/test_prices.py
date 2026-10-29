@@ -71,6 +71,9 @@ def wb_xlsx():
     return b.getvalue()
 
 
+USDA_CSV_NAME = 'export-prices-for-thailand-vietnam-india-and-pakistan.csv'
+
+
 class R:
     def __init__(self, body, ctype='text/html'):
         self.content = body if isinstance(body, bytes) else body.encode('utf-8')
@@ -83,7 +86,24 @@ class R:
         return json.loads(self.text)
 
 
+USDA_CSV = '''TABLE_NAME,TABLE_NUMBER,COMMODITY_DESCRIPTION,CLASS_DESCRIPTION,YEAR,REFERENCE_PERIOD_DESCRIPTION,LOCATION_DESCRIPTION,STATISTIC_DESCRIPTION,VALUE,UNIT_DESCRIPTION
+"Thailand milled rice prices, f.o.b. Bangkok, 1985/86 to present",25,RICE,100-PERCENT GRADE B,1985,August,THAILAND,FREIGHT ON BOARD PRICE,193.38,DOLLARS PER METRIC TON
+"Thailand milled rice prices, f.o.b. Bangkok, 1985/86 to present",25,RICE,FRAGRANT WHITE RICE,1985,August,THAILAND,FREIGHT ON BOARD PRICE,NA,DOLLARS PER METRIC TON
+"Milled rice export price quotes, India",27,RICE,5-PERCENT BROKEN,2025,August,INDIA,FREIGHT ON BOARD PRICE,352,DOLLARS PER METRIC TON
+"Milled rice export price quotes, India",27,RICE,5-PERCENT BROKEN,2025,January,INDIA,FREIGHT ON BOARD PRICE,360,DOLLARS PER METRIC TON
+"Milled rice export price quotes, India",27,RICE,5-PERCENT BROKEN,2025,MARKETING,INDIA,FREIGHT ON BOARD PRICE,355,DOLLARS PER METRIC TON
+''' + ''.join(f'"x",28,RICE,GRADE {i},2020,March,PAKISTAN,FREIGHT ON BOARD PRICE,400,DOLLARS PER METRIC TON\n' for i in range(10))
+
+
 def fake_get(url, headers=None, timeout=None, params=None):
+    if 'rice-yearbook' in url:
+        return R('<a href="/media/5668/export-prices-for-thailand-vietnam-india-and-pakistan.csv?v=123">CSV</a>')
+    if USDA_CSV_NAME in url:
+        return R(USDA_CSV)
+    if 'fredgraph' in url:
+        return R('observation_date,EXTHUS\n1985-08-01,26.80\n1998-12-01,36.5\n')
+    if 'api.worldbank.org' in url:
+        return R(json.dumps([{'page': 1}, [{'date': '1960', 'value': 20.8}, {'date': '1961', 'value': None}]]))
     if 'price_eng.html' in url:
         return R(TREA_WEEKLY)
     if 'AVG%20prices%202026' in url:
@@ -140,12 +160,20 @@ def main():
         assert S['dit_w5']['thb'][-1] == 15550 and abs(S['dit_w5']['v'][-1] - 15550 / 33.775) < 0.1
         assert all(out['sources'][k]['last_ok'] for k in out['sources']), out['sources']
         # Thai export grades are also given in baht at the day's rate; pre-FX dates have no baht value
-        assert S['th_5']['thb'][-1] == round(492 * 33.775) and S['th_5']['thb'][0] is None, S['th_5']['thb'][-3:]
+        assert S['th_5']['thb'][-1] == round(492 * 33.775), S['th_5']['thb'][-3:]
         assert 'thb' not in S['vn_5'], 'non-Thai origins stay USD only'
         # latest date contributed by each source, for the "updated" notes under each chart
         assert day('th_5', -1) == (epoch + dt.timedelta(days=S['th_5']['srclast']['trea'])).isoformat()
         assert set(S['th_5']['srclast']) == {'trea', 'fao', 'wb'}
         assert out['sources']['trea']['sched_en']
+        # USDA: marketing year Aug-Jul (Jan of MY 2025 is Jan 2026); MARKETING averages and NA skipped
+        in5 = {day('in_5', i): S['in_5']['v'][i] for i in range(len(S['in_5']['d']))}
+        assert in5 == {'2025-08-01': 352, '2026-01-01': 360}, in5
+        assert day('th_100b', 0) == '1985-08-01' and S['th_100b']['src'][-1] == 'usda'
+        # baht before 1999: Fed monthly, then World Bank annual
+        i85 = S['th_100b']['d'].index((dt.date(1985, 8, 1) - epoch).days)
+        assert S['th_100b']['thb'][i85] == round(193.38 * 26.80), S['th_100b']['thb'][i85]
+        assert S['th_5']['thb'][0] == round(104.5 * 20.8), S['th_5']['thb'][0]
 
         # second run with a broken TREA page: history kept, error recorded, others still OK
         global TREA_WEEKLY

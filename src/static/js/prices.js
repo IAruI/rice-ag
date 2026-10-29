@@ -21,8 +21,8 @@
     upd: 'Updates', latestv: 'latest', histonly: 'used for older history, up to', checks: 'rice.ag checks every source daily at 17:37 Bangkok time', lastcheck: 'last checked', fxnote: 'baht converted at each day\'s ECB rate'
   };
   var DAY = 864e5;
-  var SRCNAME = { trea: 'TREA', fao: 'FAO', wb: 'World Bank', dit: TH ? 'กรมการค้าภายใน' : 'DIT', fx: 'ECB' };
-  var DEFAULT_ON = { origins: null, thai: ['th_5', 'th_jas', 'th_glu', 'th_hm'], domestic: ['dit_paddy', 'dit_paddy_hm', 'dit_paddy_glu', 'dit_w5'] };
+  var SRCNAME = { trea: 'TREA', fao: 'FAO', wb: 'World Bank', usda: 'USDA', dit: TH ? 'กรมการค้าภายใน' : 'DIT', fx: 'ECB' };
+  var DEFAULT_ON = { origins: ['th_5', 'vn_5', 'in_5', 'us_lg', 'pk_5', 'uy_5'], more: ['in_25', 'vn_25', 'pk_25', 'th_15'], thai: ['th_5', 'th_jas', 'th_glu', 'th_hm'], domestic: ['dit_paddy', 'dit_paddy_hm', 'dit_paddy_glu', 'dit_w5'] };
   var root = document.getElementById('prices-app');
   if (!root) return;
   var state = { years: 3, data: null, on: {} };
@@ -186,13 +186,13 @@
       var s = S[id]; if (!s || !s.srclast) return;
       Object.keys(s.srclast).forEach(function (k) { last[k] = Math.max(last[k] || 0, s.srclast[k]); });
     });
-    var keys = ['trea', 'dit', 'fao', 'wb'].filter(function (k) { return last[k]; });
+    var keys = ['trea', 'dit', 'fao', 'usda', 'wb'].filter(function (k) { return last[k]; });
     if (!keys.length) return;
     var newest = 0; keys.forEach(function (k) { newest = Math.max(newest, last[k]); });
     var box = el('div', 'px-upd'); box.appendChild(el('b', null, T.upd));
     var ul = el('ul'), checked = 0;
     keys.forEach(function (k) {
-      var info = src[k] || {}, monthly = k === 'fao' || k === 'wb';
+      var info = src[k] || {}, monthly = k === 'fao' || k === 'wb' || k === 'usda';
       var latest = fdate(last[k] * DAY, monthly ? { month: 'long', year: 'numeric', timeZone: 'UTC' } : undefined);
       var sched = (TH ? info.sched_th : info.sched_en) || info.freq || '';
       // a source that only fills in early years isn't "stale": say what it's used for

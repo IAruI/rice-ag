@@ -3,6 +3,9 @@ name: Update rice prices
 on:
   schedule:
     - cron: '37 10 * * *'   # 17:37 Bangkok, after DIT's daily prices and TREA's Wednesday quotes are posted
+  push:                     # re-pull when the pipeline itself changes (the bot's own data commits don't re-trigger)
+    branches: [main]
+    paths: ['pipeline/**', '.github/workflows/prices.yml']
   workflow_dispatch:
     inputs:
       backfill:

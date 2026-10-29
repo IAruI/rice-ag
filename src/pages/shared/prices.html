@@ -4,9 +4,9 @@
     <div class="crumbs"><a href="{{ prefix }}/">rice.ag</a> / {{ T.nav_prices }}</div>
     <h1>{{ 'ราคาข้าว' if th else 'Rice prices' }}</h1>
     {% if th %}
-    <p class="lead px-lead">ราคาส่งออกข้าวของไทย เวียดนาม สหรัฐฯ อุรุกวัย และปากีสถาน พร้อมราคาข้าวเปลือกและข้าวสารขายส่งในประเทศไทย ราคาส่งออกเป็นดอลลาร์สหรัฐต่อตัน ราคาข้าวไทยแสดงเป็นบาทด้วย และอัปเดตอัตโนมัติทุกวัน</p>
+    <p class="lead px-lead">ราคาส่งออกข้าวของไทย เวียดนาม อินเดีย สหรัฐฯ อุรุกวัย และปากีสถาน พร้อมราคาข้าวเปลือกและข้าวสารขายส่งในประเทศไทย ราคาส่งออกเป็นดอลลาร์สหรัฐต่อตัน ราคาข้าวไทยแสดงเป็นบาทด้วย และอัปเดตอัตโนมัติทุกวัน</p>
     {% else %}
-    <p class="lead px-lead">Export prices for Thai, Vietnamese, US, Uruguayan and Pakistani rice, plus Thai paddy and wholesale prices. Export prices are in US dollars per tonne, Thai prices are also shown in baht, and everything updates automatically every day.</p>
+    <p class="lead px-lead">Export prices for Thai, Vietnamese, Indian, US, Uruguayan and Pakistani rice, plus Thai paddy and wholesale prices. Export prices are in US dollars per tonne, Thai prices are also shown in baht, and everything updates automatically every day.</p>
     {% endif %}
     <p class="fine" id="px-updated"></p>
     <p class="px-status fine">{{ 'กำลังโหลดข้อมูลราคา…' if th else 'Loading prices…' }}</p>
@@ -18,6 +18,11 @@
         <h2>{{ 'ราคาส่งออกตามประเทศ' if th else 'Export prices by origin' }}</h2>
         <p class="fine">{{ 'ราคาส่งออก FOB ข้าวสาร ดอลลาร์สหรัฐต่อตัน แตะที่ชื่อเพื่อแสดงหรือซ่อนเส้น' if th else 'FOB export quotes for milled rice, USD per tonne. Tap a name to show or hide its line.' }}</p>
         <div id="px-chart-origins"></div>
+      </div>
+      <div class="card px-card">
+        <h2>{{ 'ข้าวชนิดอื่นตามประเทศ' if th else 'More grades by origin' }}</h2>
+        <p class="fine">{{ 'ราคาส่งออก FOB ดอลลาร์สหรัฐต่อตัน ส่วนใหญ่เป็นข้อมูลรายเดือนจากกระทรวงเกษตรสหรัฐฯ (USDA) ย้อนหลังถึงปี 2540 ซึ่งช้ากว่าปัจจุบันหลายเดือน' if th else 'FOB export quotes, USD per tonne. Mostly USDA monthly data back to 1997, published a few months behind.' }}</p>
+        <div id="px-chart-more"></div>
       </div>
       <div class="card px-card">
         <h2>{{ 'ราคาส่งออกข้าวไทยตามชนิด' if th else 'Thai export grades' }}</h2>
@@ -59,7 +64,8 @@
         <li><strong>FOB</strong> คือราคาส่งมอบบนเรือที่ท่าเรือของประเทศผู้ส่งออก ยังไม่รวมค่าขนส่งและประกันภัย ราคา TREA รวมกระสอบ PP 50 กก.</li>
         <li><strong>ข้าวสารเทียบกับข้าวเปลือก</strong> ข้าวเปลือก 1 ตันสีได้ข้าวสารราว 0.6–0.7 ตัน ราคาข้าวเปลือกจึงเทียบกับราคาข้าวสารโดยตรงไม่ได้</li>
         <li><strong>ราคาเสนอขาย ไม่ใช่ราคาซื้อขายจริง</strong> ราคาส่งออกส่วนใหญ่เป็นราคาที่ผู้ส่งออกเสนอ ซึ่งอาจสูงกว่าราคาที่ตกลงกันจริงเล็กน้อย</li>
-        <li><strong>การต่อข้อมูลย้อนหลัง</strong> แต่ละเส้นใช้แหล่งที่ตรงที่สุดและถี่ที่สุดสำหรับช่วงล่าสุด แล้วต่อด้วยแหล่งที่ช้ากว่าสำหรับช่วงก่อนหน้า เช่น ข้าวขาว 5% ของไทยใช้ TREA รายสัปดาห์ แล้วต่อด้วย FAO รายสัปดาห์ (ตั้งแต่ปี 2543) และธนาคารโลกรายเดือน (ตั้งแต่ปี 2503) เส้นจึงอาจเปลี่ยนความถี่ตรงรอยต่อ</li>
+        <li><strong>การต่อข้อมูลย้อนหลัง</strong> แต่ละเส้นใช้แหล่งที่ตรงที่สุดและถี่ที่สุดสำหรับช่วงล่าสุด แล้วต่อด้วยแหล่งที่ช้ากว่าสำหรับช่วงก่อนหน้า เช่น ข้าวขาว 5% ของไทยใช้ TREA รายสัปดาห์ แล้วต่อด้วย FAO รายสัปดาห์ (ตั้งแต่ปี 2543) และธนาคารโลกรายเดือน (ตั้งแต่ปี 2503) ข้าวไทยชนิดอื่นใช้ข้อมูล USDA ย้อนหลังถึงปี 2528 เส้นจึงอาจเปลี่ยนความถี่ตรงรอยต่อ</li>
+        <li><strong>ราคาเป็นบาท</strong> แปลงจากดอลลาร์ด้วยอัตราแลกเปลี่ยนรายวันของ ECB ตั้งแต่ปี 2542 ค่าเฉลี่ยรายเดือนของธนาคารกลางสหรัฐฯ ปี 2524–2541 และค่าเฉลี่ยรายปีของธนาคารโลกก่อนหน้านั้น ก่อนกลางปี 2540 ค่าเงินบาทผูกไว้ราว 25 บาทต่อดอลลาร์</li>
         <li><strong>ข้าวหอมมะลิ</strong> TREA ประกาศราคาแยกตามปีการผลิต กราฟนี้ใช้ปีการผลิตล่าสุดที่มีราคา</li>
       </ul>
     {% else %}
@@ -68,7 +74,8 @@
         <li><strong>FOB</strong> (free on board) is the price loaded on a ship at the exporting country's port, before freight and insurance. TREA prices include a 50 kg PP bag.</li>
         <li><strong>Milled vs paddy.</strong> A tonne of paddy mills to roughly 0.6–0.7 t of rice, so paddy prices aren't directly comparable with milled prices.</li>
         <li><strong>Quotes, not trades.</strong> Most export prices are what exporters are offering, which can sit slightly above done deals.</li>
-        <li><strong>Spliced history.</strong> Each line uses the most direct, most frequent source for recent dates, then joins slower sources for earlier years. For example, Thai 5% is TREA weekly, then FAO weekly (from 2000), then the World Bank monthly (from 1960). A line can change frequency at the join.</li>
+        <li><strong>Spliced history.</strong> Each line uses the most direct, most frequent source for recent dates, then joins slower sources for earlier years. For example, Thai 5% is TREA weekly, then FAO weekly (from 2000), then the World Bank monthly (from 1960); other Thai grades go back to 1985 with USDA data. A line can change frequency at the join.</li>
+        <li><strong>Baht prices</strong> are converted from dollars at the ECB daily rate from 1999, the US Federal Reserve's monthly average for 1981–1998, and the World Bank's annual average before that. Until mid-1997 the baht was pegged near 25 to the dollar.</li>
         <li><strong>Hom Mali</strong> is quoted by TREA per crop year; the chart uses the newest crop that has a price.</li>
       </ul>
     {% endif %}
