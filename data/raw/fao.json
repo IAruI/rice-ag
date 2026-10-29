@@ -8358,8 +8358,8 @@
 }
 },
 "status": {
-"last_attempt": "2026-10-29T16:41:52Z",
-"last_error": null,
+"last_attempt": "2026-10-29T17:08:39Z",
+"last_error": "ValueError: value 0.0 outside sane USD/t range 80-4000; source layout may have changed",
 "last_ok": "2026-10-29T16:41:52Z"
 }
 }
