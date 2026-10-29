@@ -48,7 +48,8 @@ def fao_json(uuid):
            {'price_value': 441.42, 'price_value_dollar': 441.42, 'date': '2026-08-01', 'periodicity': 'monthly'}]
     if uuid.startswith('eb6de409'):
         pts += [{'price_value': 480.0, 'price_value_dollar': 480.0, 'date': '2026-09-25', 'periodicity': 'weekly'},
-                {'price_value': 470.0, 'price_value_dollar': 470.0, 'date': '2000-01-07', 'periodicity': 'weekly'}]
+                {'price_value': 470.0, 'price_value_dollar': 470.0, 'date': '2000-01-07', 'periodicity': 'weekly'},
+                {'price_value': 0.0, 'price_value_dollar': 0.0, 'date': '2000-01-14', 'periodicity': 'weekly'}]  # unquoted
     return {'uuid': uuid, 'datapoints': pts}
 
 

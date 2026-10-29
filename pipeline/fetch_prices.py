@@ -170,7 +170,7 @@ def fetch_fao(store, backfill):
         by = {'weekly': [], 'monthly': []}
         for p in j.get('datapoints', []):
             v = p.get('price_value_dollar') or p.get('price_value')
-            if v is not None and p.get('periodicity') in by:
+            if v is not None and float(v) > 0 and p.get('periodicity') in by:  # 0 = unquoted month
                 by[p['periodicity']].append((p['date'][:10], sane_usd(float(v))))
         for per, pts in by.items():
             if pts:
@@ -277,7 +277,7 @@ def fetch_usda(store, backfill):
     for r in rows:
         mon = MONTHS_LONG.get(r['REFERENCE_PERIOD_DESCRIPTION'].strip().lower())
         v = num(r['VALUE'])
-        if not mon or v is None or 'DOLLARS PER METRIC TON' not in r['UNIT_DESCRIPTION'].upper():
+        if not mon or not v or v <= 0 or 'DOLLARS PER METRIC TON' not in r['UNIT_DESCRIPTION'].upper():
             continue
         y = int(r['YEAR']) + (1 if mon < 8 else 0)
         sid = f"{slug(r['LOCATION_DESCRIPTION'])}:{slug(r['CLASS_DESCRIPTION'])}"
