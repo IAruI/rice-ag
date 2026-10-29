@@ -1,0 +1,90 @@
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Free · Works on your phone · Nothing uploaded</span>
+      <h1>Grade a rice sample from a photo.</h1>
+      <p class="lead">The rice.ag Grain Scanner finds and measures every kernel in a photo: head rice vs. broken, grain length and shape, colour consistency, and objects worth a second look. Built by rice millers, for anyone who buys, sells, mills or studies rice.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="{{ prefix }}/scanner/">{{ T.cta_try }} →</a>
+        <a class="btn btn-ghost" href="{{ prefix }}/scanner/?sample=1">{{ T.cta_sample }}</a>
+      </div>
+      <p class="fine">Results in seconds. Follows ISO 7301 / Codex length definitions. <a href="{{ prefix }}/methodology/">How it works</a></p>
+    </div>
+    <div class="hero-art">
+      <img src="/static/img/hero-scan.jpg" width="960" height="720" alt="Scanner output: each rice kernel outlined and colour-coded as whole, head or broken, with a reference coin and a flagged dark particle" loading="eager">
+      <span class="tag">Scanner output on a demo image</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 style="margin-top:0">What it measures</h2>
+    <div class="grid g3">
+      <div class="card">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h7M13 12h7" stroke-linecap="round"/><path d="M11 8l2 8"/></svg></div>
+        <h3>Head rice &amp; broken %</h3>
+        <p>Each kernel is measured against the sample's average whole-kernel length and sorted into whole, head, large, medium and small broken, and chips — by count and estimated weight.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L17 3l4 4L7 21H3z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg></div>
+        <h3>Grain size &amp; shape</h3>
+        <p>Put a coin in the photo and get length and width in millimetres, length/width ratio, spread, and IRRI length and shape classes — handy for checking you received the variety you paid for.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16h.01" stroke-linecap="round"/></svg></div>
+        <h3>Colour &amp; suspects</h3>
+        <p>Colour consistency across the sample, plus flags on dark, yellowed or red kernels, husk slivers and round objects — boxed on the photo so a person can check them.</p>
+      </div>
+    </div>
+    <p class="fine" style="margin-top:14px"><span class="pill beta">beta</span> Chalkiness is measured when grains are photographed on a lightbox. <a href="{{ prefix }}/guide/#chalk">How to set it up</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 style="margin-top:0">Three steps, about two minutes</h2>
+    <div class="grid g3">
+      <div><h3>1. Spread</h3><p>Scatter about a level teaspoon of rice (200–300 grains) on matte black card so no grains touch.</p></div>
+      <div><h3>2. Add a coin</h3><p>Lay a coin flat beside the grains — a Thai 10-baht coin is 26 mm — so lengths come out in millimetres.</p></div>
+      <div><h3>3. Shoot &amp; scan</h3><p>Photograph straight down in even light, then open it in the scanner. Your photo is analysed on your device.</p></div>
+    </div>
+    <p style="margin-top:8px"><a href="{{ prefix }}/guide/">Full photo guide →</a></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap narrow">
+    <h2 style="margin-top:0">What a photo can't tell you</h2>
+    <p>We'd rather you trust the numbers we do give. A camera sees shape and colour, so:</p>
+    <ul>
+      <li><strong>Moisture</strong> needs a moisture meter or oven test. Use our <a href="{{ prefix }}/tools/moisture-calculator/">moisture &amp; drying calculator</a> to sanity-check meter readings against drying records.</li>
+      <li><strong>Rice-coloured stones</strong> can look identical to grains. Destoners exist for a reason; the scanner flags obvious suspects only.</li>
+      <li><strong>Certificates</strong>: results are quick-check estimates, not a substitute for laboratory grading or official inspection.</li>
+    </ul>
+    <p><a href="{{ prefix }}/methodology/">Read the methodology and test results →</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 style="margin-top:0">Learn</h2>
+    <div class="grid g3">
+      <a class="card" style="text-decoration:none;color:inherit" href="{{ prefix }}/learn/broken-rice-grading/"><h3>Broken rice grading, explained</h3><p>Whole, head rice, brokens and chips under ISO 7301 and Codex — and why the percentage is by weight.</p><span class="more" style="color:var(--green)">Read →</span></a>
+      <a class="card" style="text-decoration:none;color:inherit" href="{{ prefix }}/learn/chainat-1-noodle-rice/"><h3>Chainat 1: Thailand's noodle rice</h3><p>Where the variety came from, what makes it suit noodles, and why unmixed supply matters.</p><span class="more" style="color:var(--green)">Read →</span></a>
+      <a class="card" style="text-decoration:none;color:inherit" href="{{ prefix }}/learn/moisture-and-drying-shrink/"><h3>Moisture &amp; drying shrink</h3><p>The dry-matter formula, worked examples, and how to catch a moisture meter that reads low.</p><span class="more" style="color:var(--green)">Read →</span></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="card wf">
+      <svg class="seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2E5B3A"/><path d="M32 12c9 6 12 16 9 27-2 7-6 11-9 13-3-2-7-6-9-13-3-11 0-21 9-27z" fill="#F6F1E7"/><path d="M32 17v31" stroke="#C9A55C" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <div>
+        <h2 style="margin-top:0">Rice prices, updated daily</h2>
+        <p>Thai, Vietnamese, US, Uruguayan and Pakistani export prices, plus Thai paddy and wholesale prices, all in USD per tonne, with history back decades and a free data download.</p>
+        <a class="btn btn-primary" href="{{ prefix }}/prices/">See rice prices →</a>
+      </div>
+  </div>
+</section>

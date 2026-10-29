@@ -1,0 +1,56 @@
+<section class="article">
+  <div class="wrap">
+    <div class="crumbs"><a href="{{ prefix }}/">rice.ag</a> / {{ T.nav_moisture }}</div>
+    <h1>{{ T.mc_title }}</h1>
+    <p class="lead" style="max-width:760px;color:var(--muted);font-size:1.08rem">{{ T.mc_intro }}</p>
+    <div class="calc">
+      <div class="panel">
+        <h2>{{ T.mc_a_title }}</h2>
+        <div class="field"><label for="aW">{{ T.mc_w_in }}</label><input type="number" id="aW" value="10000" min="0" step="any" inputmode="decimal"></div>
+        <div class="field"><label for="aM">{{ T.mc_m_in }}</label><input type="number" id="aM" value="25" min="0" max="80" step="any" inputmode="decimal"></div>
+        <div class="field"><label for="aT">{{ T.mc_m_target }}</label><input type="number" id="aT" value="14" min="0" max="80" step="any" inputmode="decimal"></div>
+        <div class="field"><label for="aS">{{ T.mc_shrink }}</label><input type="number" id="aS" value="0.5" min="0" max="20" step="any" inputmode="decimal"></div>
+        <div class="kv" style="margin-top:14px">
+          <div>{{ T.mc_res_weight }}<b class="out-big" id="aOut">—</b></div>
+          <div>{{ T.mc_res_water }}<b id="aWater">—</b></div>
+          <div>{{ T.mc_res_dry }}<b id="aDry">—</b></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>{{ T.mc_b_title }}</h2>
+        <div class="field"><label for="bW">{{ T.mc_w_in }}</label><input type="number" id="bW" value="100000" min="0" step="any" inputmode="decimal"></div>
+        <div class="field"><label for="bO">{{ T.mc_w_out }}</label><input type="number" id="bO" value="81000" min="0" step="any" inputmode="decimal"></div>
+        <div class="field"><label for="bM">{{ T.mc_m_out }}</label><input type="number" id="bM" value="14" min="0" max="80" step="any" inputmode="decimal"></div>
+        <div class="field"><label for="bS">{{ T.mc_shrink }}</label><input type="number" id="bS" value="0.5" min="0" max="20" step="any" inputmode="decimal"></div>
+        <div class="kv" style="margin-top:14px">
+          <div>{{ T.mc_res_implied }}<b class="out-big" id="bOut">—</b></div>
+          <div>{{ T.mc_res_water }}<b id="bWater">—</b></div>
+          <div>{{ T.mc_res_dry }}<b id="bDry">—</b></div>
+        </div>
+      </div>
+    </div>
+    <p class="fine" style="margin-top:16px">{{ T.mc_note }}</p>
+    <div class="narrow">
+    {{ body | safe }}
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var L = document.documentElement.lang === 'th' ? 'th-TH' : 'en-US';
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function kg(x){ return isFinite(x) ? x.toLocaleString(L,{maximumFractionDigits:0}) + (L==='th-TH'?' กก.':' kg') : '—'; }
+  function pc(x){ return isFinite(x) ? x.toLocaleString(L,{minimumFractionDigits:1,maximumFractionDigits:1}) + '%' : '—'; }
+  function set(id, t){ document.getElementById(id).textContent = t; }
+  function calc(){
+    var w=v('aW'), m=v('aM')/100, t=v('aT')/100, s=(v('aS')||0)/100;
+    var dry = w*(1-m)*(1-s), out = t<1 ? dry/(1-t) : NaN;
+    set('aOut', kg(out)); set('aDry', kg(dry)); set('aWater', kg(w - out - w*(1-m)*s));
+    var wi=v('bW'), wo=v('bO'), mo=v('bM')/100, sb=(v('bS')||0)/100;
+    var dryOut = wo*(1-mo), dryIn = dryOut/(1-sb), mi = 1 - dryIn/wi;
+    set('bOut', pc(mi*100)); set('bDry', kg(dryIn)); set('bWater', kg(wi - wo - dryIn*sb));
+  }
+  document.querySelectorAll('.calc input').forEach(function(i){ i.addEventListener('input', calc); });
+  calc();
+})();
+</script>

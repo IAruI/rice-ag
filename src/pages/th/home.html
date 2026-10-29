@@ -1,0 +1,90 @@
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">ฟรี · ใช้บนมือถือได้ · ไม่มีการอัปโหลดภาพ</span>
+      <h1>ตรวจเกรดข้าวได้จากภาพถ่ายเดียว</h1>
+      <p class="lead">เครื่องสแกนเมล็ดข้าว rice.ag ค้นหาและวัดทุกเมล็ดในภาพ: ต้นข้าวเทียบกับข้าวหัก ความยาวและรูปร่างเมล็ด ความสม่ำเสมอของสี และวัตถุที่ควรตรวจซ้ำ สร้างโดยคนสีข้าว สำหรับทุกคนที่ซื้อ ขาย สี หรือศึกษาเรื่องข้าว</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="{{ prefix }}/scanner/">{{ T.cta_try }} →</a>
+        <a class="btn btn-ghost" href="{{ prefix }}/scanner/?sample=1">{{ T.cta_sample }}</a>
+      </div>
+      <p class="fine">รู้ผลในไม่กี่วินาที ใช้นิยามความยาวตาม ISO 7301 / Codex <a href="{{ prefix }}/methodology/">หลักการทำงาน</a></p>
+    </div>
+    <div class="hero-art">
+      <img src="/static/img/hero-scan.jpg" width="960" height="720" alt="ผลจากเครื่องสแกน: เมล็ดข้าวแต่ละเมล็ดถูกวาดขอบและแยกสีตามประเภท เมล็ดเต็ม ต้นข้าว หรือข้าวหัก พร้อมเหรียญอ้างอิงและวัตถุสีเข้มที่ถูกชี้ให้ตรวจ" loading="eager">
+      <span class="tag">ผลการสแกนบนภาพสาธิต</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 style="margin-top:0">วัดอะไรได้บ้าง</h2>
+    <div class="grid g3">
+      <div class="card">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h7M13 12h7" stroke-linecap="round"/><path d="M11 8l2 8"/></svg></div>
+        <h3>ต้นข้าวและข้าวหัก (%)</h3>
+        <p>วัดแต่ละเมล็ดเทียบกับความยาวเฉลี่ยของเมล็ดเต็มในตัวอย่าง แล้วจำแนกเป็นเมล็ดเต็ม ต้นข้าว ข้าวหักใหญ่ กลาง เล็ก และปลายข้าว ทั้งตามจำนวนเมล็ดและน้ำหนักโดยประมาณ</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L17 3l4 4L7 21H3z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg></div>
+        <h3>ขนาดและรูปร่างเมล็ด</h3>
+        <p>วางเหรียญในภาพ แล้วได้ความยาวและความกว้างเป็นมิลลิเมตร อัตราส่วนยาว/กว้าง การกระจาย และชั้นความยาวและรูปร่างตาม IRRI ช่วยตรวจว่าได้รับข้าวพันธุ์ที่จ่ายเงินซื้อจริง</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16h.01" stroke-linecap="round"/></svg></div>
+        <h3>สีและวัตถุน่าสงสัย</h3>
+        <p>ความสม่ำเสมอของสีทั้งตัวอย่าง พร้อมชี้เมล็ดสีเข้ม เมล็ดเหลือง เมล็ดแดง เศษแกลบ และวัตถุกลม โดยตีกรอบบนภาพให้คนตรวจสอบซ้ำ</p>
+      </div>
+    </div>
+    <p class="fine" style="margin-top:14px"><span class="pill beta">beta</span> วัดท้องไข่ได้เมื่อถ่ายภาพข้าวบนกล่องไฟ <a href="{{ prefix }}/guide/#chalk">วิธีจัดวาง</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 style="margin-top:0">3 ขั้นตอน ประมาณ 2 นาที</h2>
+    <div class="grid g3">
+      <div><h3>1. เกลี่ยข้าว</h3><p>โรยข้าวประมาณ 1 ช้อนชาปาด (200–300 เมล็ด) บนกระดาษแข็งสีดำด้าน อย่าให้เมล็ดสัมผัสกัน</p></div>
+      <div><h3>2. วางเหรียญ</h3><p>วางเหรียญราบไว้ข้างเมล็ดข้าว (เหรียญ 10 บาทกว้าง 26 มม.) เพื่อให้วัดความยาวเป็นมิลลิเมตรได้</p></div>
+      <div><h3>3. ถ่ายและสแกน</h3><p>ถ่ายภาพตรงลงมาจากด้านบนภายใต้แสงสม่ำเสมอ แล้วเปิดในเครื่องสแกน ภาพถูกวิเคราะห์บนอุปกรณ์ของคุณ</p></div>
+    </div>
+    <p style="margin-top:8px"><a href="{{ prefix }}/guide/">คู่มือการถ่ายภาพฉบับเต็ม →</a></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap narrow">
+    <h2 style="margin-top:0">สิ่งที่ภาพถ่ายบอกไม่ได้</h2>
+    <p>เราอยากให้คุณเชื่อมั่นในตัวเลขที่เราให้ได้จริง กล้องมองเห็นรูปร่างและสีเท่านั้น ดังนั้น:</p>
+    <ul>
+      <li><strong>ความชื้น</strong> ต้องใช้เครื่องวัดความชื้นหรือการอบด้วยตู้อบ ใช้<a href="{{ prefix }}/tools/moisture-calculator/">เครื่องคำนวณความชื้นและการอบแห้ง</a>ของเราเพื่อเทียบค่าจากเครื่องวัดกับบันทึกการอบ</li>
+      <li><strong>หินที่มีสีเหมือนข้าว</strong> อาจดูเหมือนเมล็ดข้าวทุกประการ เครื่องแยกหินจึงยังจำเป็น เครื่องสแกนชี้ได้เฉพาะสิ่งที่เห็นได้ชัดเท่านั้น</li>
+      <li><strong>ใบรับรอง</strong>: ผลลัพธ์เป็นค่าประมาณสำหรับการตรวจเบื้องต้น ไม่ใช่การตรวจในห้องปฏิบัติการหรือการตรวจสอบอย่างเป็นทางการ</li>
+    </ul>
+    <p><a href="{{ prefix }}/methodology/">อ่านหลักการและผลการทดสอบ →</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 style="margin-top:0">ความรู้</h2>
+    <div class="grid g3">
+      <a class="card" style="text-decoration:none;color:inherit" href="{{ prefix }}/learn/broken-rice-grading/"><h3>การจำแนกข้าวหักแบบเข้าใจง่าย</h3><p>เมล็ดเต็ม ต้นข้าว ข้าวหัก และปลายข้าว ตาม ISO 7301 และ Codex และเหตุผลที่เปอร์เซ็นต์คิดตามน้ำหนัก</p><span class="more" style="color:var(--green)">อ่านต่อ →</span></a>
+      <a class="card" style="text-decoration:none;color:inherit" href="{{ prefix }}/learn/chainat-1-noodle-rice/"><h3>ชัยนาท 1: ข้าวสำหรับทำเส้นของไทย</h3><p>ที่มาของพันธุ์ เหตุผลที่เหมาะกับการทำเส้น และทำไมข้าวไม่ปนจึงสำคัญ</p><span class="more" style="color:var(--green)">อ่านต่อ →</span></a>
+      <a class="card" style="text-decoration:none;color:inherit" href="{{ prefix }}/learn/moisture-and-drying-shrink/"><h3>ความชื้นและน้ำหนักหายจากการอบ</h3><p>สูตรน้ำหนักเนื้อแห้ง ตัวอย่างการคำนวณ และวิธีจับเครื่องวัดความชื้นที่อ่านค่าต่ำ</p><span class="more" style="color:var(--green)">อ่านต่อ →</span></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="card wf">
+      <svg class="seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2E5B3A"/><path d="M32 12c9 6 12 16 9 27-2 7-6 11-9 13-3-2-7-6-9-13-3-11 0-21 9-27z" fill="#F6F1E7"/><path d="M32 17v31" stroke="#C9A55C" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <div>
+        <h2 style="margin-top:0">ราคาข้าว อัปเดตทุกวัน</h2>
+        <p>ราคาส่งออกข้าวไทย เวียดนาม สหรัฐฯ อุรุกวัย และปากีสถาน พร้อมราคาข้าวเปลือกและข้าวสารขายส่งในประเทศไทย เป็นดอลลาร์สหรัฐต่อตัน มีข้อมูลย้อนหลังหลายสิบปี และดาวน์โหลดข้อมูลได้ฟรี</p>
+        <a class="btn btn-primary" href="{{ prefix }}/prices/">ดูราคาข้าว →</a>
+      </div>
+  </div>
+</section>

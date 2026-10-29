@@ -1,0 +1,6 @@
+dist/
+__pycache__/
+tests/*.png
+tests/*.jpg
+tests/*.json
+tests/batch/
