@@ -38,10 +38,7 @@
     </a>
     <button class="menu-btn" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">{{ T.menu }}</button>
     <nav class="nav" id="nav">
-      <a href="{{ prefix }}/scanner/" {% if section == 'scanner' %}aria-current="page"{% endif %}>{{ T.nav_scanner }}</a>
-      <a href="{{ prefix }}/guide/" {% if section == 'guide' %}aria-current="page"{% endif %}>{{ T.nav_guide }}</a>
-      <a href="{{ prefix }}/tools/moisture-calculator/" {% if section == 'moisture' %}aria-current="page"{% endif %}>{{ T.nav_moisture }}</a>
-      <a href="{{ prefix }}/prices/" {% if section == 'prices' %}aria-current="page"{% endif %}>{{ T.nav_prices }}</a>
+      <a href="{{ prefix }}/" {% if section == 'prices' %}aria-current="page"{% endif %}>{{ T.nav_prices }}</a>
       <a href="{{ prefix }}/learn/" {% if section == 'learn' %}aria-current="page"{% endif %}>{{ T.nav_learn }}</a>
       <a href="{{ prefix }}/about/" {% if section == 'about' %}aria-current="page"{% endif %}>{{ T.nav_about }}</a>
       <a class="lang" href="{{ alt_url }}" hreflang="{{ alt_lang }}" lang="{{ alt_lang }}">{{ T.switch_to }}</a>
@@ -64,7 +61,7 @@
         <ul>
           <li><a href="{{ prefix }}/scanner/">{{ T.nav_scanner }}</a></li>
           <li><a href="{{ prefix }}/tools/moisture-calculator/">{{ T.nav_moisture }}</a></li>
-          <li><a href="{{ prefix }}/prices/">{{ T.nav_prices }}</a></li>
+          <li><a href="{{ prefix }}/">{{ T.nav_prices }}</a></li>
           <li><a href="{{ prefix }}/guide/">{{ T.nav_guide }}</a></li>
           <li><a href="{{ prefix }}/methodology/">{{ T.footer_methodology }}</a></li>
         </ul>
@@ -78,7 +75,7 @@
       <div>
         <h4>{{ T.footer_wf }}</h4>
         <ul>
-          <li><a href="{{ prefix }}/prices/">{{ T.footer_wf_site }}</a></li>
+          <li><a href="{{ prefix }}/tools/">{{ 'เครื่องมือทั้งหมด' if lang == 'th' else 'All tools' }}</a></li>
           <li><a href="{{ prefix }}/about/">{{ T.footer_wf_source }}</a></li>
         </ul>
         <p class="fine" style="margin-top:18px">© {{ year }} rice.ag</p>

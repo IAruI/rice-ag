@@ -4,3 +4,14 @@
 
 [build.environment]
   PYTHON_VERSION = "3.11"
+
+# /prices/ moved to the homepage (Oct 2026)
+[[redirects]]
+  from = "/prices/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/th/prices/*"
+  to = "/th/"
+  status = 301
