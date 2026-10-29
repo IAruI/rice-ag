@@ -64,6 +64,7 @@ def wb_xlsx():
     ws.append([None, 'Crude oil, average', 'Rice, Thai 5% ', 'Rice, Thai 25% ', 'Rice, Thai A.1', 'Rice, Viet Namese 5%'])
     ws.append([None, '($/bbl)', '($/mt)', '($/mt)', '($/mt)', '($/mt)'])
     ws.append(['1960M01', 1.6, 104.5, '…', '…', '…'])
+    ws.append(['1960M02', 1.6, 105.0, 0, 0, '…'])  # real file has zeros for missing months
     ws.append(['2026M09', 70, 482, 461, 473.2, 418.5])
     b = io.BytesIO()
     wb.save(b)

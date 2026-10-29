@@ -205,7 +205,7 @@ def fetch_wb(store, backfill):
         for r in rows[hi + 2:]:
             if not r or not isinstance(r[0], str) or not re.fullmatch(r'\d{4}M\d\d', r[0]):
                 continue
-            if isinstance(r[i], (int, float)):
+            if isinstance(r[i], (int, float)) and r[i] > 0:  # the Pink Sheet uses 0 for some missing months
                 pts.append((f'{r[0][:4]}-{r[0][5:]}-01', sane_usd(float(r[i]), lo=30)))
         added += merge(store, slug(name), pts)
     return added
