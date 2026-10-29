@@ -1262,6 +1262,7 @@ date,series_id,series,usd_per_tonne
 1994-12-16,th_a1s,Thai broken A1 Super,222.0
 1994-12-23,th_100b,Thai white 100% grade B,272.0
 1994-12-23,th_a1s,Thai broken A1 Super,225.0
+1995-01-01,in_25,India white rice 25%,238.0
 1995-01-01,th_15,Thai white rice 15%,264.8
 1995-01-01,th_25,Thai white 25%,258.0
 1995-01-01,th_5,Thailand white rice 5%,276.8
@@ -1273,6 +1274,7 @@ date,series_id,series,usd_per_tonne
 1995-01-20,th_a1s,Thai broken A1 Super,240.0
 1995-01-27,th_100b,Thai white 100% grade B,298.0
 1995-01-27,th_a1s,Thai broken A1 Super,240.0
+1995-02-01,in_25,India white rice 25%,235.0
 1995-02-01,th_15,Thai white rice 15%,270.2
 1995-02-01,th_25,Thai white 25%,262.0
 1995-02-01,th_5,Thailand white rice 5%,280.5
@@ -1284,6 +1286,7 @@ date,series_id,series,usd_per_tonne
 1995-02-17,th_a1s,Thai broken A1 Super,222.0
 1995-02-24,th_100b,Thai white 100% grade B,290.0
 1995-02-24,th_a1s,Thai broken A1 Super,220.0
+1995-03-01,in_25,India white rice 25%,238.0
 1995-03-01,th_15,Thai white rice 15%,272.2
 1995-03-01,th_25,Thai white 25%,259.0
 1995-03-01,th_5,Thailand white rice 5%,286.3
@@ -1297,6 +1300,7 @@ date,series_id,series,usd_per_tonne
 1995-03-24,th_a1s,Thai broken A1 Super,230.0
 1995-03-31,th_100b,Thai white 100% grade B,300.0
 1995-03-31,th_a1s,Thai broken A1 Super,234.0
+1995-04-01,in_25,India white rice 25%,238.1
 1995-04-01,th_15,Thai white rice 15%,270.5
 1995-04-01,th_25,Thai white 25%,260.0
 1995-04-01,th_5,Thailand white rice 5%,281.5
@@ -1308,6 +1312,7 @@ date,series_id,series,usd_per_tonne
 1995-04-21,th_a1s,Thai broken A1 Super,228.0
 1995-04-28,th_100b,Thai white 100% grade B,298.0
 1995-04-28,th_a1s,Thai broken A1 Super,240.0
+1995-05-01,in_25,India white rice 25%,237.0
 1995-05-01,th_15,Thai white rice 15%,279.0
 1995-05-01,th_25,Thai white 25%,268.0
 1995-05-01,th_5,Thailand white rice 5%,291.0
@@ -1319,6 +1324,7 @@ date,series_id,series,usd_per_tonne
 1995-05-19,th_a1s,Thai broken A1 Super,243.0
 1995-05-26,th_100b,Thai white 100% grade B,313.0
 1995-05-26,th_a1s,Thai broken A1 Super,247.0
+1995-06-01,in_25,India white rice 25%,240.0
 1995-06-01,th_15,Thai white rice 15%,313.8
 1995-06-01,th_25,Thai white 25%,303.0
 1995-06-01,th_5,Thailand white rice 5%,326.0
@@ -1332,6 +1338,7 @@ date,series_id,series,usd_per_tonne
 1995-06-23,th_a1s,Thai broken A1 Super,293.0
 1995-06-30,th_100b,Thai white 100% grade B,348.0
 1995-06-30,th_a1s,Thai broken A1 Super,293.0
+1995-07-01,in_25,India white rice 25%,247.0
 1995-07-01,th_15,Thai white rice 15%,335.2
 1995-07-01,th_25,Thai white 25%,327.0
 1995-07-01,th_5,Thailand white rice 5%,345.6
@@ -1343,6 +1350,7 @@ date,series_id,series,usd_per_tonne
 1995-07-21,th_a1s,Thai broken A1 Super,305.0
 1995-07-28,th_100b,Thai white 100% grade B,368.0
 1995-07-28,th_a1s,Thai broken A1 Super,306.0
+1995-08-01,in_25,India white rice 25%,258.0
 1995-08-01,th_15,Thai white rice 15%,327.2
 1995-08-01,th_25,Thai white 25%,318.0
 1995-08-01,th_5,Thailand white rice 5%,339.5
@@ -1354,6 +1362,7 @@ date,series_id,series,usd_per_tonne
 1995-08-18,th_a1s,Thai broken A1 Super,295.0
 1995-08-25,th_100b,Thai white 100% grade B,352.0
 1995-08-25,th_a1s,Thai broken A1 Super,288.0
+1995-09-01,in_25,India white rice 25%,254.0
 1995-09-01,th_100b,Thai white 100% grade B,360.0
 1995-09-01,th_15,Thai white rice 15%,345.8
 1995-09-01,th_25,Thai white 25%,332.0
@@ -1367,6 +1376,7 @@ date,series_id,series,usd_per_tonne
 1995-09-22,th_a1s,Thai broken A1 Super,300.0
 1995-09-29,th_100b,Thai white 100% grade B,392.0
 1995-09-29,th_a1s,Thai broken A1 Super,295.0
+1995-10-01,in_25,India white rice 25%,247.5
 1995-10-01,th_15,Thai white rice 15%,371.8
 1995-10-01,th_25,Thai white 25%,351.0
 1995-10-01,th_5,Thailand white rice 5%,382.6
@@ -1378,6 +1388,7 @@ date,series_id,series,usd_per_tonne
 1995-10-20,th_a1s,Thai broken A1 Super,300.0
 1995-10-27,th_100b,Thai white 100% grade B,400.0
 1995-10-27,th_a1s,Thai broken A1 Super,301.0
+1995-11-01,in_25,India white rice 25%,249.2
 1995-11-01,th_15,Thai white rice 15%,333.8
 1995-11-01,th_25,Thai white 25%,322.0
 1995-11-01,th_5,Thailand white rice 5%,340.5
@@ -1389,6 +1400,7 @@ date,series_id,series,usd_per_tonne
 1995-11-17,th_a1s,Thai broken A1 Super,303.0
 1995-11-24,th_100b,Thai white 100% grade B,358.0
 1995-11-24,th_a1s,Thai broken A1 Super,297.0
+1995-12-01,in_25,India white rice 25%,261.6
 1995-12-01,th_100b,Thai white 100% grade B,362.0
 1995-12-01,th_15,Thai white rice 15%,325.7
 1995-12-01,th_25,Thai white 25%,312.0
@@ -1402,6 +1414,7 @@ date,series_id,series,usd_per_tonne
 1995-12-22,th_a1s,Thai broken A1 Super,272.0
 1995-12-29,th_100b,Thai white 100% grade B,355.0
 1995-12-29,th_a1s,Thai broken A1 Super,272.0
+1996-01-01,in_25,India white rice 25%,253.3
 1996-01-01,th_15,Thai white rice 15%,350.2
 1996-01-01,th_25,Thai white 25%,331.0
 1996-01-01,th_5,Thailand white rice 5%,369.2
@@ -1413,6 +1426,7 @@ date,series_id,series,usd_per_tonne
 1996-01-19,th_a1s,Thai broken A1 Super,269.0
 1996-01-26,th_100b,Thai white 100% grade B,383.0
 1996-01-26,th_a1s,Thai broken A1 Super,269.0
+1996-02-01,in_25,India white rice 25%,260.8
 1996-02-01,th_15,Thai white rice 15%,348.0
 1996-02-01,th_25,Thai white 25%,320.0
 1996-02-01,th_5,Thailand white rice 5%,368.0
@@ -1424,6 +1438,7 @@ date,series_id,series,usd_per_tonne
 1996-02-16,th_a1s,Thai broken A1 Super,257.0
 1996-02-23,th_100b,Thai white 100% grade B,377.0
 1996-02-23,th_a1s,Thai broken A1 Super,257.0
+1996-03-01,in_25,India white rice 25%,261.1
 1996-03-01,th_100b,Thai white 100% grade B,377.0
 1996-03-01,th_15,Thai white rice 15%,344.0
 1996-03-01,th_25,Thai white 25%,313.0
@@ -1437,6 +1452,7 @@ date,series_id,series,usd_per_tonne
 1996-03-22,th_a1s,Thai broken A1 Super,263.0
 1996-03-29,th_100b,Thai white 100% grade B,345.0
 1996-03-29,th_a1s,Thai broken A1 Super,250.0
+1996-04-01,in_25,India white rice 25%,264.9
 1996-04-01,th_15,Thai white rice 15%,310.2
 1996-04-01,th_25,Thai white 25%,281.0
 1996-04-01,th_5,Thailand white rice 5%,327.2
@@ -1448,6 +1464,7 @@ date,series_id,series,usd_per_tonne
 1996-04-19,th_a1s,Thai broken A1 Super,246.0
 1996-04-26,th_100b,Thai white 100% grade B,348.0
 1996-04-26,th_a1s,Thai broken A1 Super,249.0
+1996-05-01,in_25,India white rice 25%,281.7
 1996-05-01,th_15,Thai white rice 15%,312.2
 1996-05-01,th_25,Thai white 25%,279.0
 1996-05-01,th_5,Thailand white rice 5%,332.3
@@ -1461,6 +1478,7 @@ date,series_id,series,usd_per_tonne
 1996-05-24,th_a1s,Thai broken A1 Super,253.0
 1996-05-31,th_100b,Thai white 100% grade B,360.0
 1996-05-31,th_a1s,Thai broken A1 Super,254.0
+1996-06-01,in_25,India white rice 25%,252.5
 1996-06-01,th_15,Thai white rice 15%,321.8
 1996-06-01,th_25,Thai white 25%,285.0
 1996-06-01,th_5,Thailand white rice 5%,341.5
@@ -1472,6 +1490,7 @@ date,series_id,series,usd_per_tonne
 1996-06-21,th_a1s,Thai broken A1 Super,235.0
 1996-06-28,th_100b,Thai white 100% grade B,368.0
 1996-06-28,th_a1s,Thai broken A1 Super,231.0
+1996-07-01,in_25,India white rice 25%,242.5
 1996-07-01,th_15,Thai white rice 15%,335.2
 1996-07-01,th_25,Thai white 25%,293.0
 1996-07-01,th_5,Thailand white rice 5%,358.0
@@ -1483,6 +1502,7 @@ date,series_id,series,usd_per_tonne
 1996-07-19,th_a1s,Thai broken A1 Super,235.0
 1996-07-26,th_100b,Thai white 100% grade B,365.0
 1996-07-26,th_a1s,Thai broken A1 Super,228.0
+1996-08-01,in_25,India white rice 25%,245.0
 1996-08-01,th_15,Thai white rice 15%,313.8
 1996-08-01,th_25,Thai white 25%,276.0
 1996-08-01,th_5,Thailand white rice 5%,335.5
@@ -1496,6 +1516,7 @@ date,series_id,series,usd_per_tonne
 1996-08-23,th_a1s,Thai broken A1 Super,215.0
 1996-08-30,th_100b,Thai white 100% grade B,344.0
 1996-08-30,th_a1s,Thai broken A1 Super,215.0
+1996-09-01,in_25,India white rice 25%,242.5
 1996-09-01,th_15,Thai white rice 15%,311.0
 1996-09-01,th_25,Thai white 25%,274.0
 1996-09-01,th_5,Thailand white rice 5%,328.4
@@ -1507,6 +1528,7 @@ date,series_id,series,usd_per_tonne
 1996-09-20,th_a1s,Thai broken A1 Super,217.0
 1996-09-27,th_100b,Thai white 100% grade B,325.0
 1996-09-27,th_a1s,Thai broken A1 Super,212.0
+1996-10-01,in_25,India white rice 25%,244.2
 1996-10-01,th_15,Thai white rice 15%,292.6
 1996-10-01,th_25,Thai white 25%,260.0
 1996-10-01,th_5,Thailand white rice 5%,312.8
@@ -1518,6 +1540,7 @@ date,series_id,series,usd_per_tonne
 1996-10-18,th_a1s,Thai broken A1 Super,210.0
 1996-10-25,th_100b,Thai white 100% grade B,326.0
 1996-10-25,th_a1s,Thai broken A1 Super,207.0
+1996-11-01,in_25,India white rice 25%,245.0
 1996-11-01,th_100b,Thai white 100% grade B,326.0
 1996-11-01,th_15,Thai white rice 15%,293.0
 1996-11-01,th_25,Thai white 25%,258.0
@@ -1531,6 +1554,7 @@ date,series_id,series,usd_per_tonne
 1996-11-22,th_a1s,Thai broken A1 Super,204.0
 1996-11-29,th_100b,Thai white 100% grade B,325.0
 1996-11-29,th_a1s,Thai broken A1 Super,201.0
+1996-12-01,in_25,India white rice 25%,250.0
 1996-12-01,th_15,Thai white rice 15%,297.5
 1996-12-01,th_25,Thai white 25%,263.0
 1996-12-01,th_5,Thailand white rice 5%,319.2
@@ -1542,6 +1566,7 @@ date,series_id,series,usd_per_tonne
 1996-12-20,th_a1s,Thai broken A1 Super,221.0
 1996-12-27,th_100b,Thai white 100% grade B,350.0
 1996-12-27,th_a1s,Thai broken A1 Super,216.0
+1997-01-01,in_25,India white rice 25%,245.0
 1997-01-01,th_15,Thai white rice 15%,332.2
 1997-01-01,th_25,Thai white 25%,291.0
 1997-01-01,th_5,Thailand white rice 5%,356.0
@@ -1555,6 +1580,7 @@ date,series_id,series,usd_per_tonne
 1997-01-24,th_a1s,Thai broken A1 Super,224.0
 1997-01-31,th_100b,Thai white 100% grade B,365.0
 1997-01-31,th_a1s,Thai broken A1 Super,223.0
+1997-02-01,in_25,India white rice 25%,238.3
 1997-02-01,th_15,Thai white rice 15%,319.8
 1997-02-01,th_25,Thai white 25%,283.0
 1997-02-01,th_5,Thailand white rice 5%,347.0
@@ -1566,6 +1592,7 @@ date,series_id,series,usd_per_tonne
 1997-02-21,th_a1s,Thai broken A1 Super,229.0
 1997-02-28,th_100b,Thai white 100% grade B,354.0
 1997-02-28,th_a1s,Thai broken A1 Super,232.0
+1997-03-01,in_25,India white rice 25%,245.0
 1997-03-01,th_15,Thai white rice 15%,302.2
 1997-03-01,th_25,Thai white 25%,273.0
 1997-03-01,th_5,Thailand white rice 5%,323.4
@@ -1577,6 +1604,7 @@ date,series_id,series,usd_per_tonne
 1997-03-21,th_a1s,Thai broken A1 Super,234.0
 1997-03-28,th_100b,Thai white 100% grade B,320.0
 1997-03-28,th_a1s,Thai broken A1 Super,233.0
+1997-04-01,in_25,India white rice 25%,270.0
 1997-04-01,th_15,Thai white rice 15%,284.5
 1997-04-01,th_25,Thai white 25%,262.0
 1997-04-01,th_5,Thailand white rice 5%,304.5
@@ -1588,6 +1616,7 @@ date,series_id,series,usd_per_tonne
 1997-04-18,th_a1s,Thai broken A1 Super,212.0
 1997-04-25,th_100b,Thai white 100% grade B,325.0
 1997-04-25,th_a1s,Thai broken A1 Super,215.0
+1997-05-01,in_25,India white rice 25%,270.0
 1997-05-01,th_15,Thai white rice 15%,300.3
 1997-05-01,th_25,Thai white 25%,267.0
 1997-05-01,th_5,Thailand white rice 5%,324.5
@@ -1601,6 +1630,7 @@ date,series_id,series,usd_per_tonne
 1997-05-23,th_a1s,Thai broken A1 Super,217.0
 1997-05-30,th_100b,Thai white 100% grade B,325.0
 1997-05-30,th_a1s,Thai broken A1 Super,213.0
+1997-06-01,in_25,India white rice 25%,270.0
 1997-06-01,th_15,Thai white rice 15%,298.8
 1997-06-01,th_25,Thai white 25%,266.0
 1997-06-01,th_5,Thailand white rice 5%,323.2
@@ -1612,6 +1642,7 @@ date,series_id,series,usd_per_tonne
 1997-06-20,th_a1s,Thai broken A1 Super,218.0
 1997-06-27,th_100b,Thai white 100% grade B,345.0
 1997-06-27,th_a1s,Thai broken A1 Super,226.0
+1997-07-01,in_25,India white rice 25%,260.0
 1997-07-01,th_15,Thai white rice 15%,296.2
 1997-07-01,th_25,Thai white 25%,267.0
 1997-07-01,th_5,Thailand white rice 5%,320.0
