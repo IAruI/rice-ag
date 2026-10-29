@@ -153,14 +153,16 @@
       });
       rows.sort(function (a, b) { return b.v - a.v; }).forEach(function (r) {
         var row = el('div', 'px-tip-r'); var k = el('i'); k.style.background = r.l.c; row.appendChild(k);
-        row.appendChild(el('b', null, nf0.format(r.v)));
-        var extra = baht ? ' ($' + nf0.format(r.l.s.v[r.i]) + ')' : '';
-        row.appendChild(el('span', null, name(r.l.s) + extra)); tip.appendChild(row);
+        // baht charts: ฿ value, then the dollar price highlighted; dollar charts: the dollar price highlighted
+        if (baht) row.appendChild(el('b', 'px-tip-v', '฿' + nf0.format(r.v)));
+        row.appendChild(el('b', 'px-tip-usd', '$' + nf0.format(baht ? r.l.s.v[r.i] : r.v)));
+        if (!baht) row.appendChild(el('b', 'px-tip-v', ''));
+        row.appendChild(el('span', 'px-tip-n', name(r.l.s))); tip.appendChild(row);
       });
       tip.hidden = false;
       var bw = box.clientWidth, tw = tip.offsetWidth;
       var left = x * (box.clientWidth / W) + 14; if (left + tw > bw) left = x * (box.clientWidth / W) - tw - 14;
-      tip.style.left = Math.max(0, left) + 'px';
+      tip.style.left = Math.max(0, Math.min(left, bw - tw)) + 'px';
     }
     function hide() { cross.setAttribute('visibility', 'hidden'); dots.forEach(function (d) { d.setAttribute('visibility', 'hidden'); }); tip.hidden = true; }
     function nearest(clientX) {
@@ -171,7 +173,8 @@
       return lo;
     }
     g.addEventListener('pointermove', function (e) { show(nearest(e.clientX)); });
-    g.addEventListener('pointerleave', hide);
+    g.addEventListener('pointerdown', function (e) { show(nearest(e.clientX)); });  // tap on phones
+    g.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') hide(); });
     g.addEventListener('focus', function () { show(cur >= 0 ? cur : allT.length - 1); });
     g.addEventListener('blur', hide);
     g.addEventListener('keydown', function (e) {
