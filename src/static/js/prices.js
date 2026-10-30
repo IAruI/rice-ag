@@ -35,6 +35,8 @@
   var pf = new Intl.NumberFormat(LOC, { maximumFractionDigits: 1, minimumFractionDigits: 1, signDisplay: 'exceptZero' });
   function fdate(ms, opt) { return new Date(ms).toLocaleDateString(LOC, opt || { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }); }
   function name(s) { return TH ? s.th : s.en; }
+  // moments (pull times) in the viewer's local time; fdate above is for date-only data points
+  function fwhen(ms) { return new Date(ms).toLocaleString(LOC, { dateStyle: 'medium', timeStyle: 'short' }); }
 
   // value of series at or before t, if within `tol` days
   function at(s, t, tol, arr) {
@@ -204,7 +206,7 @@
       if (info.last_ok) checked = Math.max(checked, Date.parse(info.last_ok));
     });
     if (gr.unit === 'THB' || gr.id === 'domestic') ul.appendChild(el('li', null, 'ECB: ' + T.fxnote));
-    ul.appendChild(el('li', null, T.checks + (checked ? ' · ' + T.lastcheck + ' ' + fdate(checked) : '')));
+    ul.appendChild(el('li', null, T.checks + (checked ? ' · ' + T.lastcheck + ' ' + fwhen(checked) : '')));
     box.appendChild(ul); host.appendChild(box);
   }
 
@@ -248,7 +250,7 @@
       if (!s.last_ok) st.textContent = T.never + '.';
       else {
         var okd = Date.parse(s.last_ok), stale = now - okd > 3 * DAY;
-        st.textContent = T.ok + ': ' + fdate(okd) + (stale ? ' (' + T.stale + ')' : '') + '.';
+        st.textContent = T.ok + ': ' + fwhen(okd) + (stale ? ' (' + T.stale + ')' : '') + '.';
         if (stale) st.className = 'fine px-stale';
       }
       if (s.last_error && (!s.last_ok || Date.parse(s.last_attempt) > Date.parse(s.last_ok))) st.textContent += ' ' + T.failed + '.';
