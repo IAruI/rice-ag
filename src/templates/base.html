@@ -79,11 +79,14 @@
           <li><a href="{{ prefix }}/tools/">{{ 'เครื่องมือทั้งหมด' if lang == 'th' else 'All tools' }}</a></li>
           <li><a href="{{ prefix }}/about/">{{ T.footer_wf_source }}</a></li>
         </ul>
-        <p class="fine" style="margin-top:18px">© {{ year }} rice.ag</p>
+        <p class="fine" style="margin-top:18px">{{ 'ติดต่อ' if lang == 'th' else 'Contact' }}: <a class="js-mail" data-u="aryan" data-d="wildfield.org" href="{{ prefix }}/about/#contact">aryan [at] wildfield.org</a></p>
+        <p class="fine">© {{ year }} rice.ag</p>
       </div>
     </div>
   </div>
 </footer>
 {{ scripts | safe }}
+<script>/* email built in the browser so scrapers reading the HTML don't harvest it */
+document.querySelectorAll('.js-mail').forEach(function(a){var e=a.dataset.u+'@'+a.dataset.d;a.href='mailto:'+e;a.textContent=e;});</script>
 </body>
 </html>
