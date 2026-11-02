@@ -1,0 +1,13 @@
+{
+  "india": {
+    "status": "open",
+    "updated": "2026-11-02",
+    "note_en": "No rice export restrictions in force. USDA expects record Indian exports of about 25 million tonnes in 2026/27 even with output down about 4.6%, and government stocks are around three times the buffer norm. The warning sign to watch is Indian retail rice prices: they have started rising on El Niño talk, and in July 2023 India banned exports when domestic prices rose, despite large stocks.",
+    "note_th": "ขณะนี้อินเดียไม่มีมาตรการจำกัดการส่งออกข้าว USDA คาดว่าอินเดียจะส่งออกสูงเป็นประวัติการณ์ราว 25 ล้านตันในปี 2569/70 แม้ผลผลิตลดลงราว 4.6% และสต็อกของรัฐบาลสูงราวสามเท่าของระดับสำรองขั้นต่ำ สัญญาณที่ต้องจับตาคือราคาข้าวขายปลีกในอินเดีย ซึ่งเริ่มขยับขึ้นจากความกังวลเรื่องเอลนีโญ ในเดือนกรกฎาคม 2566 อินเดียเคยห้ามส่งออกเมื่อราคาในประเทศสูงขึ้น แม้มีสต็อกมาก",
+    "source_name": "FEWS NET, 2026–27 El Niño food security impacts (6 Oct 2026)",
+    "source_url": "https://fews.net/global/special-report/october-2026"
+  },
+  "note_en": null,
+  "note_th": null,
+  "_how_to_edit": "status is one of: open (no curbs), watch (signs of new curbs: rising Indian domestic prices, ministers' statements, minimum export prices discussed), restricted (a ban, duty or minimum export price in force). Update 'updated' and the notes, then push; the site rebuilds in about a minute. note_en/note_th at the top level show as an optional editor's note on the page."
+}

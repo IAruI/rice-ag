@@ -13,6 +13,58 @@ I18N = json.loads((SRC / 'i18n.json').read_text(encoding='utf-8'))
 env = Environment(loader=FileSystemLoader([str(SRC / 'templates'), str(SRC / 'pages')]),
                   autoescape=select_autoescape(['html']), trim_blocks=True, lstrip_blocks=True)
 
+# ---- weekly brief helpers (see pipeline/brief.py)
+TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+
+def fdate(iso, lang='en'):
+    d = datetime.date.fromisoformat(str(iso)[:10])
+    return f"{d.day} {TH_MONTHS[d.month - 1]} {d.year + 543}" if lang == 'th' else d.strftime('%-d %b %Y')
+
+def spark(history, w=280, h=56):
+    """Inline SVG line for [[date, value], ...]."""
+    vals = [v for _, v in (history or []) if v is not None]
+    if len(vals) < 2:
+        return ''
+    lo, hi = min(vals), max(vals)
+    rng = (hi - lo) or 1
+    pts = ' '.join(f"{i * w / (len(vals) - 1):.1f},{h - 4 - (v - lo) / rng * (h - 8):.1f}" for i, v in enumerate(vals))
+    return (f'<svg viewBox="0 0 {w} {h}" preserveAspectRatio="none" role="img" aria-hidden="true">'
+            f'<polyline points="{pts}" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke" '
+            f'stroke-linejoin="round" stroke-linecap="round"/></svg>')
+
+def onibars(history, w=280, h=56):
+    """Bars above/below zero for the last ONI seasons; El Nino and La Nina bars coloured."""
+    vals = [v for _, v in (history or [])]
+    if not vals:
+        return ''
+    m = max(2.0, max(abs(v) for v in vals))
+    bw = w / len(vals)
+    mid = h / 2
+    out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-hidden="true"><line x1="0" x2="{w}" y1="{mid}" y2="{mid}" class="bf-zero"/>']
+    for i, v in enumerate(vals):
+        bh = abs(v) / m * (mid - 2)
+        cls = 'bf-warm' if v >= 0.5 else 'bf-cool' if v <= -0.5 else 'bf-neu'
+        out.append(f'<rect x="{i * bw + 1:.1f}" y="{(mid - bh if v >= 0 else mid):.1f}" width="{max(bw - 2, 1):.1f}" height="{max(bh, .5):.1f}" rx="1.5" class="{cls}"/>')
+    out.append('</svg>')
+    return ''.join(out)
+
+env.filters.update(fdate=fdate, spark=spark, onibars=onibars)
+env.globals.update(
+    ONI_CAT={'en': {'neutral': 'Neutral', 'el_nino_weak': 'Weak El Niño', 'el_nino_moderate': 'Moderate El Niño',
+                    'el_nino_strong': 'Strong El Niño', 'el_nino_very_strong': 'Very strong El Niño',
+                    'la_nina_weak': 'Weak La Niña', 'la_nina_moderate': 'Moderate La Niña',
+                    'la_nina_strong': 'Strong La Niña', 'la_nina_very_strong': 'Very strong La Niña'},
+             'th': {'neutral': 'ภาวะปกติ', 'el_nino_weak': 'เอลนีโญกำลังอ่อน', 'el_nino_moderate': 'เอลนีโญกำลังปานกลาง',
+                    'el_nino_strong': 'เอลนีโญกำลังแรง', 'el_nino_very_strong': 'เอลนีโญกำลังแรงมาก',
+                    'la_nina_weak': 'ลานีญากำลังอ่อน', 'la_nina_moderate': 'ลานีญากำลังปานกลาง',
+                    'la_nina_strong': 'ลานีญากำลังแรง', 'la_nina_very_strong': 'ลานีญากำลังแรงมาก'}},
+    INDIA={'en': {'open': 'Exports open', 'watch': 'Watch: curbs possible', 'restricted': 'Exports restricted', 'unknown': 'Not checked'},
+           'th': {'open': 'ส่งออกได้ตามปกติ', 'watch': 'จับตา: อาจจำกัดการส่งออก', 'restricted': 'จำกัดการส่งออก', 'unknown': 'ยังไม่ได้ตรวจ'}})
+
+def load_brief():
+    p = SRC / 'static/data/brief.json'
+    return json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+
 ORG = {"@type": "Organization", "@id": BASE_URL + "/#org", "name": "rice.ag", "url": BASE_URL + "/",
        "logo": BASE_URL + "/icon-512.png"}
 
@@ -22,6 +74,11 @@ PAGES = [
                 'th': 'ราคาข้าววันนี้: ราคาส่งออกข้าวไทย เวียดนาม สหรัฐฯ และราคาข้าวเปลือก (ดอลลาร์/ตัน) | rice.ag'},
          desc={'en': 'Free daily-updated rice price charts: Thai 5%, Hom Mali, jasmine, glutinous and parboiled export prices, Viet Nam, US, Uruguay and Pakistan FOB quotes, and Thai paddy prices, all in USD per tonne. Download the data.',
                'th': 'กราฟราคาข้าวอัปเดตทุกวัน ฟรี: ราคาส่งออกข้าวขาว 5% ข้าวหอมมะลิ ข้าวหอมไทย ข้าวเหนียว ข้าวนึ่ง ราคา FOB เวียดนาม สหรัฐฯ อุรุกวัย ปากีสถาน และราคาข้าวเปลือกไทย เป็นดอลลาร์ต่อตัน ดาวน์โหลดข้อมูลได้'}),
+    dict(key='brief', path='/brief/', src='shared/brief.html', section='brief',
+         title={'en': 'Weekly rice early-warning brief: El Niño, Thai export & paddy prices, baht, India policy | rice.ag',
+                'th': 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์: เอลนีโญ ราคาส่งออกและข้าวเปลือก ค่าเงินบาท นโยบายอินเดีย | rice.ag'},
+         desc={'en': 'Five signals that move Thai rice prices, read by the same rules every week: El Niño (ONI), Thai 5% FOB, Thai paddy in baht, USD/THB and India\'s rice export policy. Updated automatically.',
+               'th': 'ห้าสัญญาณที่ขับเคลื่อนราคาข้าวไทย อ่านด้วยกฎเดียวกันทุกสัปดาห์: เอลนีโญ (ONI) ราคาส่งออกข้าวขาว 5% ราคาข้าวเปลือกเป็นบาท ค่าเงินบาท และนโยบายส่งออกข้าวของอินเดีย อัปเดตอัตโนมัติ'}),
     dict(key='home', path='/tools/', src='home', section='tools',
          title={'en': 'Free rice tools: grain scanner, moisture calculator & photo guide | rice.ag',
                 'th': 'เครื่องมือเรื่องข้าวฟรี: เครื่องสแกนเมล็ดข้าว คำนวณความชื้น และวิธีถ่ายภาพ | rice.ag'},
@@ -116,6 +173,8 @@ def main():
             T = I18N[lang]; prefix = '' if lang == 'en' else '/th'
             url = url_for(p['path'], lang); alt_lang = 'th' if lang == 'en' else 'en'
             ctx = dict(lang=lang, T=T, prefix=prefix, url=url, base_url=BASE_URL, year=datetime.date.today().year, ver=ver)
+            if p['key'] == 'brief':
+                ctx['brief'] = load_brief()
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):

@@ -7,6 +7,7 @@
     {% else %}
     <p class="lead px-lead">Export prices for Thai, Vietnamese, Indian, US, Uruguayan and Pakistani rice, plus Thai paddy and wholesale prices. Export prices are in US dollars per tonne, Thai prices are also shown in baht, and everything updates automatically every day.</p>
     {% endif %}
+    <p class="px-brief-link"><a href="{{ prefix }}/brief/">{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์ →' if th else 'Weekly early-warning brief: El Niño, prices, baht and India →' }}</a></p>
     <p class="fine" id="px-updated"></p>
     <p class="px-status fine">{{ 'กำลังโหลดข้อมูลราคา…' if th else 'Loading prices…' }}</p>
 

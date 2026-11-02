@@ -1,0 +1,120 @@
+{% set th = lang == 'th' %}
+{% set B = brief %}
+{% set SIG = {'up': ('▲', 'สัญญาณขึ้น' if th else 'Pointing up'), 'down': ('▼', 'สัญญาณลง' if th else 'Pointing down'), 'steady': ('●', 'ทรงตัว' if th else 'Steady'), 'unknown': ('?', 'ไม่มีข้อมูล' if th else 'No data')} %}
+{% macro chip(sig) %}<span class="bf-sig bf-{{ sig }}"><b aria-hidden="true">{{ SIG[sig][0] }}</b> {{ SIG[sig][1] }}</span>{% endmacro %}
+{% macro pct(v) %}{% if v is none %}–{% else %}<span class="{{ 'bf-pos' if v > 0 else 'bf-neg' if v < 0 else '' }}">{{ '+' if v > 0 else '' }}{{ '%.1f' % v }}%</span>{% endif %}{% endmacro %}
+{% macro chg(i) %}<dl class="bf-chg"><div><dt>{{ '1 สัปดาห์' if th else '1 week' }}</dt><dd>{{ pct(i.chg_1w) }}</dd></div><div><dt>{{ '4 สัปดาห์' if th else '4 weeks' }}</dt><dd>{{ pct(i.chg_4w) }}</dd></div><div><dt>{{ '1 ปี' if th else '1 year' }}</dt><dd>{{ pct(i.chg_52w) }}</dd></div></dl>{% endmacro %}
+<section class="article brief">
+  <div class="wrap">
+    <h1>{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์' if th else 'Weekly rice early-warning brief' }}</h1>
+    {% if th %}
+    <p class="lead bf-lead">ห้าสัญญาณที่เคยขับเคลื่อนราคาข้าวไทย อ่านด้วยกฎเดียวกันทุกสัปดาห์: ปรากฏการณ์เอลนีโญ ราคาส่งออกข้าวขาว 5% ราคาข้าวเปลือก ค่าเงินบาท และนโยบายส่งออกข้าวของอินเดีย</p>
+    {% else %}
+    <p class="lead bf-lead">The five things that have moved Thai rice prices, read by the same rules every week: El Niño, the Thai 5% export price, the paddy price, the baht, and India's export policy.</p>
+    {% endif %}
+
+    {% if not B or not B.indicators %}
+    <p class="fine">{{ 'ยังไม่มีข้อมูล' if th else 'No data yet.' }}</p>
+    {% else %}
+    <p class="fine">{{ 'สัปดาห์ของวันที่' if th else 'Week of' }} <strong>{{ B.week_of | fdate(lang) }}</strong> · {{ 'อัปเดตอัตโนมัติทุกวัน' if th else 'updated automatically every day' }} · {{ 'คำนวณเมื่อ' if th else 'computed' }} {{ B.generated[:10] | fdate(lang) }}</p>
+
+    <div class="card bf-sum">
+      <div class="bf-sum-n"><span>{{ B.summary.up }}</span><small>/ {{ B.summary.known }}</small></div>
+      <div>
+        <p class="bf-sum-h">{% if th %}{{ B.summary.up }} จาก {{ B.summary.known }} สัญญาณชี้ว่าราคาข้าวไทยมีแนวโน้มสูงขึ้น{% else %}{{ B.summary.up }} of {{ B.summary.known }} signals point to higher Thai rice prices{% endif %}{% if B.summary.down %}{{ ' และ %d สัญญาณชี้ลง' % B.summary.down if th else ', %d point lower' % B.summary.down }}{% endif %}.</p>
+        <p class="fine">{{ 'นับเฉพาะสัญญาณ ไม่ใช่การพยากรณ์ราคา แต่ละสัญญาณมีน้ำหนักไม่เท่ากัน ดูเหตุผลในแต่ละการ์ด' if th else 'A count of signals, not a price forecast. They do not carry equal weight; each card says why.' }}</p>
+      </div>
+    </div>
+    {% if (B.note_th if th else B.note_en) %}<p class="bf-note">{{ B.note_th if th else B.note_en }}</p>{% endif %}
+
+    <div class="bf-grid">
+    {% for i in B.indicators %}
+      {% if i.id == 'oni' %}
+      <article class="card bf-card" id="el-nino">
+        <header><h2>{{ 'เอลนีโญ (ดัชนี ONI)' if th else 'El Niño (ONI)' }}</h2>{{ chip(i.signal) }}</header>
+        {% if i.value is defined %}
+        <p class="bf-big">{{ '+' if i.value > 0 else '' }}{{ '%.2f' % i.value }} °C</p>
+        <p class="bf-sub">{{ ONI_CAT[lang][i.category] }} · {{ i.season }} {{ i.year + 543 if th else i.year }}{% if i.prev is not none %} · {{ 'ฤดูก่อน' if th else 'previous season' }} {{ '+' if i.prev > 0 else '' }}{{ '%.2f' % i.prev }}{% endif %}</p>
+        <div class="bf-spark">{{ i.history | onibars | safe }}</div>
+        {% if th %}
+        <p>ค่าตั้งแต่ +0.5 คือเอลนีโญ ซึ่งมักทำให้ฝนในไทยน้อยลง ส่งผลต่อนาปรังที่ปลูกตามมา ธนาคารโลกพบว่าในช่วงปี 2513–2568 ราคาข้าวหกเดือนหลังเดือนที่เป็นเอลนีโญสูงกว่าช่วงปกติมากกว่า 10 จุดเปอร์เซ็นต์</p>
+        {% else %}
+        <p>+0.5 or above is El Niño, which usually means less rain in Thailand and a smaller off-season crop that follows. Over 1970–2025 the World Bank found rice prices six months after El Niño months ran more than 10 percentage points above neutral months.</p>
+        {% endif %}
+        {% endif %}
+        <p class="fine bf-src"><a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php" rel="noopener">NOAA Climate Prediction Center</a>{% if B.oni_status and B.oni_status.last_error %} · <span class="px-stale">{{ 'ดึงข้อมูลล่าสุดไม่สำเร็จ แสดงค่าที่บันทึกไว้' if th else 'latest pull failed; showing stored values' }}</span>{% endif %}</p>
+      </article>
+
+      {% elif i.id == 'fob' %}
+      <article class="card bf-card" id="export-price">
+        <header><h2>{{ 'ราคาส่งออกข้าวขาว 5%' if th else 'Thai white rice 5%, export' }}</h2>{{ chip(i.signal) }}</header>
+        {% if i.value is defined %}
+        <p class="bf-big">${{ '{:,.0f}'.format(i.value) }}<small>/{{ 'ตัน' if th else 't' }}</small></p>
+        <p class="bf-sub">FOB {{ 'กรุงเทพฯ' if th else 'Bangkok' }}{% if i.thb %} · ฿{{ '{:,.0f}'.format(i.thb) }}/{{ 'ตัน' if th else 't' }}{% endif %} · {{ i.date | fdate(lang) }}</p>
+        <div class="bf-spark">{{ i.history | spark | safe }}</div>
+        {{ chg(i) }}
+        <p>{{ 'ราคาอ้างอิงหลักของข้าวไทย การเปลี่ยนแปลงใน 4 สัปดาห์ตั้งแต่ ±%.0f%% ขึ้นไปนับเป็นสัญญาณ' % B.rules.price_move_pct if th else 'The main reference price for Thai rice. A move of %.0f%% or more over 4 weeks counts as a signal.' % B.rules.price_move_pct }}</p>
+        {% endif %}
+        <p class="fine bf-src"><a href="{{ prefix }}/">{{ 'ดูกราฟเต็มในหน้าราคาข้าว' if th else 'Full chart on the prices page' }}</a> · Thai Rice Exporters Association</p>
+      </article>
+
+      {% elif i.id == 'paddy' %}
+      <article class="card bf-card" id="paddy-price">
+        <header><h2>{{ 'ราคาข้าวเปลือกเจ้า' if th else 'Thai white paddy price' }}</h2>{{ chip(i.signal) }}</header>
+        {% if i.value is defined %}
+        <p class="bf-big">฿{{ '{:,.0f}'.format(i.value) }}<small>/{{ 'ตัน' if th else 't' }}</small></p>
+        <p class="bf-sub">{{ 'ราคาเฉลี่ยทั้งประเทศ' if th else 'National average' }} · {{ i.date | fdate(lang) }}</p>
+        <div class="bf-spark">{{ i.history | spark | safe }}</div>
+        {{ chg(i) }}
+        {% if i.share_of_fob %}
+        <p>{% if th %}ข้าวเปลือกมีราคาเท่ากับ <strong>{{ '%.0f' % i.share_of_fob }}%</strong> ของราคาส่งออกข้าวขาว 5% (คิดเป็นบาททั้งคู่) ถ้าสัดส่วนนี้ขยับขึ้นเร็ว แสดงว่าโรงสีแย่งซื้อข้าวเปลือก{% else %}Paddy is trading at <strong>{{ '%.0f' % i.share_of_fob }}%</strong> of the 5% export price, both in baht. When this share climbs fast, mills are competing for paddy.{% endif %}</p>
+        {% endif %}
+        {% endif %}
+        <p class="fine bf-src"><a href="https://pricelist.dit.go.th/" rel="noopener">{{ 'กรมการค้าภายใน' if th else 'Department of Internal Trade' }}</a></p>
+      </article>
+
+      {% elif i.id == 'fx' %}
+      <article class="card bf-card" id="baht">
+        <header><h2>{{ 'ค่าเงินบาท' if th else 'The baht' }}</h2>{{ chip(i.signal) }}</header>
+        {% if i.value is defined %}
+        <p class="bf-big">{{ '%.2f' % i.value }}<small> {{ 'บาท/ดอลลาร์' if th else 'THB per USD' }}</small></p>
+        <p class="bf-sub">{{ i.date | fdate(lang) }}</p>
+        {{ chg(i) }}
+        <p>{{ 'ตัวเลขเพิ่มขึ้นแปลว่าบาทอ่อนลง ราคาส่งออกเป็นดอลลาร์เท่าเดิมจะได้เงินบาทมากขึ้น ทำให้ราคาข้าวเปลือกในประเทศสูงขึ้นได้ บาทแข็งให้ผลตรงข้าม การเปลี่ยนแปลงใน 4 สัปดาห์ตั้งแต่ ±%.0f%% นับเป็นสัญญาณ' % B.rules.fx_move_pct if th else 'Up means a weaker baht: the same dollar export price is worth more baht, which can lift Thai paddy prices. A stronger baht does the opposite. A move of %.0f%% or more over 4 weeks counts as a signal.' % B.rules.fx_move_pct }}</p>
+        {% endif %}
+        <p class="fine bf-src">ECB {{ 'ผ่าน' if th else 'via' }} <a href="https://frankfurter.dev/" rel="noopener">Frankfurter</a></p>
+      </article>
+
+      {% elif i.id == 'india' %}
+      <article class="card bf-card" id="india">
+        <header><h2>{{ 'นโยบายส่งออกข้าวของอินเดีย' if th else "India's rice export policy" }}</h2>{{ chip(i.signal) }}</header>
+        <p class="bf-big bf-word">{{ INDIA[lang].get(i.status, i.status) }}</p>
+        {% if i.updated %}<p class="bf-sub">{{ 'ตรวจล่าสุด' if th else 'Checked' }} {{ i.updated | fdate(lang) }}</p>{% endif %}
+        <p>{{ i.note_th if th else i.note_en }}</p>
+        <p>{{ 'อินเดียส่งออกข้าวราว 40% ของการค้าข้าวโลก การห้ามส่งออกในเดือนกรกฎาคม 2566 ดันราคาข้าวโลกขึ้นราว 35%' if th else 'India ships about 40% of the world rice trade. Its July 2023 export ban lifted world rice prices by about 35%.' }}</p>
+        {% if i.source_url %}<p class="fine bf-src"><a href="{{ i.source_url }}" rel="noopener">{{ i.source_name }}</a></p>{% endif %}
+      </article>
+      {% endif %}
+    {% endfor %}
+    </div>
+
+    <div class="narrow">
+      <h2>{{ 'สัญญาณตัดสินอย่างไร' if th else 'How each signal is decided' }}</h2>
+      <ul>
+      {% if th %}
+        <li><strong>เอลนีโญ:</strong> ONI ตั้งแต่ +{{ B.rules.el_nino }} °C = ขึ้น ต่ำกว่านั้น = ทรงตัว (ลานีญาไม่นับเป็นสัญญาณลง เพราะผลต่อราคาข้าวไม่ชัดเจน)</li>
+        <li><strong>ราคาส่งออกและราคาข้าวเปลือก:</strong> เปลี่ยนแปลงใน 4 สัปดาห์ตั้งแต่ +{{ B.rules.price_move_pct }}% = ขึ้น ตั้งแต่ −{{ B.rules.price_move_pct }}% = ลง</li>
+        <li><strong>ค่าเงินบาท:</strong> บาทอ่อนลงใน 4 สัปดาห์ตั้งแต่ {{ B.rules.fx_move_pct }}% = ขึ้น (หนุนราคาเป็นบาท) บาทแข็งขึ้นตั้งแต่ {{ B.rules.fx_move_pct }}% = ลง</li>
+        <li><strong>อินเดีย:</strong> เปิดส่งออกปกติ = ทรงตัว มีสัญญาณจะจำกัด หรือจำกัดแล้ว = ขึ้น ส่วนนี้ตรวจและแก้ไขด้วยมือ เพราะไม่มีแหล่งข้อมูลอัตโนมัติที่เชื่อถือได้</li>
+      {% else %}
+        <li><strong>El Niño:</strong> ONI at +{{ B.rules.el_nino }} °C or above = up; below = steady. La Niña isn't counted as a down signal because its effect on rice prices is unclear.</li>
+        <li><strong>Export and paddy prices:</strong> a 4-week change of +{{ B.rules.price_move_pct }}% or more = up; −{{ B.rules.price_move_pct }}% or more = down.</li>
+        <li><strong>Baht:</strong> a weaker baht by {{ B.rules.fx_move_pct }}% or more over 4 weeks = up (it supports baht prices); stronger by {{ B.rules.fx_move_pct }}% or more = down.</li>
+        <li><strong>India:</strong> open = steady; signs of new curbs, or curbs in force = up. This one is checked and edited by hand, because no reliable automatic data source exists.</li>
+      {% endif %}
+      </ul>
+      <p class="fine">{{ 'ข้อมูลเพื่อการศึกษาและอ้างอิงเท่านั้น ไม่ใช่คำแนะนำในการซื้อขาย' if th else 'For information only. Not trading advice.' }}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>

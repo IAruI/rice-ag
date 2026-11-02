@@ -52,3 +52,10 @@ Raw history lives in `data/raw/*.json` and is only ever added to. A source that 
 - Add or remove a line on the charts: edit `pipeline/catalog.py`.
 - CBOT rough rice is an embedded TradingView chart, not stored data: CME's licence doesn't allow republishing its prices.
 - TREA's weekly page shows grade names as an image, so rows are matched by position. If TREA adds or removes a row, the pull stops with an error instead of mislabelling prices; update `TREA_WEEKLY_ROWS` in `fetch_prices.py`.
+
+## Weekly brief (/brief/)
+`pipeline/brief.py` runs in the same daily Action, after the prices. It pulls NOAA's Oceanic Niño Index into `data/raw/oni.json`, reads the Thai 5% FOB, Thai white paddy and USD/THB series already stored, and writes `src/static/data/brief.json`. `build.py` renders that into `/brief/` and `/th/brief/` (template: `src/pages/shared/brief.html`).
+
+- Signal rules (what counts as up / steady / down) are constants at the top of `pipeline/brief.py` and are printed on the page.
+- **India's export policy is edited by hand** in `data/brief_notes.json`: set `status` to `open`, `watch` or `restricted`, update `updated` and the EN/TH notes, push. Pushing that file re-runs the Action and the site rebuilds. Optional top-level `note_en` / `note_th` show as an editor's note above the cards.
+- Tests (offline): `python3 tests/test_brief.py`
