@@ -32,11 +32,12 @@ jobs:
           python-version: '3.11'
       - run: pip install -r pipeline/requirements.txt
       - name: Test parsers offline
-        run: python3 tests/test_prices.py && python3 tests/test_brief.py
+        run: python3 tests/test_prices.py
       - name: Pull prices
         run: python3 pipeline/fetch_prices.py ${{ inputs.backfill && '--backfill' || '' }}
       - name: Build weekly brief (pulls NOAA El Niño index)
-        run: python3 pipeline/brief.py
+        continue-on-error: true   # a brief problem must never stop the price update
+        run: python3 tests/test_brief.py && python3 pipeline/brief.py
       - name: Commit (Netlify rebuilds the site on push)
         run: |
           git config user.name "rice.ag price bot"

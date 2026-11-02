@@ -62,8 +62,11 @@ env.globals.update(
            'th': {'open': 'ส่งออกได้ตามปกติ', 'watch': 'จับตา: อาจจำกัดการส่งออก', 'restricted': 'จำกัดการส่งออก', 'unknown': 'ยังไม่ได้ตรวจ'}})
 
 def load_brief():
-    p = SRC / 'static/data/brief.json'
-    return json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+    """A missing or broken brief.json only blanks /brief/; it never stops the rest of the site building."""
+    try:
+        return json.loads((SRC / 'static/data/brief.json').read_text(encoding='utf-8'))
+    except Exception:
+        return {}
 
 ORG = {"@type": "Organization", "@id": BASE_URL + "/#org", "name": "rice.ag", "url": BASE_URL + "/",
        "logo": BASE_URL + "/icon-512.png"}
