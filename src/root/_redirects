@@ -1,0 +1,6 @@
+# Read by Cloudflare Pages (and Netlify). Only the bare /prices/ path moved to the homepage;
+# /prices/<country-or-type>/ are real pages.
+/prices      /     301
+/prices/     /     301
+/th/prices   /th/  301
+/th/prices/  /th/  301
