@@ -32,7 +32,7 @@ jobs:
           python-version: '3.11'
       - run: pip install -r pipeline/requirements.txt
       - name: Test parsers offline
-        run: python3 tests/test_prices.py
+        run: python3 tests/test_prices.py && python3 tests/test_pricepages.py
       - name: Pull prices
         run: python3 pipeline/fetch_prices.py ${{ inputs.backfill && '--backfill' || '' }}
       - name: Build weekly brief (pulls NOAA El Niño index)

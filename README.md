@@ -53,6 +53,15 @@ Raw history lives in `data/raw/*.json` and is only ever added to. A source that 
 - CBOT rough rice is an embedded TradingView chart, not stored data: CME's licence doesn't allow republishing its prices.
 - TREA's weekly page shows grade names as an image, so rows are matched by position. If TREA adds or removes a row, the pull stops with an error instead of mislabelling prices; update `TREA_WEEKLY_ROWS` in `fetch_prices.py`.
 
+## Price pages and SEO (Nov 2026)
+`pricepages.py` turns `prices.json` into HTML at build time, so the numbers are in the page source that search engines read:
+- **Homepage**: "How rice is doing" summary (generated from Thai 5%, Viet Nam 5%, Thai paddy, El Niño and India's status), the latest-prices table, and a title carrying the Thai and Vietnam 5% prices. `prices.js` still draws the interactive charts.
+- **Hub pages** at `/prices/<slug>/` (EN + TH): one per origin (Thailand, Thai paddy, Vietnam, India, Pakistan, US) and per type (white 5%, jasmine, basmati, parboiled, broken, glutinous). Each has the latest price in its title, a static 5-year chart, the table, hand-written context and Dataset schema. Edit or add hubs in `HUBS` in `pricepages.py`.
+- Tests (offline): `python3 tests/test_pricepages.py`
+
+## Analytics
+Cloudflare Web Analytics (cookieless, filters most bots). Create a site in Cloudflare > Analytics & Logs > Web Analytics, copy the token, and set it as `CF_ANALYTICS_TOKEN` in Netlify > Site configuration > Environment variables. Next deploy adds the beacon to every page; with no token, nothing is added.
+
 ## Weekly brief (/brief/)
 `pipeline/brief.py` runs in the same daily Action, after the prices. It pulls NOAA's Oceanic Niño Index into `data/raw/oni.json`, reads the Thai 5% FOB, Thai white paddy and USD/THB series already stored, and writes `src/static/data/brief.json`. `build.py` renders that into `/brief/` and `/th/brief/` (template: `src/pages/shared/brief.html`).
 

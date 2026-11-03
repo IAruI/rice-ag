@@ -1,0 +1,40 @@
+{# Server-rendered price table and hub links. Same columns and numbers as prices.js table(). #}
+{% macro px_table(groups, lang) %}
+{% set th = lang == 'th' %}
+{% set FREQ = {'daily': 'รายวัน', 'weekly': 'รายสัปดาห์', 'monthly': 'รายเดือน'} if th else {'daily': 'daily', 'weekly': 'weekly', 'monthly': 'monthly'} %}
+<div class="table-scroll"><table class="px-table">
+<thead><tr>
+  <th scope="col">{{ 'รายการ' if th else 'Series' }}</th><th scope="col">{{ 'ชนิด' if th else 'Basis' }}</th>
+  <th scope="col" class="num">{{ 'USD/ตัน' if th else 'USD/t' }}</th><th scope="col" class="num">{{ 'บาท/ตัน' if th else 'THB/t' }}</th>
+  <th scope="col">{{ 'วันที่' if th else 'Date' }}</th><th scope="col" class="num">{{ '1 เดือน' if th else '1 mo' }}</th>
+  <th scope="col" class="num">{{ '1 ปี' if th else '1 yr' }}</th><th scope="col">{{ 'แหล่งข้อมูล' if th else 'Source' }}</th>
+</tr></thead>
+{% for label, rows in groups %}
+<tbody>
+{% if label %}<tr class="px-grp"><th colspan="8" scope="colgroup">{{ label }}</th></tr>{% endif %}
+{% for r in rows %}
+<tr>
+  <th scope="row">{{ r.th if th else r.en }}</th>
+  <td>{{ ('ข้าวเปลือก' if th else 'paddy') if r.paddy else ('ข้าวสาร' if th else 'milled') }} · {{ r.s.market[lang] }}</td>
+  <td class="num">{{ r.usd | pxnum }}</td>
+  <td class="num">{{ r.thb | pxnum if r.thb else '' }}</td>
+  <td>{{ r.date | pxdate(lang) }} · {{ FREQ[r.freq] }}</td>
+  <td class="num">{{ r.m1 | pxpct }}</td>
+  <td class="num">{{ r.y1 | pxpct }}</td>
+  <td>{{ r | pxsrc(lang) }}</td>
+</tr>
+{% endfor %}
+</tbody>
+{% endfor %}
+</table></div>
+{% endmacro %}
+
+{% macro hub_links(hubs, prefix, lang, current='') %}
+{% set th = lang == 'th' %}
+<nav class="px-hubs" aria-label="{{ 'ราคาข้าวตามประเทศและชนิด' if th else 'Rice prices by country and type' }}">
+  <p><b>{{ 'ตามประเทศ' if th else 'By country' }}</b>
+  {% for h in hubs if h.kind == 'origin' %}<a href="{{ prefix }}/prices/{{ h.slug }}/"{% if h.slug == current %} aria-current="page"{% endif %}>{{ h.name[lang] }}</a>{% endfor %}</p>
+  <p><b>{{ 'ตามชนิดข้าว' if th else 'By type' }}</b>
+  {% for h in hubs if h.kind == 'type' %}<a href="{{ prefix }}/prices/{{ h.slug }}/"{% if h.slug == current %} aria-current="page"{% endif %}>{{ h.name[lang] }}</a>{% endfor %}</p>
+</nav>
+{% endmacro %}

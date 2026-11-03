@@ -297,10 +297,11 @@
   fetch('/static/data/prices.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (d) {
       state.data = d;
-      if (!Object.keys(d.series).length) { root.querySelector('.px-status').textContent = T.nodata; }
-      else root.querySelector('.px-status').remove();
+      var st = root.querySelector('.px-status');
+      if (!Object.keys(d.series).length) { st.textContent = T.nodata; st.hidden = false; }
+      else st.remove();
       render();
       var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(render, 150); });
     })
-    .catch(function () { root.querySelector('.px-status').textContent = T.loadfail; });
+    .catch(function () { var st = root.querySelector('.px-status'); if (st) { st.textContent = T.loadfail; st.hidden = false; } });
 })();
