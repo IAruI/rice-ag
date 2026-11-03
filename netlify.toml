@@ -5,13 +5,24 @@
 [build.environment]
   PYTHON_VERSION = "3.11"
 
-# /prices/ moved to the homepage (Oct 2026)
+# /prices/ moved to the homepage (Oct 2026). Only the bare path redirects:
+# /prices/<country-or-type>/ are real pages (Nov 2026).
 [[redirects]]
-  from = "/prices/*"
+  from = "/prices/"
   to = "/"
   status = 301
 
 [[redirects]]
-  from = "/th/prices/*"
+  from = "/prices"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/th/prices/"
+  to = "/th/"
+  status = 301
+
+[[redirects]]
+  from = "/th/prices"
   to = "/th/"
   status = 301

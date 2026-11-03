@@ -279,3 +279,20 @@ details.adv summary{cursor:pointer;font-weight:600;font-size:.92rem;margin-top:8
 .px-brief-link{margin:4px 0 0;font-weight:600}
 .px-brief-link a{text-decoration:none}
 @media (max-width:520px){.bf-sum{flex-direction:column;align-items:flex-start;gap:6px}}
+/* server-rendered price content: verdict, hub links, static hub charts */
+.px-verdict{margin:18px 0 14px;max-width:860px}
+.px-verdict h2{margin:0 0 6px;font-size:1.3rem}
+.px-verdict p{margin:0 0 .6em}
+.px-hubs{margin:14px 0 4px;font-size:.92rem}
+.px-hubs p{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 6px}
+.px-hubs b{min-width:84px;font-weight:600}
+.px-hubs a{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 11px;text-decoration:none;background:var(--surface);color:var(--ink)}
+.px-hubs a:hover{border-color:var(--green)}
+.px-hubs a[aria-current="page"]{background:var(--green);border-color:var(--green);color:#fff}
+.px-key{display:flex;flex-wrap:wrap;gap:6px 16px;list-style:none;padding:0;margin:8px 0 0;font-size:.86rem}
+.article .px-key li{margin:0;display:inline-flex;align-items:center;gap:7px}
+.px-key i{width:14px;height:3px;border-radius:2px;display:inline-block}
+:root[data-theme="dark"] .px-hubs a[aria-current="page"]{color:#0f1a12}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .px-hubs a[aria-current="page"]{color:#0f1a12}}
+/* static hub charts scale with their viewBox, so ticks need bigger user units on phones */
+@media (max-width:600px){.px-static .px-tick{font-size:24px}.px-static .px-line{stroke-width:3}}

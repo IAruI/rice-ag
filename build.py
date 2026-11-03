@@ -3,6 +3,7 @@
 import json, shutil, hashlib, datetime, os, re
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+import pricepages as pp
 
 ROOT = Path(__file__).parent
 SRC, DIST = ROOT / 'src', ROOT / 'dist'
@@ -48,7 +49,15 @@ def onibars(history, w=280, h=56):
     out.append('</svg>')
     return ''.join(out)
 
-env.filters.update(fdate=fdate, spark=spark, onibars=onibars)
+env.filters.update(fdate=fdate, spark=spark, onibars=onibars,
+                   pxnum=pp.num, pxpct=pp.pct,
+                   pxdate=lambda d, lang='en': pp.fdate(d if isinstance(d, datetime.date) else datetime.date.fromisoformat(str(d)[:10]), lang),
+                   pxsrc=lambda r, lang='en': pp.srcnames(r, lang))
+PRICES = pp.load_prices()
+env.globals.update(hubs=pp.HUBS)
+# Cloudflare Web Analytics: set CF_ANALYTICS_TOKEN in Netlify (Site configuration > Environment variables).
+# Empty = no analytics script on the site.
+CF_ANALYTICS_TOKEN = os.environ.get('CF_ANALYTICS_TOKEN', '').strip()
 env.globals.update(
     ONI_CAT={'en': {'neutral': 'Neutral', 'el_nino_weak': 'Weak El Niño', 'el_nino_moderate': 'Moderate El Niño',
                     'el_nino_strong': 'Strong El Niño', 'el_nino_very_strong': 'Very strong El Niño',
@@ -129,6 +138,22 @@ PAGES = [
                'th': 'rice.ag เป็นเว็บไซต์อิสระที่ให้ใช้ฟรี มีเครื่องสแกนเมล็ดข้าว เครื่องคำนวณความชื้นข้าวเปลือก ราคาข้าวรายวัน และความรู้เรื่องข้าวเชิงปฏิบัติ'}),
 ]
 
+# one page per origin and per rice type (see pricepages.HUBS); titles carry the latest price
+for _h in pp.HUBS:
+    _f = {lang: pp.hub_fill(_h, PRICES, lang) for lang in ('en', 'th')}
+    PAGES.append(dict(key='hub', hub=_h, fill=_f, path=f"/prices/{_h['slug']}/", src='shared/price_hub.html', section='prices',
+                      title={l: _f[l]['title'] for l in _f}, desc={l: _f[l]['desc'] for l in _f}))
+
+# homepage title and description carry the benchmark prices
+def _home_numbers():
+    th5, vn5 = pp.stats(PRICES, 'th_5'), pp.stats(PRICES, 'vn_5')
+    if not (th5 and vn5):
+        return
+    home = PAGES[0]
+    home['title'] = {'en': f"Rice prices today: Thai 5% ${pp.num(th5['usd'])}/t, Vietnam 5% ${pp.num(vn5['usd'])}/t, export & paddy prices | rice.ag",
+                     'th': f"ราคาข้าววันนี้: ข้าวขาว 5% ไทย {pp.num(th5['usd'])} ดอลลาร์/ตัน เวียดนาม {pp.num(vn5['usd'])} ราคาส่งออกและข้าวเปลือก | rice.ag"}
+_home_numbers()
+
 def url_for(path, lang):
     return path if lang == 'en' else '/th' + path
 
@@ -144,6 +169,12 @@ def jsonld(p, lang, url):
         graph.append({"@type": "WebApplication", "name": p['title'][lang].split(' | ')[0], "url": BASE_URL + url,
                       "applicationCategory": "BusinessApplication", "operatingSystem": "Any (web browser)",
                       "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@id": ORG["@id"]}})
+    elif p['key'] == 'hub':
+        h = p['hub']
+        graph.append(pp.dataset_ld(h, PRICES, lang, url, BASE_URL, ORG['@id']))
+        graph.append({"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": 'ราคาข้าว' if lang == 'th' else 'Rice prices', "item": BASE_URL + url_for('/', lang)},
+            {"@type": "ListItem", "position": 2, "name": h['name'][lang], "item": BASE_URL + url}]})
     elif p['key'] == 'prices':
         graph.append({"@type": "Dataset", "name": "rice.ag rice price tracker", "url": BASE_URL + url, "description": p['desc'][lang],
                       "inLanguage": lang, "isAccessibleForFree": True, "temporalCoverage": "1960-01/..",
@@ -178,6 +209,19 @@ def main():
             ctx = dict(lang=lang, T=T, prefix=prefix, url=url, base_url=BASE_URL, year=datetime.date.today().year, ver=ver)
             if p['key'] == 'brief':
                 ctx['brief'] = load_brief()
+            if p['key'] == 'prices':
+                seen, groups = set(), []
+                for gr in PRICES.get('groups', []):
+                    rows = []
+                    for sid in gr['series'] + gr.get('table_extra', []):
+                        st = pp.stats(PRICES, sid)
+                        if st and sid not in seen:
+                            seen.add(sid); rows.append(st)
+                    groups.append((gr[lang], rows))
+                ctx['px'] = dict(groups=[g for g in groups if g[1]], verdict=pp.market_verdict(PRICES, load_brief(), lang),
+                                 generated=PRICES.get('generated'))
+            if p['key'] == 'hub':
+                ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):
@@ -192,6 +236,9 @@ def main():
                            f'<script src="/static/js/engine.js?v={ver}"></script>\n<script src="/static/js/app.js?v={ver}"></script>')
             for js in p.get('js', []):
                 scripts += f'\n<script src="/static/js/{js}?v={ver}" defer></script>'
+            if CF_ANALYTICS_TOKEN:
+                scripts += ('\n<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+                            f'data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>')
             html = env.get_template('base.html').render(
                 page=dict(title=p['title'][lang], description=p['desc'][lang], kind=p.get('kind')),
                 content=content, scripts=scripts, section=p['section'],

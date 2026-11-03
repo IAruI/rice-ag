@@ -1,3 +1,4 @@
+{% from '_px.html' import px_table, hub_links %}
 {% set th = lang == 'th' %}
 <section class="article prices" id="prices-app">
   <div class="wrap">
@@ -7,9 +8,18 @@
     {% else %}
     <p class="lead px-lead">Export prices for Thai, Vietnamese, Indian, US, Uruguayan and Pakistani rice, plus Thai paddy and wholesale prices. Export prices are in US dollars per tonne, Thai prices are also shown in baht, and everything updates automatically every day.</p>
     {% endif %}
+    {% if px.verdict %}
+    <div class="card px-verdict">
+      <h2>{{ 'ตลาดข้าวตอนนี้' if th else 'How rice is doing' }}</h2>
+      <p>{{ px.verdict | join(' ') }}</p>
+      <p class="fine"><a href="{{ prefix }}/brief/">{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์ →' if th else 'Weekly early-warning brief: El Niño, prices, baht and India →' }}</a></p>
+    </div>
+    {% else %}
     <p class="px-brief-link"><a href="{{ prefix }}/brief/">{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์ →' if th else 'Weekly early-warning brief: El Niño, prices, baht and India →' }}</a></p>
-    <p class="fine" id="px-updated"></p>
-    <p class="px-status fine">{{ 'กำลังโหลดข้อมูลราคา…' if th else 'Loading prices…' }}</p>
+    {% endif %}
+    {{ hub_links(hubs, prefix, lang) }}
+    <p class="fine" id="px-updated">{% if px.generated %}{{ 'อัปเดตข้อมูล' if th else 'Data updated' }}: {{ px.generated | pxdate(lang) }}{% endif %}</p>
+    <p class="px-status fine"{% if px.groups %} hidden{% endif %}>{{ 'กำลังโหลดข้อมูลราคา…' if th else 'Loading prices…' }}</p>
 
     <div class="px-range" id="px-range" role="group" aria-label="{{ 'ช่วงเวลา' if th else 'Date range' }}"></div>
 
@@ -55,9 +65,9 @@
     <h2>{{ 'ราคาล่าสุด' if th else 'Latest prices' }}</h2>
     <p class="fine">{{ 'การเปลี่ยนแปลงเทียบกับราคาเมื่อประมาณ 1 เดือนและ 1 ปีก่อน' if th else 'Changes compare the latest price with the price about one month and one year earlier.' }}
       <a href="/static/data/prices.csv" download>{{ 'ดาวน์โหลดข้อมูลทั้งหมด (CSV)' if th else 'Download all data (CSV)' }}</a></p>
-    <div id="px-table"></div>
+    <div id="px-table">{% if px.groups %}{{ px_table(px.groups, lang) }}{% endif %}</div>
 
-    <div class="narrow">
+    <div class="narrow" id="prices-notes">
     {% if th %}
       <h2>อ่านตัวเลขเหล่านี้อย่างไร</h2>
       <ul>

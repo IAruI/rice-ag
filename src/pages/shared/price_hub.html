@@ -1,0 +1,48 @@
+{% from '_px.html' import px_table, hub_links %}
+{% set th = lang == 'th' %}
+<section class="article prices">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/">{{ 'ราคาข้าว' if th else 'Rice prices' }}</a> › {{ hub.name[lang] }}</p>
+    <h1>{{ hub.h1[lang] }}</h1>
+    {% if fill.lead %}<p class="lead px-lead">{{ fill.lead }}</p>{% endif %}
+    <p class="fine">{{ 'อัปเดตข้อมูล' if th else 'Data updated' }}: {{ generated | pxdate(lang) }} · {{ 'rice.ag ตรวจทุกแหล่งข้อมูลทุกวัน' if th else 'rice.ag checks every source daily' }}</p>
+
+    {% if hub.india and india.status %}
+    {% set IND = {'open': ('ส่งออกได้ตามปกติ' if th else 'Exports open'), 'watch': ('จับตา: อาจจำกัดการส่งออก' if th else 'Watch: curbs possible'), 'restricted': ('จำกัดการส่งออก' if th else 'Exports restricted')} %}
+    <div class="card px-verdict">
+      <h2>{{ 'นโยบายส่งออกข้าวของอินเดีย' if th else "India's rice export policy" }}: {{ IND.get(india.status, india.status) }}</h2>
+      <p>{{ india.note_th if th else india.note_en }}</p>
+      <p class="fine">{{ 'ตรวจล่าสุด' if th else 'Checked' }} {{ india.updated | pxdate(lang) }}{% if india.source_url %} · <a href="{{ india.source_url }}" rel="noopener">{{ india.source_name }}</a>{% endif %} · <a href="{{ prefix }}/brief/">{{ 'สรุปรายสัปดาห์' if th else 'Weekly brief' }}</a></p>
+    </div>
+    {% endif %}
+
+    {% if fill.chart %}
+    <div class="card px-card">
+      <h2>{{ 'ราคา 5 ปีล่าสุด' if th else 'Last five years' }}</h2>
+      <p class="fine">{{ ('บาทต่อตัน' if th else 'Baht per tonne') if hub.baht else ('ดอลลาร์สหรัฐต่อตัน' if th else 'US dollars per tonne') }}. <a href="{{ prefix }}/">{{ 'ดูกราฟแบบโต้ตอบและข้อมูลย้อนหลังทั้งหมด' if th else 'Interactive charts with full history' }} →</a></p>
+      {{ fill.chart | safe }}
+    </div>
+    {% endif %}
+
+    <h2>{{ 'ราคาล่าสุด' if th else 'Latest prices' }}</h2>
+    <p class="fine">{{ 'การเปลี่ยนแปลงเทียบกับราคาเมื่อประมาณ 1 เดือนและ 1 ปีก่อน' if th else 'Changes compare the latest price with the price about one month and one year earlier.' }}
+      <a href="/static/data/prices.csv" download>{{ 'ดาวน์โหลดข้อมูลทั้งหมด (CSV)' if th else 'Download all data (CSV)' }}</a></p>
+    {{ px_table([(None, fill.rows)], lang) }}
+
+    <div class="narrow">
+      {% for para in hub.body[lang] %}<p>{{ para }}</p>{% endfor %}
+      <h2>{{ 'ปัจจัยที่ขับเคลื่อนราคา' if th else 'What moves these prices' }}</h2>
+      <ul>{% for d in hub.drivers[lang] %}<li>{{ d }}</li>{% endfor %}</ul>
+      {% if hub.slug == 'broken-rice' %}<p><a href="{{ prefix }}/learn/broken-rice-grading/">{{ 'การจำแนกข้าวหัก: เมล็ดเต็ม ต้นข้าว ข้าวหัก และปลายข้าว' if th else 'Broken rice grading: whole, head rice, brokens and chips' }} →</a></p>{% endif %}
+      {% if hub.slug == 'united-states' %}<p><a href="{{ prefix }}/#px-cwt">{{ 'ตัวแปลงราคา CBOT เป็นต่อตัน' if th else 'CBOT rough rice to USD per tonne converter' }} →</a></p>{% endif %}
+      <h2>{{ 'อ่านตัวเลขเหล่านี้อย่างไร' if th else 'How to read these numbers' }}</h2>
+      {% if th %}
+      <p class="fine"><strong>FOB</strong> คือราคาบนเรือที่ท่าเรือของประเทศผู้ส่งออก ยังไม่รวมค่าขนส่งและประกันภัย ราคาส่งออกส่วนใหญ่เป็นราคาเสนอขาย ไม่ใช่ราคาที่ตกลงซื้อขายจริง ข้าวเปลือก 1 ตันสีได้ข้าวสารราว 0.6–0.7 ตัน ราคาจาก USDA และ FAO เป็นรายเดือนและเผยแพร่ช้ากว่าปัจจุบัน ข้อมูลเพื่อการอ้างอิงเท่านั้น ไม่ใช่คำแนะนำในการซื้อขาย <a href="{{ prefix }}/#prices-notes">วิธีต่อข้อมูลย้อนหลังและแหล่งข้อมูล</a></p>
+      {% else %}
+      <p class="fine"><strong>FOB</strong> is the price loaded on a ship at the exporter's port, before freight and insurance. Most export prices are exporters' offers, not done deals. A tonne of paddy mills to roughly 0.6–0.7 t of rice. USDA and FAO prices are monthly and published late. For information only, not trading advice. <a href="{{ prefix }}/#prices-notes">How the history is spliced, and all sources</a></p>
+      {% endif %}
+      <h2>{{ 'ราคาข้าวตามประเทศและชนิดข้าว' if th else 'More rice prices' }}</h2>
+      {{ hub_links(hubs, prefix, lang, hub.slug) }}
+    </div>
+  </div>
+</section>
