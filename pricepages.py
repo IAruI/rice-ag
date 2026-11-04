@@ -81,8 +81,10 @@ def stats(data, sid):
         return None
     last = day(s['d'][-1])
     thb = s.get('thb') or []
+    # Thai domestic prices are set in baht, so their % changes are in baht (USD moves add FX noise)
+    base = thb if thb and not s['market']['en'].startswith('Export') else None
     return dict(id=sid, s=s, en=s['en'], th=s['th'], usd=s['v'][-1], thb=thb[-1] if thb else None,
-                date=last, freq=freq_of(s), m1=change(s, 30), y1=change(s, 365),
+                date=last, freq=freq_of(s), m1=change(s, 30, base), y1=change(s, 365, base),
                 m1_thb=change(s, 30, thb) if thb else None, y1_thb=change(s, 365, thb) if thb else None,
                 stale=(datetime.date.today() - last).days > STALE_DAYS,
                 paddy=s.get('basis') == 'paddy', export=s['market']['en'].startswith('Export'),

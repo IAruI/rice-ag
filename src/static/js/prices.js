@@ -210,9 +210,11 @@
     box.appendChild(ul); host.appendChild(box);
   }
 
+  // Thai domestic prices are set in baht, so their % changes use baht; export prices use dollars
   function change(s, days) {
-    var n = s.d.length - 1, t = (s.d[n] - days) * DAY, prev = at(s, t, Math.max(tolOf(s), days * 0.25));
-    return prev && prev.v ? (s.v[n] / prev.v - 1) * 100 : null;
+    var arr = s.thb && s.thb.length && s.market.en.indexOf('Export') !== 0 ? s.thb : s.v;
+    var n = s.d.length - 1, t = (s.d[n] - days) * DAY, prev = at(s, t, Math.max(tolOf(s), days * 0.25), arr);
+    return prev && prev.v ? (arr[n] / prev.v - 1) * 100 : null;
   }
 
   function table(host) {
