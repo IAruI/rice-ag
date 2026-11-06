@@ -25702,6 +25702,13 @@ date,series_id,series,usd_per_tonne
 2026-10-01,dit_paddy_pathum,Pathum Thani fragrant paddy,323.9
 2026-10-01,dit_paddy_supan,"White paddy 5%, wet season, Suphan Buri",274.8
 2026-10-01,dit_w5,"White rice 5%, Bangkok wholesale",432.3
+2026-10-01,in_25,India white rice 25%,376.0
+2026-10-01,pk_25,Pakistan white rice 25%,384.2
+2026-10-01,pk_basmati,Pakistan Super Kernel basmati 2%,1067.3
+2026-10-01,us_lg,"US long grain No.2, 4%",673.2
+2026-10-01,uy_5,Uruguay white rice 5%,598.3
+2026-10-01,vn_25,Viet Nam white rice 25%,405.2
+2026-10-01,vn_5,Viet Nam white rice 5%,417.2
 2026-10-02,dit_glu,"Glutinous RD6 milled, Bangkok wholesale",726.3
 2026-10-02,dit_hm,"Hom Mali 100% grade 1, Bangkok wholesale",1171.3
 2026-10-02,dit_paddy,White paddy,266.4
@@ -25914,3 +25921,11 @@ date,series_id,series,usd_per_tonne
 2026-11-05,dit_paddy_pathum,Pathum Thani fragrant paddy,378.3
 2026-11-05,dit_paddy_supan,"White paddy 5%, wet season, Suphan Buri",297.5
 2026-11-05,dit_w5,"White rice 5%, Bangkok wholesale",474.0
+2026-11-06,dit_glu,"Glutinous RD6 milled, Bangkok wholesale",757.1
+2026-11-06,dit_hm,"Hom Mali 100% grade 1, Bangkok wholesale",1172.9
+2026-11-06,dit_paddy,White paddy,283.2
+2026-11-06,dit_paddy_glu,"Glutinous paddy, long grain",372.6
+2026-11-06,dit_paddy_hm,Hom Mali paddy,485.8
+2026-11-06,dit_paddy_pathum,Pathum Thani fragrant paddy,371.1
+2026-11-06,dit_paddy_supan,"White paddy 5%, wet season, Suphan Buri",299.6
+2026-11-06,dit_w5,"White rice 5%, Bangkok wholesale",472.4
