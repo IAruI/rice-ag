@@ -1,0 +1,38 @@
+<article class="article">
+  <div class="wrap narrow">
+    <div class="crumbs"><a href="{{ prefix }}/">rice.ag</a> / <a href="{{ prefix }}/learn/">{{ T.nav_learn }}</a> / Basal fertilizer for rice</div>
+    <h1>16-20-0 or 16-16-8: choosing basal fertilizer for rice by soil</h1>
+    <p class="meta">The Rice Department's recommendations, priced at today's Thai shop prices</p>
+
+    <p>Basal fertilizer is the season's first chemical fertilizer, applied on transplanting day or about 20 days after broadcasting. Thailand's Rice Department says to choose the <strong>formula by soil type</strong>, not by brand or price.</p>
+
+    <h2>What the Rice Department recommends</h2>
+    <div class="table-scroll" tabindex="0"><table>
+      <thead><tr><th>Soil</th><th>Recommended formulas</th><th>Rate (kg/rai)</th></tr></thead>
+      <tbody>
+        <tr><td>Clay</td><td>16-20-0, 18-22-0 or 20-20-0</td><td>25-35</td></tr>
+        <tr><td>Loam and sandy</td><td>16-16-8, 18-12-6 or 15-15-15</td><td>25-35</td></tr>
+        <tr><td>Loam and sandy</td><td>13-13-21</td><td>30-45</td></tr>
+      </tbody>
+    </table></div>
+    <p class="fine">Photoperiod-sensitive rice (such as Khao Dawk Mali 105) takes the lower rate, about 25 kg/rai; non-sensitive rice about 30 kg/rai. One rai is 1,600 m².</p>
+
+    <h2>Why sandy soils need potash</h2>
+    <p>Clay holds on to potassium well; sandy soil holds less. So basal fertilizer for sandy fields carries potash (the last number), as in 16-16-8 or 13-13-21, while clay fields can use 16-20-0, which has none.</p>
+
+    {% if fg %}
+    <h2>Today's prices and basal cost per rai</h2>
+    <div class="table-scroll" tabindex="0"><table>
+      <thead><tr><th>Formula</th><th class="num">Median per bag</th><th class="num">25 kg/rai</th><th class="num">30 kg/rai</th></tr></thead>
+      <tbody>{% for k in ['16-20-0', '18-20-0', '15-15-15', '13-13-21', '16-8-8'] if k in fg.med %}<tr><td>{% if k in fg.pages %}<a href="{{ prefix }}/fertilizer/{{ k }}/">{{ k }}</a>{% else %}{{ k }}{% endif %}</td><td class="num">{{ fg.med[k] | pxnum }} baht</td><td class="num">{{ (fg.med[k] / 2) | pxnum }} baht</td><td class="num">{{ (fg.med[k] * 0.6) | pxnum }} baht</td></tr>{% endfor %}</tbody>
+    </table></div>
+    <p class="fine">Shop board prices from {{ fg.shops }} shops, surveyed {{ fg.month_en }}. 16-16-8 had no price in the survey. · <a href="{{ prefix }}/fertilizer/rice/">Work out the whole season per rai</a></p>
+    {% endif %}
+
+    <h2>Not sure what your soil is?</h2>
+    <p>A soil test is the most reliable answer, and it lets you apply only what the crop needs, which often cuts the bill. Ask at your provincial Land Development station or district agriculture office.</p>
+
+    <p class="fine">Source: Rice Knowledge Bank, Rice Department of Thailand (<a href="https://rkb.ricethailand.go.th/" rel="noopener">rkb.ricethailand.go.th</a>). Information to support decisions, not a substitute for advice from your local agriculture officer.</p>
+    <p><a href="{{ prefix }}/learn/urea-for-rice/">Urea for rice: when and how much →</a></p>
+  </div>
+</article>

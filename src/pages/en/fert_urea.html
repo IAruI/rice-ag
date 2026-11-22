@@ -1,0 +1,34 @@
+<article class="article">
+  <div class="wrap narrow">
+    <div class="crumbs"><a href="{{ prefix }}/">rice.ag</a> / <a href="{{ prefix }}/learn/">{{ T.nav_learn }}</a> / Urea for rice</div>
+    <h1>Urea for rice: when to apply, how much, and what it costs</h1>
+    <p class="meta">The Rice Department's recommendations, with today's urea price</p>
+
+    <p>Urea (46-0-0) is the cheapest source of nitrogen. In rice it is the <strong>top-dressing</strong>, applied after the basal fertilizer.</p>
+
+    <h2>When</h2>
+    <ul>
+      <li><strong>At maximum tillering</strong></li>
+      <li><strong>At panicle initiation</strong>, when the young panicle starts to form</li>
+    </ul>
+
+    <h2>How much</h2>
+    <div class="table-scroll" tabindex="0"><table>
+      <thead><tr><th>Variety</th><th class="num">Urea (kg/rai)</th>{% if fg %}<th class="num">Urea cost/rai</th>{% endif %}</tr></thead>
+      <tbody>
+        <tr><td>Photoperiod-sensitive, e.g. Khao Dawk Mali 105</td><td class="num">5</td>{% if fg %}<td class="num">{{ (fg.urea * 5 / 50) | pxnum }} baht</td>{% endif %}</tr>
+        <tr><td>Non-sensitive, e.g. Chainat 1, Pathum Thani</td><td class="num">10</td>{% if fg %}<td class="num">{{ (fg.urea * 10 / 50) | pxnum }} baht</td>{% endif %}</tr>
+      </tbody>
+    </table></div>
+    {% if fg %}<p class="fine">Urea at the median shop price of {{ fg.urea | pxnum }} baht per 50 kg bag ({{ '%.2f' % (fg.urea / 50) }} baht/kg){% if fg.paddy %}, worth about {{ (fg.urea / fg.paddy) | round | int }} kg of white paddy per bag{% endif %}. One rai is 1,600 m². · <a href="{{ prefix }}/fertilizer/46-0-0/">Urea prices by brand</a></p>{% endif %}
+
+    <h2>Can I use ammonium sulfate (21-0-0) instead?</h2>
+    <p>Yes. The Rice Department gives 20-30 kg/rai of ammonium sulfate against 10-15 kg/rai of urea, about twice as much, because it is 21% nitrogen against urea's 46%; it also adds sulfur.{% if fg and fg.n %} Right now nitrogen from urea costs {{ '%.1f' % fg.n['46-0-0'] }} baht/kg{% if '21-0-0' in fg.n %} and from 21-0-0 {{ '%.1f' % fg.n['21-0-0'] }} baht/kg{% endif %}.{% endif %}</p>
+
+    <h2>Don't overdo it</h2>
+    <p>Too much nitrogen makes rice lush and prone to lodging, pests and disease, which costs money without adding yield. If the leaves are already a healthy deep green, the full rate may not be needed.</p>
+
+    <p class="fine">Source: Rice Knowledge Bank, Rice Department of Thailand (<a href="https://rkb.ricethailand.go.th/" rel="noopener">rkb.ricethailand.go.th</a>). Information to support decisions, not a substitute for advice from your local agriculture officer.</p>
+    <p><a href="{{ prefix }}/learn/rice-basal-fertilizer/">Basal fertilizer for rice by soil →</a> · <a href="{{ prefix }}/fertilizer/rice/">Rice fertilizer cost per rai →</a></p>
+  </div>
+</article>

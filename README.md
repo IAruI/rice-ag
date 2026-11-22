@@ -75,3 +75,7 @@ Cloudflare Web Analytics (cookieless, filters most bots). Create a site in Cloud
 - Daily urea futures (CME) are licensed and TradingView's free widget refuses them, so the page links out instead.
 - Pages (all EN + TH, built by `build.py` with `fertpages.py`): `/fertilizer/` (prices, nutrient cost, calculators, world prices, rice-vs-urea since 1960, cheapest month, FAQ, price-report form), `/fertilizer/<formula>/` (every formula at 3+ brands plus the straights and rice formulas), `/fertilizer/brand/<slug>/` (brands in `BRANDS`), `/fertilizer/blend/`, `/fertilizer/rice/` (Rice Department rates in `RICE_PLAN`), `/fertilizer/world/<urea|dap|potash|tsp|phosphate-rock>/`. Embeds at `/embed/fertilizer-<slug>/`; CSV at `/static/data/fertilizer_world.csv`.
 - Tests (offline): `python3 tests/test_fertilizer.py`
+
+## Share images, fonts (Nov 2026)
+- `og.py` draws a 1200x630 share image with today's number for every priced page at build time (`dist/og/*.png`), using IBM Plex Sans Thai in `og/` (OFL). Needs Pillow (in `requirements.txt`); without it, pages fall back to `static/img/og.png`.
+- Fonts are self-hosted from Fontsource (`src/static/fonts/`, `src/static/css/fonts.css`, OFL); no request to Google Fonts.

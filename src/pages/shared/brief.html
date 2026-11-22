@@ -25,6 +25,10 @@
         <p class="fine">{{ 'นับเฉพาะสัญญาณ ไม่ใช่การพยากรณ์ราคา แต่ละสัญญาณมีน้ำหนักไม่เท่ากัน ดูเหตุผลในแต่ละการ์ด' if th else 'A count of signals, not a price forecast. They do not carry equal weight; each card says why.' }}</p>
       </div>
     </div>
+    {% if fert_brief %}
+    <p class="fert-mini card"><b>{{ 'ต้นทุนปุ๋ย' if th else 'Fertilizer costs' }}:</b> {% if th %}ยูเรียตลาดโลก {{ fert_brief.usd | pxnum }} ดอลลาร์/ตัน ({{ fert_brief.date | pxmonth(lang) }}{% if fert_brief.y1 is not none %}, {{ fert_brief.y1 | pxpct }} ในรอบปี{% endif %}) · ยูเรียหน้าร้าน {{ fert_brief.shop | pxnum }} บาท/กระสอบ{% if fert_brief.ratio %} · ข้าว 1 ตันซื้อยูเรียได้ {{ '%.2f' % fert_brief.ratio }} ตัน (ค่ากลางตั้งแต่ 2503: {{ '%.2f' % fert_brief.median }}){% endif %}{% else %}world urea ${{ fert_brief.usd | pxnum }}/t ({{ fert_brief.date | pxmonth(lang) }}{% if fert_brief.y1 is not none %}, {{ fert_brief.y1 | pxpct }} on the year{% endif %}) · urea in Thai shops {{ fert_brief.shop | pxnum }} baht a bag{% if fert_brief.ratio %} · a tonne of rice buys {{ '%.2f' % fert_brief.ratio }} t of urea (median since 1960: {{ '%.2f' % fert_brief.median }}){% endif %}{% endif %}
+      · <a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }} →</a></p>
+    {% endif %}
     {% if (B.note_th if th else B.note_en) %}<p class="bf-note">{{ B.note_th if th else B.note_en }}</p>{% endif %}
 
     <div class="bf-grid">
