@@ -29,6 +29,14 @@
       <a href="/static/data/prices.csv" download>{{ 'ดาวน์โหลดข้อมูลทั้งหมด (CSV)' if th else 'Download all data (CSV)' }}</a></p>
     {{ px_table([(None, fill.rows)], lang) }}
 
+    <div class="card px-cite">
+      <h2>{{ 'นำข้อมูลนี้ไปใช้' if th else 'Use this data' }}</h2>
+      <p>{{ 'ใช้ได้ฟรีเมื่อระบุแหล่งที่มา อ้างอิงเป็น' if th else 'Free to use with credit. Cite as' }}: <cite>rice.ag, “{{ hub.h1[lang] }}”, {{ base_url }}{{ url }}</cite></p>
+      <p class="fine">{{ 'ในข่าวหรือบทความ ใส่ลิงก์มาที่หน้านี้ โปรดระบุแหล่งข้อมูลต้นทาง (ดูในตาราง) ด้วย' if th else 'In news stories and reports, please link to this page and name the original source shown in the table.' }}</p>
+      <label for="px-embed">{{ 'ฝังกราฟนี้ในเว็บไซต์ของคุณ (อัปเดตอัตโนมัติ)' if th else 'Embed this chart on your site (updates automatically)' }}</label>
+      <textarea id="px-embed" class="px-embed-code" rows="3" readonly onfocus="this.select()">&lt;iframe src="{{ base_url }}{{ prefix }}/embed/{{ hub.slug }}/" title="{{ hub.h1[lang] }} – rice.ag" width="100%" height="480" style="border:0;max-width:760px" loading="lazy"&gt;&lt;/iframe&gt;</textarea>
+    </div>
+
     <div class="narrow">
       {% for para in hub.body[lang] %}<p>{{ para }}</p>{% endfor %}
       <h2>{{ 'ปัจจัยที่ขับเคลื่อนราคา' if th else 'What moves these prices' }}</h2>

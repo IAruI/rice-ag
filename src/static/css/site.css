@@ -296,3 +296,9 @@ details.adv summary{cursor:pointer;font-weight:600;font-size:.92rem;margin-top:8
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .px-hubs a[aria-current="page"]{color:#0f1a12}}
 /* static hub charts scale with their viewBox, so ticks need bigger user units on phones */
 @media (max-width:600px){.px-static .px-tick{font-size:24px}.px-static .px-line{stroke-width:3}}
+.px-cite{margin:18px 0}
+.px-cite h2{margin-top:0}
+.px-cite cite{font-style:normal;font-weight:600;overflow-wrap:anywhere}
+.px-cite label{display:block;font-size:.9rem;font-weight:600;margin:10px 0 6px}
+.px-embed-code{width:100%;box-sizing:border-box;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical}
+.bf-feed{font-size:.9rem}
