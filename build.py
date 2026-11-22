@@ -50,7 +50,7 @@ def onibars(history, w=280, h=56):
     return ''.join(out)
 
 env.filters.update(fdate=fdate, spark=spark, onibars=onibars,
-                   pxnum=pp.num, pxpct=pp.pct,
+                   pxnum=pp.num, pxpct=pp.pct, pxkg=pp.kg,
                    pxdate=lambda d, lang='en': pp.fdate(d if isinstance(d, datetime.date) else datetime.date.fromisoformat(str(d)[:10]), lang),
                    pxsrc=lambda r, lang='en': pp.srcnames(r, lang))
 PRICES = pp.load_prices()
@@ -76,6 +76,47 @@ def load_brief():
         return json.loads((SRC / 'static/data/brief.json').read_text(encoding='utf-8'))
     except Exception:
         return {}
+
+def load_fert():
+    """fertilizer.json plus the derived bits the page needs. Missing data blanks the page, never the build."""
+    try:
+        F = json.loads((SRC / 'static/data/fertilizer.json').read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+    by = {f['npk']: f for f in F.get('formulas', [])}
+    F['key'] = [by[k] for k in ('46-0-0', '16-20-0', '15-15-15', '0-0-60', '21-0-0', '16-8-8', '13-13-21', '18-46-0') if k in by]
+    F['urea'] = by.get('46-0-0')
+    un = next((r for r in F.get('nutrients', {}).get('N', []) if r['npk'] == '46-0-0'), None)
+    F['calc'] = {'formulas': {k: f['median'] for k, f in by.items()}, 'urea_n': un['baht_per_kg'] if un else None}
+    sv = F.setdefault('survey', {})
+    if sv.get('month'):
+        y, m = map(int, sv['month'].split('-'))
+        sv['month_th'] = f"{pp.TH_MONTHS_LONG[m - 1]} {y + 543}"
+        sv['month_en'] = datetime.date(y, m, 1).strftime('%B %Y')
+    return F
+
+def fert_lead(F, lang):
+    by = {f['npk']: f for f in F.get('formulas', [])}
+    u, a, b = by.get('46-0-0'), by.get('16-20-0'), by.get('15-15-15')
+    if not u:
+        return ''
+    w = (F.get('world') or {}).get('urea')
+    if lang == 'th':
+        out = f"ปุ๋ยยูเรีย 46-0-0 กระสอบ 50 กก. ราคาหน้าร้านราว {pp.num(u['median'])} บาท"
+        out += f" ({pp.num(u['low'])}–{pp.num(u['high'])})" if u['count'] > 1 else ''
+        out += f" สูตร 16-20-0 ราว {pp.num(a['median'])} บาท" if a else ''
+        out += f" และ 15-15-15 ราว {pp.num(b['median'])} บาท" if b else ''
+        out += f" ราคายูเรียตลาดโลก {pp.num(w['usd'])} ดอลลาร์ต่อตัน ({pp.fdate(datetime.date.fromisoformat(w['date']), 'th', True)})" if w else ''
+        return out
+    out = f"Urea (46-0-0) costs about {pp.num(u['median'])} baht for a 50 kg bag at Thai shops"
+    out += f" ({pp.num(u['low'])}–{pp.num(u['high'])})" if u['count'] > 1 else ''
+    out += f"; 16-20-0 about {pp.num(a['median'])} baht" if a else ''
+    out += f" and 15-15-15 about {pp.num(b['median'])} baht" if b else ''
+    out += '.'
+    out += f" World urea was ${pp.num(w['usd'])} per tonne in {datetime.date.fromisoformat(w['date']).strftime('%B %Y')}." if w else ''
+    return out
+
+FERT = load_fert()
 
 ORG = {"@type": "Organization", "@id": BASE_URL + "/#org", "name": "rice.ag", "url": BASE_URL + "/",
        "logo": BASE_URL + "/icon-512.png"}
@@ -138,6 +179,16 @@ PAGES = [
                'th': 'rice.ag เป็นเว็บไซต์อิสระที่ให้ใช้ฟรี มีเครื่องสแกนเมล็ดข้าว เครื่องคำนวณความชื้นข้าวเปลือก ราคาข้าวรายวัน และความรู้เรื่องข้าวเชิงปฏิบัติ'}),
 ]
 
+if FERT.get('formulas'):
+    _u = (FERT.get('urea') or {}).get('median')
+    _a = next((f['median'] for f in FERT['formulas'] if f['npk'] == '16-20-0'), None)
+    _b = next((f['median'] for f in FERT['formulas'] if f['npk'] == '15-15-15'), None)
+    PAGES.append(dict(key='fertilizer', path='/fertilizer/', src='shared/fertilizer.html', section='prices',
+        title={'en': f"Fertilizer prices in Thailand today: urea 46-0-0 ฿{pp.num(_u)}/bag, 16-20-0, 15-15-15 | rice.ag",
+               'th': f"ราคาปุ๋ยวันนี้: ยูเรีย 46-0-0 กระสอบละ {pp.num(_u)} บาท 16-20-0 {pp.num(_a)} 15-15-15 {pp.num(_b)} | rice.ag"},
+        desc={'en': f"Thai fertilizer shop prices per 50 kg bag for {len(FERT['formulas'])} formulas and brands: urea, 16-20-0, 15-15-15, 0-0-60, 21-0-0. Cheapest source of N, P and K, a price calculator, and world urea, DAP and potash prices.",
+              'th': f"ราคาปุ๋ยหน้าร้านต่อกระสอบ 50 กก. {len(FERT['formulas'])} สูตร หลายยี่ห้อ: ยูเรีย 46-0-0 16-20-0 15-15-15 0-0-60 21-0-0 สูตรไหนให้ธาตุอาหารถูกที่สุด เครื่องคำนวณความคุ้มค่า และราคาปุ๋ยตลาดโลก"}))
+
 # one page per origin and per rice type (see pricepages.HUBS); titles carry the latest price
 for _h in pp.HUBS:
     _f = {lang: pp.hub_fill(_h, PRICES, lang) for lang in ('en', 'th')}
@@ -175,6 +226,11 @@ def jsonld(p, lang, url):
         graph.append({"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": 'ราคาข้าว' if lang == 'th' else 'Rice prices', "item": BASE_URL + url_for('/', lang)},
             {"@type": "ListItem", "position": 2, "name": h['name'][lang], "item": BASE_URL + url}]})
+    elif p['key'] == 'fertilizer':
+        graph.append({"@type": "Dataset", "name": p['title'][lang].split(':')[0], "url": BASE_URL + url, "description": p['desc'][lang],
+                      "inLanguage": lang, "isAccessibleForFree": True, "creator": {"@id": ORG["@id"]},
+                      "variableMeasured": "Fertilizer retail price, THB per 50 kg bag", "spatialCoverage": "Thailand",
+                      "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": BASE_URL + "/static/data/fertilizer.json"}]})
     elif p['key'] == 'prices':
         graph.append({"@type": "Dataset", "name": "rice.ag rice price tracker", "url": BASE_URL + url, "description": p['desc'][lang],
                       "inLanguage": lang, "isAccessibleForFree": True, "temporalCoverage": "1960-01/..",
@@ -261,6 +317,9 @@ def main():
                                  generated=PRICES.get('generated'))
             if p['key'] == 'hub':
                 ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
+            if p['key'] == 'fertilizer':
+                ctx.update(fert=dict(FERT, lead=fert_lead(FERT, lang)),
+                           charts=dict(world=pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang), paddy_bag=pp.paddy_bag_chart(FERT, lang)))
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):

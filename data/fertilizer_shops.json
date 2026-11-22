@@ -1,0 +1,2351 @@
+{
+ "survey": {
+  "month": "2026-11",
+  "shops": 2,
+  "area_en": null,
+  "area_th": null,
+  "note_en": "Prices copied from the price boards of two farm-supply shops. Retail, cash, per bag.",
+  "note_th": "ราคาจากป้ายราคาของร้านจำหน่ายปุ๋ย 2 ร้าน ราคาขายปลีกเงินสดต่อกระสอบ"
+ },
+ "items": [
+  {
+   "shop": "A",
+   "brand": "Brand",
+   "brand_th": null,
+   "item": "Formula / Item",
+   "size_kg": 50,
+   "note": "Note / Size",
+   "price": null
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "46-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1000,
+   "npk": [
+    46,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": "orange",
+   "price": 640,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1080,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": "yellow",
+   "price": null,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "16-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    16,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "13-13-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 1340,
+   "npk": [
+    13,
+    13,
+    24
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "9-25-25",
+   "size_kg": 50,
+   "note": null,
+   "price": 1590,
+   "npk": [
+    9,
+    25,
+    25
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": "Cho Fa (ช่อฟ้า)",
+   "price": null,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "0-0-60",
+   "size_kg": 50,
+   "note": null,
+   "price": 930,
+   "npk": [
+    0,
+    0,
+    60
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "40-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 910,
+   "npk": [
+    40,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "18-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 975,
+   "npk": [
+    18,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "15-7-18",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    15,
+    7,
+    18
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "Magnesium sulfate?",
+   "size_kg": 50,
+   "note": null,
+   "price": 580
+  },
+  {
+   "shop": "A",
+   "brand": "Khao Thong / Chang Thong ?",
+   "brand_th": null,
+   "item": "30-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 910,
+   "npk": [
+    30,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Khao Thong / Chang Thong ?",
+   "brand_th": null,
+   "item": "20-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 980,
+   "npk": [
+    20,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Khao Thong / Chang Thong ?",
+   "brand_th": null,
+   "item": "20-8-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1180,
+   "npk": [
+    20,
+    8,
+    20
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Khao Thong / Chang Thong ?",
+   "brand_th": null,
+   "item": "15-5-26",
+   "size_kg": 50,
+   "note": null,
+   "price": 1180,
+   "npk": [
+    15,
+    5,
+    26
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Cow Head & Plough",
+   "brand_th": "หัววัวคันไถ",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1140,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Cow Head & Plough",
+   "brand_th": "หัววัวคันไถ",
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1320,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Cow Head & Plough",
+   "brand_th": "หัววัวคันไถ",
+   "item": "8-24-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 1645,
+   "npk": [
+    8,
+    24,
+    24
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Cow Head & Plough",
+   "brand_th": "หัววัวคันไถ",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1080,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Cow Head & Plough",
+   "brand_th": "หัววัวคันไถ",
+   "item": "18-4-5 ?",
+   "size_kg": 50,
+   "note": null,
+   "price": 880
+  },
+  {
+   "shop": "A",
+   "brand": "Cow Head & Plough",
+   "brand_th": "หัววัวคันไถ",
+   "item": "15-15-15",
+   "size_kg": 25,
+   "note": null,
+   "price": 620,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "15-4-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1140,
+   "npk": [
+    15,
+    4,
+    21
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "14-4-34",
+   "size_kg": 50,
+   "note": null,
+   "price": 1290,
+   "npk": [
+    14,
+    4,
+    34
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "25-?-?",
+   "size_kg": 50,
+   "note": null,
+   "price": 1350
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1310,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1350,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "8-24-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 1480,
+   "npk": [
+    8,
+    24,
+    24
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "12-12-17",
+   "size_kg": 50,
+   "note": null,
+   "price": 1230,
+   "npk": [
+    12,
+    12,
+    17
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "15-5-20",
+   "size_kg": 50,
+   "note": "SF",
+   "price": 1550,
+   "npk": [
+    15,
+    5,
+    20
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "12-12-17",
+   "size_kg": 50,
+   "note": "SF",
+   "price": 1650,
+   "npk": [
+    12,
+    12,
+    17
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "0-0-60",
+   "size_kg": 50,
+   "note": null,
+   "price": 920,
+   "npk": [
+    0,
+    0,
+    60
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "15-5-20",
+   "size_kg": 50,
+   "note": "?",
+   "price": 1140,
+   "npk": [
+    15,
+    5,
+    20
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Suea Tawan ?",
+   "brand_th": null,
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": "?",
+   "price": 1260,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Kao Sahachai ?",
+   "brand_th": null,
+   "item": "15-3-3",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    15,
+    3,
+    3
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Kao Sahachai ?",
+   "brand_th": null,
+   "item": "15-5-25",
+   "size_kg": 50,
+   "note": null,
+   "price": 1140,
+   "npk": [
+    15,
+    5,
+    25
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Kao Sahachai ?",
+   "brand_th": null,
+   "item": "20-8-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1160,
+   "npk": [
+    20,
+    8,
+    20
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Kao Sahachai ?",
+   "brand_th": null,
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1250,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Kao Sahachai ?",
+   "brand_th": null,
+   "item": "14-7-35",
+   "size_kg": 50,
+   "note": null,
+   "price": 1250,
+   "npk": [
+    14,
+    7,
+    35
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Organic-chemical",
+   "brand_th": "อินทรีย์-เคมี",
+   "item": "9-3-6",
+   "size_kg": 5,
+   "note": null,
+   "price": 200,
+   "npk": [
+    9,
+    3,
+    6
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Organic-chemical",
+   "brand_th": "อินทรีย์-เคมี",
+   "item": "9-3-6",
+   "size_kg": 25,
+   "note": null,
+   "price": 580,
+   "npk": [
+    9,
+    3,
+    6
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Organic-chemical",
+   "brand_th": "อินทรีย์-เคมี",
+   "item": "9-3-6",
+   "size_kg": 50,
+   "note": null,
+   "price": 1010,
+   "npk": [
+    9,
+    3,
+    6
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Olive Tree ?",
+   "brand_th": "ต้นมะกอก",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1050,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Olive Tree ?",
+   "brand_th": "ต้นมะกอก",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1150,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Silver Coin ?",
+   "brand_th": null,
+   "item": "15-3-3",
+   "size_kg": 50,
+   "note": null,
+   "price": 790,
+   "npk": [
+    15,
+    3,
+    3
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Silver Coin ?",
+   "brand_th": null,
+   "item": "15-3-25",
+   "size_kg": 50,
+   "note": null,
+   "price": 1250,
+   "npk": [
+    15,
+    3,
+    25
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Silver Coin ?",
+   "brand_th": null,
+   "item": "14-7-35",
+   "size_kg": 50,
+   "note": null,
+   "price": 1350,
+   "npk": [
+    14,
+    7,
+    35
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Silver Coin ?",
+   "brand_th": null,
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1320,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Root booster (ระเบิดราก)",
+   "size_kg": 50,
+   "note": null,
+   "price": 250
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Soil supplement ?",
+   "size_kg": 50,
+   "note": null,
+   "price": 350
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "? (ดีโอ...)",
+   "size_kg": 50,
+   "note": null,
+   "price": 350
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "? Setthi",
+   "size_kg": 50,
+   "note": null,
+   "price": 400
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Phra Chan Dao",
+   "size_kg": 50,
+   "note": "green",
+   "price": 420
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Phra Chan Dao",
+   "size_kg": 50,
+   "note": "orange",
+   "price": 420
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Bio product ?",
+   "size_kg": 50,
+   "note": "green",
+   "price": 180
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Bio product ?",
+   "size_kg": 50,
+   "note": "gold label",
+   "price": 250
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Pelleted chicken manure",
+   "size_kg": 50,
+   "note": "yellow",
+   "price": 230
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Pelleted chicken manure",
+   "size_kg": 50,
+   "note": "dark",
+   "price": 310
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Sola Plus",
+   "size_kg": 50,
+   "note": null,
+   "price": 520
+  },
+  {
+   "shop": "A",
+   "brand": "Soil & root conditioners",
+   "brand_th": "บำรุงดิน-บำรุงราก",
+   "item": "Lime (ปูนขาว)",
+   "size_kg": 50,
+   "note": null,
+   "price": 100
+  },
+  {
+   "shop": "B",
+   "brand": "Brand",
+   "brand_th": null,
+   "item": "Formula / Item",
+   "size_kg": 50,
+   "note": "Note / Size",
+   "price": null
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1320,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1245,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "23-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 1045,
+   "npk": [
+    23,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": null,
+   "price": 1275,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "15-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 510,
+   "npk": [
+    15,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "25-7-7",
+   "size_kg": 50,
+   "note": null,
+   "price": 1180,
+   "npk": [
+    25,
+    7,
+    7
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "21-7-14",
+   "size_kg": 50,
+   "note": null,
+   "price": 1195,
+   "npk": [
+    21,
+    7,
+    14
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "12-11-18",
+   "size_kg": 50,
+   "note": null,
+   "price": 820,
+   "npk": [
+    12,
+    11,
+    18
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "14-8-19",
+   "size_kg": 50,
+   "note": null,
+   "price": 725,
+   "npk": [
+    14,
+    8,
+    19
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "13-4-25",
+   "size_kg": 50,
+   "note": null,
+   "price": 935,
+   "npk": [
+    13,
+    4,
+    25
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "8-24-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 1730,
+   "npk": [
+    8,
+    24,
+    24
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "10-10-30",
+   "size_kg": 50,
+   "note": null,
+   "price": 1365,
+   "npk": [
+    10,
+    10,
+    30
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sailboat / Yara",
+   "brand_th": "เรือใบ ยาร่า",
+   "item": "46-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    46,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Kemira ?",
+   "brand_th": null,
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1440,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Kemira ?",
+   "brand_th": null,
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1450,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Kemira ?",
+   "brand_th": null,
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": null,
+   "price": 1470,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "0-0-60",
+   "size_kg": 50,
+   "note": null,
+   "price": 910,
+   "npk": [
+    0,
+    0,
+    60
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "13-13-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 1280,
+   "npk": [
+    13,
+    13,
+    24
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1160,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "15-9-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1280,
+   "npk": [
+    15,
+    9,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": "blue",
+   "price": 1230,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": "yellow",
+   "price": 1190,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1100,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": "red",
+   "price": null,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": "orange",
+   "price": 635,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "21-7-14",
+   "size_kg": 50,
+   "note": null,
+   "price": 1110,
+   "npk": [
+    21,
+    7,
+    14
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "25-7-7",
+   "size_kg": 50,
+   "note": null,
+   "price": 995,
+   "npk": [
+    25,
+    7,
+    7
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "46-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    46,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "9-25-25",
+   "size_kg": 50,
+   "note": null,
+   "price": 1560,
+   "npk": [
+    9,
+    25,
+    25
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Garsoni ?",
+   "brand_th": "การ์โซนี่",
+   "item": "14-14-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1300,
+   "npk": [
+    14,
+    14,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Garsoni ?",
+   "brand_th": "การ์โซนี่",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1230,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Garsoni ?",
+   "brand_th": "การ์โซนี่",
+   "item": "15-5-20",
+   "size_kg": 25,
+   "note": null,
+   "price": 790,
+   "npk": [
+    15,
+    5,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1270,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1125,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "20-8-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1175,
+   "npk": [
+    20,
+    8,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "15-7-18",
+   "size_kg": 50,
+   "note": null,
+   "price": 1070,
+   "npk": [
+    15,
+    7,
+    18
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1080,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "16-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 955,
+   "npk": [
+    16,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "8-24-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 1660,
+   "npk": [
+    8,
+    24,
+    24
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "0-0-60",
+   "size_kg": 50,
+   "note": null,
+   "price": 930,
+   "npk": [
+    0,
+    0,
+    60
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1270,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1140,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "15-7-18",
+   "size_kg": 50,
+   "note": null,
+   "price": 1065,
+   "npk": [
+    15,
+    7,
+    18
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "18-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 965,
+   "npk": [
+    18,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "20-8-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1175,
+   "npk": [
+    20,
+    8,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": null,
+   "price": 1350,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "18-18-18",
+   "size_kg": 25,
+   "note": null,
+   "price": 850,
+   "npk": [
+    18,
+    18,
+    18
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": "Chao Rai",
+   "price": 985,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "19-5-5",
+   "size_kg": 50,
+   "note": "Chao Rai",
+   "price": 900,
+   "npk": [
+    19,
+    5,
+    5
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sagro Star ?",
+   "brand_th": null,
+   "item": "11-6-25",
+   "size_kg": 50,
+   "note": null,
+   "price": 1490,
+   "npk": [
+    11,
+    6,
+    25
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sagro Star ?",
+   "brand_th": null,
+   "item": "12-12-17",
+   "size_kg": 50,
+   "note": null,
+   "price": 1580,
+   "npk": [
+    12,
+    12,
+    17
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sagro Star ?",
+   "brand_th": null,
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1460,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sagro Star ?",
+   "brand_th": null,
+   "item": "15-5-25",
+   "size_kg": 25,
+   "note": null,
+   "price": 980,
+   "npk": [
+    15,
+    5,
+    25
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sagro Star ?",
+   "brand_th": null,
+   "item": "20-10-10",
+   "size_kg": 50,
+   "note": null,
+   "price": 1430,
+   "npk": [
+    20,
+    10,
+    10
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Sagro Star ?",
+   "brand_th": null,
+   "item": "6-3-3",
+   "size_kg": 25,
+   "note": null,
+   "price": 580,
+   "npk": [
+    6,
+    3,
+    3
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "0-0-60",
+   "size_kg": 50,
+   "note": null,
+   "price": 920,
+   "npk": [
+    0,
+    0,
+    60
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "15-5-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1050,
+   "npk": [
+    15,
+    5,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "16-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 915,
+   "npk": [
+    16,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "25-7-7",
+   "size_kg": 50,
+   "note": null,
+   "price": 1080,
+   "npk": [
+    25,
+    7,
+    7
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "30-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 865,
+   "npk": [
+    30,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "30-11-5",
+   "size_kg": 50,
+   "note": null,
+   "price": 1200,
+   "npk": [
+    30,
+    11,
+    5
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "14-7-35",
+   "size_kg": 50,
+   "note": null,
+   "price": 1255,
+   "npk": [
+    14,
+    7,
+    35
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "15-15-15",
+   "size_kg": 25,
+   "note": null,
+   "price": 905,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Thip",
+   "brand_th": "ทิพย์",
+   "item": "14-7-35",
+   "size_kg": 50,
+   "note": "?",
+   "price": 1445,
+   "npk": [
+    14,
+    7,
+    35
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Brand",
+   "brand_th": null,
+   "item": "Formula / Item",
+   "size_kg": 50,
+   "note": "Note / Size",
+   "price": null
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "46-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1180,
+   "npk": [
+    46,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "0-0-60",
+   "size_kg": 50,
+   "note": null,
+   "price": 930,
+   "npk": [
+    0,
+    0,
+    60
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "13-13-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 1290,
+   "npk": [
+    13,
+    13,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 980,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "18-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1000,
+   "npk": [
+    18,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "18-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 920,
+   "npk": [
+    18,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "20-8-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 950,
+   "npk": [
+    20,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "30-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1080,
+   "npk": [
+    30,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "18-46-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 1630,
+   "npk": [
+    18,
+    46,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": null,
+   "price": 1340,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "20-10-10",
+   "size_kg": 50,
+   "note": null,
+   "price": 1350,
+   "npk": [
+    20,
+    10,
+    10
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "24-8-7",
+   "size_kg": 50,
+   "note": null,
+   "price": 1300,
+   "npk": [
+    24,
+    8,
+    7
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "13-10-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 1350,
+   "npk": [
+    13,
+    10,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "12-12-17",
+   "size_kg": 50,
+   "note": null,
+   "price": 1610,
+   "npk": [
+    12,
+    12,
+    17
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "8-24-24",
+   "size_kg": 50,
+   "note": null,
+   "price": 875,
+   "npk": [
+    8,
+    24,
+    24
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "15-15-15",
+   "size_kg": 50,
+   "note": null,
+   "price": 1250,
+   "npk": [
+    15,
+    15,
+    15
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Yaka ?",
+   "brand_th": null,
+   "item": "0-0-50",
+   "size_kg": 50,
+   "note": null,
+   "price": 875,
+   "npk": [
+    0,
+    0,
+    50
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Bird",
+   "brand_th": "นก",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 670,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Chao Rai / Farmer",
+   "brand_th": "ชาวไร่",
+   "item": "16-20-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 890,
+   "npk": [
+    16,
+    20,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Chao Rai / Farmer",
+   "brand_th": "ชาวไร่",
+   "item": "19-5-5",
+   "size_kg": 50,
+   "note": null,
+   "price": null,
+   "npk": [
+    19,
+    5,
+    5
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Fujitech ?",
+   "brand_th": "ฟูจิเทค",
+   "item": "12-12-17",
+   "size_kg": 50,
+   "note": null,
+   "price": 915,
+   "npk": [
+    12,
+    12,
+    17
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Fujitech ?",
+   "brand_th": "ฟูจิเทค",
+   "item": "15-5-20",
+   "size_kg": 50,
+   "note": null,
+   "price": 915,
+   "npk": [
+    15,
+    5,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Fujitech ?",
+   "brand_th": "ฟูจิเทค",
+   "item": "7-21-21",
+   "size_kg": 50,
+   "note": null,
+   "price": 915,
+   "npk": [
+    7,
+    21,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Fujitech ?",
+   "brand_th": "ฟูจิเทค",
+   "item": "25-7-8",
+   "size_kg": 50,
+   "note": null,
+   "price": 915,
+   "npk": [
+    25,
+    7,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Fujitech ?",
+   "brand_th": "ฟูจิเทค",
+   "item": "15-0-0",
+   "size_kg": 50,
+   "note": null,
+   "price": 530,
+   "npk": [
+    15,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Fujitech ?",
+   "brand_th": "ฟูจิเทค",
+   "item": "16-16-16",
+   "size_kg": 50,
+   "note": null,
+   "price": 915,
+   "npk": [
+    16,
+    16,
+    16
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Polyflomax",
+   "size_kg": 50,
+   "note": null,
+   "price": 710
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Dolomite",
+   "size_kg": 50,
+   "note": null,
+   "price": 115
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Chicken manure",
+   "size_kg": 50,
+   "note": "5 Star",
+   "price": 250
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Chicken manure",
+   "size_kg": 50,
+   "note": "M",
+   "price": 295
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Bua Kaew brand",
+   "size_kg": 50,
+   "note": null,
+   "price": 400
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Red-label brand ?",
+   "size_kg": 50,
+   "note": null,
+   "price": 350
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "0-3-0 Dao Krajai",
+   "size_kg": 50,
+   "note": null,
+   "price": 170
+  },
+  {
+   "shop": "B",
+   "brand": "Other products",
+   "brand_th": null,
+   "item": "Gypsum",
+   "size_kg": 25,
+   "note": null,
+   "price": 135
+  },
+  {
+   "shop": "B",
+   "brand": "Crown",
+   "brand_th": "มงกุฎ",
+   "item": "18-8-8",
+   "size_kg": 50,
+   "note": "urea-substitute sheet",
+   "price": 980,
+   "npk": [
+    18,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "18-8-8",
+   "size_kg": 50,
+   "note": "urea-substitute sheet",
+   "price": 920,
+   "npk": [
+    18,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "20-8-8",
+   "size_kg": 50,
+   "note": "urea-substitute sheet",
+   "price": 950,
+   "npk": [
+    20,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Chao Rai / Farmer",
+   "brand_th": "ชาวไร่",
+   "item": "19-5-5",
+   "size_kg": 50,
+   "note": "urea-substitute sheet",
+   "price": 900,
+   "npk": [
+    19,
+    5,
+    5
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Cow Head",
+   "brand_th": "หัววัว",
+   "item": "16-8-8",
+   "size_kg": 50,
+   "note": "urea-substitute sheet",
+   "price": 930,
+   "npk": [
+    16,
+    8,
+    8
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Rabbit",
+   "brand_th": "กระต่าย",
+   "item": "21-0-0",
+   "size_kg": 50,
+   "note": "urea-substitute sheet",
+   "price": 700,
+   "npk": [
+    21,
+    0,
+    0
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "13-3-21",
+   "size_kg": 50,
+   "note": "promo sheet",
+   "price": 950,
+   "npk": [
+    13,
+    3,
+    21
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "15-5-20",
+   "size_kg": 50,
+   "note": "promo sheet",
+   "price": 1020,
+   "npk": [
+    15,
+    5,
+    20
+   ]
+  },
+  {
+   "shop": "B",
+   "brand": "Openbill Stork",
+   "brand_th": "นกปากห่าง",
+   "item": "46-0-0",
+   "size_kg": 50,
+   "note": "promo sheet",
+   "price": 970,
+   "npk": [
+    46,
+    0,
+    0
+   ]
+  }
+ ],
+ "market": [
+  {
+   "date": "2026-11-12",
+   "en": "World urea is back near $420 per tonne FOB Middle East, about half its April peak. Egyptian urea is higher, around $500–535, because Egypt cut gas to its fertilizer plants.",
+   "th": "ราคายูเรียโลกกลับมาอยู่ราว 420 ดอลลาร์ต่อตัน (FOB ตะวันออกกลาง) ราวครึ่งหนึ่งของจุดสูงสุดในเดือนเมษายน ยูเรียจากอียิปต์แพงกว่าที่ราว 500–535 ดอลลาร์ เพราะอียิปต์ลดก๊าซที่ส่งให้โรงงานปุ๋ย",
+   "sources": [
+    [
+     "CommodityScope",
+     "https://commodityscope.com/prices/fertilizers"
+    ],
+    [
+     "EnterpriseAM",
+     "https://enterpriseam.com/egypt/2026/11/04/egyptian-granular-urea-at-usd-535-as-gas-supplies-to-fertilizer-plants-cut-20/"
+    ]
+   ]
+  },
+  {
+   "date": "2026-04-29",
+   "en": "Thailand's Department of Internal Trade publishes recommended retail fertilizer prices for every province (Announcement No. 4/2569), worked out from factory price plus transport to each provincial capital. Shops that charge well above it can be reported to the provincial commerce office.",
+   "th": "กรมการค้าภายในประกาศราคาจำหน่ายปลีกแนะนำปุ๋ยเคมีรายจังหวัด (ประกาศ กกร. ฉบับที่ 4/2569) คำนวณจากราคาหน้าโรงงานบวกค่าขนส่งถึงอำเภอเมืองของแต่ละจังหวัด ร้านที่ขายแพงเกินควรแจ้งได้ที่สำนักงานพาณิชย์จังหวัด หรือสายด่วน 1569",
+   "sources": [
+    [
+     "DIT announcement (PDF)",
+     "https://www.dit.go.th/media/ov2fbsju/20260429164941_8549.pdf"
+    ],
+    [
+     "Thai PBS",
+     "https://www.thaipbs.or.th/news/content/504993"
+    ]
+   ]
+  },
+  {
+   "date": "2026-04-23",
+   "en": "In April, conflict in the Middle East pushed urea from about $500 to over $900 per tonne. DIT checked 1,135 shops and found the gap between factory and shop prices had widened to 300–500 baht a bag.",
+   "th": "ในเดือนเมษายน ความขัดแย้งในตะวันออกกลางดันราคายูเรียจากราว 500 เป็นกว่า 900 ดอลลาร์ต่อตัน กรมการค้าภายในตรวจร้าน 1,135 แห่ง พบส่วนต่างราคาหน้าโรงงานกับหน้าร้านกว้างขึ้นเป็น 300–500 บาทต่อกระสอบ",
+   "sources": [
+    [
+     "InfoQuest",
+     "https://www.infoquest.co.th/?p=587097"
+    ],
+    [
+     "Thai PBS",
+     "https://www.thaipbs.or.th/news/content/504993"
+    ]
+   ]
+  }
+ ]
+}

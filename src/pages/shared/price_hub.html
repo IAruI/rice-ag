@@ -7,6 +7,44 @@
     {% if fill.lead %}<p class="lead px-lead">{{ fill.lead }}</p>{% endif %}
     <p class="fine">{{ 'อัปเดตข้อมูล' if th else 'Data updated' }}: {{ generated | pxdate(lang) }} · {{ 'rice.ag ตรวจทุกแหล่งข้อมูลทุกวัน' if th else 'rice.ag checks every source daily' }}</p>
 
+    {% if fill.cards %}
+    <ul class="px-kg" aria-label="{{ 'ราคาข้าวเปลือกต่อกิโลกรัม' if th else 'Paddy prices per kilo' }}">
+      {% for c in fill.cards %}
+      <li class="card px-kgc">
+        <span class="px-kgn">{{ c.th if th else c.en }}</span>
+        <span class="px-kgv"><b>{{ c.thb | pxkg }}</b> {{ 'บาท/กก.' if th else 'baht/kg' }}</span>
+        <span class="px-kgs">{{ c.thb | pxnum }} {{ 'บาท/ตัน' if th else 'baht/t' }} · {{ '1 เดือน' if th else '1 mo' }} {{ c.m1_thb | pxpct }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="fine">{{ 'ราคาอ้างอิงข้าวเปลือกแห้ง กรมการค้าภายใน ณ' if th else 'Dry paddy reference prices, Department of Internal Trade,' }} {{ fill.cards[0].date | pxdate(lang) }}</p>
+
+    <div class="card px-wet" id="wet-paddy">
+      <h2>{{ 'ข้าวเปลือกสด (ความชื้นสูง) ควรได้กิโลละเท่าไร' if th else 'What is wet paddy worth per kilo?' }}</h2>
+      <p class="fine">{{ 'ข้าวจากรถเกี่ยวมีน้ำปนอยู่ โรงสีจึงจ่ายตามน้ำหนักเนื้อข้าวแห้ง ใส่ความชื้นที่วัดได้เพื่อดูราคาเทียบเท่า' if th else 'Paddy straight from the harvester carries water, so mills pay for the dry grain inside. Enter the moisture reading to see the equivalent price.' }}</p>
+      <div class="px-wet-f">
+        <div class="field"><label for="wv">{{ 'ชนิดข้าว' if th else 'Paddy' }}</label>
+          <select id="wv">{% for c in fill.cards %}<option value="{{ c.thb }}">{{ c.th if th else c.en }} ({{ c.thb | pxkg }})</option>{% endfor %}</select></div>
+        <div class="field"><label for="wm">{{ 'ความชื้นข้าวที่ขาย (%)' if th else 'Moisture of your paddy (%)' }}</label>
+          <input type="number" id="wm" value="25" min="0" max="45" step="0.1" inputmode="decimal"></div>
+        <div class="field"><label for="ws">{{ 'ความชื้นมาตรฐานของราคาอ้างอิง (%)' if th else 'Standard moisture of the reference price (%)' }}</label>
+          <input type="number" id="ws" value="15" min="0" max="30" step="0.1" inputmode="decimal"></div>
+      </div>
+      <p class="px-wet-out" aria-live="polite"><span id="wo"></span></p>
+      <p class="fine">{{ 'นี่คือเพดานราคาตามน้ำหนักแห้งเท่านั้น โรงสียังหักค่าอบ สิ่งเจือปน และข้าวลีบ ราคาที่ได้จริงจึงมักต่ำกว่านี้ ใช้เป็นตัวเลขต่อรอง' if th else 'This is a ceiling based on dry weight only. Mills also deduct drying costs, impurities and empty grains, so real offers are usually lower. Use it as a bargaining reference.' }}
+        <a href="{{ prefix }}/tools/moisture-calculator/">{{ 'เครื่องคำนวณความชื้นและน้ำหนักหาย' if th else 'Moisture and shrink calculator' }} →</a></p>
+      <script>
+      (function(){var v=document.getElementById('wv'),m=document.getElementById('wm'),s=document.getElementById('ws'),o=document.getElementById('wo'),th={{ 'true' if th else 'false' }};
+      function f(x){return x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+      function run(){var p=+v.value/1000,mm=+m.value,ss=+s.value;if(!(mm>=0&&mm<100&&ss>=0&&ss<100)){o.textContent='';return}
+        var r=Math.min(1,(100-mm)/(100-ss)),kg=p*r,w=1000*r;
+        o.innerHTML=th?('ราคาเทียบเท่า <b>'+f(kg)+' บาท/กก.</b> · ข้าวสด 1,000 กก. เท่ากับข้าวแห้งราว '+Math.round(w).toLocaleString('en-US')+' กก.')
+          :('Equivalent price <b>'+f(kg)+' baht/kg</b> · 1,000 kg of wet paddy is about '+Math.round(w).toLocaleString('en-US')+' kg of dry paddy');}
+      [v,m,s].forEach(function(e){e.addEventListener('input',run)});run();})();
+      </script>
+    </div>
+    {% endif %}
+
     {% if hub.india and india.status %}
     {% set IND = {'open': ('ส่งออกได้ตามปกติ' if th else 'Exports open'), 'watch': ('จับตา: อาจจำกัดการส่งออก' if th else 'Watch: curbs possible'), 'restricted': ('จำกัดการส่งออก' if th else 'Exports restricted')} %}
     <div class="card px-verdict">

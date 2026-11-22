@@ -92,7 +92,7 @@ section{padding:34px 0}
 .card a.more{font-weight:600;text-decoration:none}
 .band{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .pill{display:inline-block;font-size:.78rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--green-soft);color:var(--green)}
-.pill.beta{background:var(--gold-soft);color:var(--gold)}
+.pill.beta{background:var(--gold-soft);color:color-mix(in srgb,var(--gold) 62%,var(--ink))}
 .callout{border-left:4px solid var(--gold);background:var(--gold-soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:1.2em 0}
 .callout.green{border-color:var(--green);background:var(--green-soft)}
 .wf{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
@@ -244,7 +244,7 @@ details.adv summary{cursor:pointer;font-weight:600;font-size:.92rem;margin-top:8
 .px-stale{color:var(--danger)}
 
 /* ---- weekly brief (/brief/) */
-.brief{--warm:#C2492F;--cool:#2A78D6}
+.brief{--warm:#AC3F27;--cool:#2266BF}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .brief{--warm:#E8735A;--cool:#5E9EEA}}
 :root[data-theme="dark"] .brief{--warm:#E8735A;--cool:#5E9EEA}
 .bf-lead{max-width:760px;color:var(--muted);font-size:1.08rem}
@@ -302,3 +302,35 @@ details.adv summary{cursor:pointer;font-weight:600;font-size:.92rem;margin-top:8
 .px-cite label{display:block;font-size:.9rem;font-weight:600;margin:10px 0 6px}
 .px-embed-code{width:100%;box-sizing:border-box;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical}
 .bf-feed{font-size:.9rem}
+.px-kg{list-style:none;padding:0;margin:16px 0 6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.px-kgc{display:flex;flex-direction:column;gap:2px;padding:12px 14px;margin:0}
+.px-kgn{font-size:.92rem;font-weight:600}
+.px-kgv{font-size:.95rem;color:var(--muted)}
+.px-kgv b{font-size:1.9rem;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:2px}
+.px-kgs{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+@media (max-width:600px){.px-kg{grid-template-columns:1fr 1fr}.px-kgv b{font-size:1.6rem}}
+.px-wet{margin:18px 0}
+.px-wet h2{margin-top:0}
+.px-wet-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.px-wet-f select,.px-wet-f input{width:100%;box-sizing:border-box}
+.px-wet-out{font-size:1.05rem;margin:12px 0 4px}
+.px-wet-out b{font-size:1.3rem}
+.table-scroll:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.prices ul.px-kg{padding:0;margin-left:0}
+.px-kgv{white-space:nowrap}
+@media (max-width:600px){.px-kgv{font-size:.85rem}}
+.px-kgn small{font-weight:400;color:var(--muted)}
+.fert-big{margin:4px 0}.fert-big b{font-size:2.4rem;font-variant-numeric:tabular-nums}
+.fert-nut{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:10px 0}
+.fert-nut .card{margin:0;padding:12px 14px}.fert-nut h3{margin:0 0 6px;font-size:1rem}
+.prices ol.fert-rank{margin:0;padding-left:1.2em}
+.fert-rank li{display:flex;gap:6px;align-items:baseline;padding:3px 0;border-bottom:1px solid var(--line)}
+.fert-rank li span{flex:1}.fert-rank small{color:var(--muted)}.fert-rank b{font-variant-numeric:tabular-nums}
+.fert-rank li:first-child b{color:var(--green)}
+.fert-table th small{font-weight:400;color:var(--muted)}
+.fert-brands{font-size:.85rem;min-width:260px}
+.fert-flag{color:var(--muted);text-decoration:line-through dotted}
+.fert-news{padding-left:1.2em}.fert-news li{margin:8px 0}
+.fert-world{font-size:.9rem;padding-left:1.2em}
+.px-kgc{min-width:0}
+.fert .px-kgv{white-space:normal}

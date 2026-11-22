@@ -1,0 +1,143 @@
+{% from '_px.html' import hub_links %}
+{% set th = lang == 'th' %}
+{% set F = fert %}
+{% set NAME = {
+  '46-0-0': ('Urea', 'ยูเรีย'), '21-0-0': ('Ammonium sulfate', 'แอมโมเนียมซัลเฟต'), '0-0-60': ('Potash (potassium chloride)', 'โพแทสเซียมคลอไรด์'),
+  '0-0-50': ('Potassium sulfate', 'โพแทสเซียมซัลเฟต'), '18-46-0': ('DAP', 'ไดแอมโมเนียมฟอสเฟต (DAP)'), '15-0-0': ('Calcium nitrate', 'แคลเซียมไนเตรต'),
+  '16-20-0': ('Rice starter (ammonium phosphate)', 'สูตรรองพื้นนาข้าว'), '15-15-15': ('Balanced NPK', 'สูตรเสมอ'), '16-16-16': ('Balanced NPK', 'สูตรเสมอ'),
+  '16-8-8': ('Rice top-dressing', 'สูตรแต่งหน้าข้าว'), '13-13-21': ('High-potash NPK', 'สูตรเร่งผล')} %}
+{% macro fname(k) %}{% if k in NAME %}{{ NAME[k][1] if th else NAME[k][0] }}{% endif %}{% endmacro %}
+{% macro brand(i) %}{{ (i.brand_th or i.brand) if th else i.brand }}{% endmacro %}
+{% macro mdate(d) %}{{ d | pxdate(lang) }}{% endmacro %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/">{{ 'ราคาข้าว' if th else 'Rice prices' }}</a> › {{ 'ราคาปุ๋ย' if th else 'Fertilizer' }}</p>
+    <h1>{{ 'ราคาปุ๋ยวันนี้' if th else 'Fertilizer prices in Thailand today' }}</h1>
+    {% if F.lead %}<p class="lead px-lead">{{ F.lead }}</p>{% endif %}
+    <p class="fine">{% if th %}ราคาหน้าร้านจากป้ายราคาร้านจำหน่ายปุ๋ย {{ F.survey.shops }} ร้าน สำรวจเดือน{{ F.survey.month_th }}{% if F.survey.area_th %} ({{ F.survey.area_th }}){% endif %} · ราคาโลกจากธนาคารโลก{% else %}Shop prices from the price boards of {{ F.survey.shops }} farm-supply shops, surveyed {{ F.survey.month_en }}{% if F.survey.area_en %} ({{ F.survey.area_en }}){% endif %} · world prices from the World Bank{% endif %}</p>
+
+    <ul class="px-kg" aria-label="{{ 'ราคาปุ๋ยสูตรหลักต่อกระสอบ' if th else 'Main formulas, price per bag' }}">
+      {% for f in F.key %}
+      <li class="card px-kgc">
+        <span class="px-kgn">{{ f.npk }}{% if f.npk in NAME %} <small>{{ fname(f.npk) }}</small>{% endif %}</span>
+        <span class="px-kgv"><b>{{ f.median | pxnum }}</b> {{ 'บาท/กระสอบ' if th else 'baht/bag' }}</span>
+        <span class="px-kgs">{% if f.count > 1 %}{{ f.low | pxnum }}–{{ f.high | pxnum }} · {{ f.count }} {{ 'ยี่ห้อ' if th else 'brands' }}{% else %}1 {{ 'ยี่ห้อ' if th else 'brand' }}{% endif %} · {{ 'กก.ละ' if th else 'per kg' }} {{ '%.2f' % f.per_kg }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="fine">{{ 'กระสอบ 50 กก. ราคากลาง (มัธยฐาน) ของทุกยี่ห้อที่พบ' if th else '50 kg bags. The middle (median) price across the brands seen.' }}</p>
+
+    {% if F.paddy.kg_per_urea_bag %}
+    <div class="card px-verdict">
+      <h2>{{ 'ต้องขายข้าวเปลือกกี่กิโลเพื่อซื้อยูเรีย 1 กระสอบ' if th else 'How much paddy buys a bag of urea' }}</h2>
+      <p class="fert-big"><b>{{ F.paddy.kg_per_urea_bag }}</b> {{ 'กก.' if th else 'kg' }}</p>
+      <p>{% if th %}ยูเรีย 46-0-0 กระสอบละ {{ F.urea.median | pxnum }} บาท หารด้วยราคาข้าวเปลือกเจ้า {{ '%.2f' % F.paddy.baht_per_kg }} บาท/กก. ยิ่งตัวเลขนี้สูง ชาวนายิ่งต้องใช้ข้าวมากขึ้นเพื่อซื้อปุ๋ย{% else %}Urea 46-0-0 at {{ F.urea.median | pxnum }} baht a bag, divided by white paddy at {{ '%.2f' % F.paddy.baht_per_kg }} baht/kg. The higher this number, the more rice a farmer gives up for the same fertilizer.{% endif %}
+        <a href="{{ prefix }}/prices/thailand-paddy/">{{ 'ราคาข้าวเปลือกวันนี้' if th else "Today's paddy prices" }} →</a></p>
+      {% if charts.paddy_bag %}
+      <p class="fine">{{ 'ย้อนหลัง: ใช้ราคายูเรียโลก (ยังไม่รวมค่าขนส่งและกำไรร้านค้า) เทียบกับราคาข้าวเปลือกเฉลี่ยรายเดือน จึงต่ำกว่าตัวเลขหน้าร้าน แต่ใช้ดูแนวโน้มได้' if th else 'History uses the world urea price (before freight and shop margins) against the monthly average paddy price, so it sits below the shop figure, but shows the trend.' }}</p>
+      {{ charts.paddy_bag | safe }}
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <h2 id="nutrient-cost">{{ 'ซื้อธาตุอาหารจากสูตรไหนถูกที่สุด' if th else 'Which fertilizer gives the cheapest nutrient' }}</h2>
+    <p>{{ 'พืชต้องการธาตุอาหาร ไม่ใช่น้ำหนักกระสอบ ตารางนี้คิดราคาต่อธาตุอาหาร 1 กก. จากราคากลางหน้าร้าน' if th else 'Crops need nutrients, not bag weight. This compares the price of 1 kg of each nutrient, from the median shop prices.' }}</p>
+    <div class="fert-nut">
+      {% for key, label in [('N', ('ไนโตรเจน (N)' if th else 'Nitrogen (N)')), ('P', ('ฟอสฟอรัส (P₂O₅)' if th else 'Phosphate (P₂O₅)')), ('K', ('โพแทสเซียม (K₂O)' if th else 'Potash (K₂O)'))] %}
+      {% if F.nutrients[key] %}
+      <div class="card">
+        <h3>{{ label }}</h3>
+        <ol class="fert-rank">
+          {% for r in F.nutrients[key] %}
+          <li><span>{{ r.npk }} <small>{{ fname(r.npk) }}</small></span><b>{{ '%.1f' % r.baht_per_kg }}</b> <small>{{ 'บาท/กก.' if th else 'baht/kg' }}</small></li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <p class="fine">{% if th %}ฟอสฟอรัส: หักมูลค่าไนโตรเจนในสูตรออกตามราคายูเรียก่อน ส่วนที่เหลือคือราคาฟอสฟอรัส · 21-0-0 มีกำมะถันราว 24% และ 15-0-0 มีแคลเซียม ซึ่งมีประโยชน์ในดินบางชนิด จึงไม่ได้ด้อยกว่าเสมอไปแม้ไนโตรเจนแพงกว่า{% else %}Phosphate: the nitrogen in the bag is first valued at the urea price; the rest of the price buys the phosphate. · 21-0-0 also carries about 24% sulfur and 15-0-0 carries calcium, which some soils need, so a higher nitrogen cost is not always a worse buy.{% endif %}</p>
+
+    <div class="card px-wet" id="fert-calc">
+      <h2>{{ 'คำนวณ: ปุ๋ยกระสอบนี้คุ้มไหม' if th else 'Calculator: is this bag a good price?' }}</h2>
+      <div class="px-wet-f">
+        <div class="field"><label for="fc-f">{{ 'สูตรปุ๋ย (N-P-K)' if th else 'Formula (N-P-K)' }}</label><input type="text" id="fc-f" value="16-20-0" inputmode="numeric" autocomplete="off"></div>
+        <div class="field"><label for="fc-p">{{ 'ราคาต่อกระสอบ (บาท)' if th else 'Price per bag (baht)' }}</label><input type="number" id="fc-p" value="1065" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="fc-w">{{ 'น้ำหนักกระสอบ (กก.)' if th else 'Bag size (kg)' }}</label><input type="number" id="fc-w" value="50" min="1" step="1" inputmode="numeric"></div>
+      </div>
+      <p class="px-wet-out" aria-live="polite" id="fc-o"></p>
+      <script type="application/json" id="fc-d">{{ F.calc | tojson }}</script>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},D=JSON.parse($('fc-d').textContent),th={{ 'true' if th else 'false' }};
+      function n(x,d){return x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}
+      function run(){var m=($('fc-f').value||'').replace(/\s/g,'').match(/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/),p=+$('fc-p').value,w=+$('fc-w').value,o=$('fc-o');
+        if(!m||!(p>0)||!(w>0)){o.textContent=th?'ใส่สูตรแบบ 16-20-0 ราคา และน้ำหนักกระสอบ':'Enter a formula like 16-20-0, a price and a bag size.';return}
+        var N=+m[1],P=+m[2],K=+m[3],tot=N+P+K;if(!tot||tot>100){o.textContent='–';return}
+        var per=p/(w*tot/100),key=[m[1],m[2],m[3]].join('-'),ref=D.formulas[key],s=[];
+        s.push((th?'ธาตุอาหารรวม ':'Total nutrient ')+n(w*tot/100,1)+(th?' กก. ต่อกระสอบ · ':' kg per bag · ')+'<b>'+n(per,1)+(th?' บาท ต่อธาตุอาหาร 1 กก.':' baht per kg of nutrient')+'</b>');
+        if(ref){var ref50=ref*w/50,d=(p/ref50-1)*100;s.push(th?('ราคากลางที่เราพบสำหรับสูตรนี้ '+n(ref50,0)+' บาท ('+(Math.abs(d)<2?'ใกล้เคียง':(d>0?'แพงกว่า ':'ถูกกว่า ')+n(Math.abs(d),0)+'%')+')'+(w!==50?' เทียบตามน้ำหนัก กระสอบเล็กมักแพงกว่าต่อกิโล':''))
+          :('Median we found for this formula: '+n(ref50,0)+' baht ('+(Math.abs(d)<2?'about the same':n(Math.abs(d),0)+'% '+(d>0?'dearer':'cheaper'))+')'+(w!==50?', scaled by weight; small bags usually cost more per kg':'')));}
+        if(N&&!P&&!K&&D.urea_n)s.push(th?('ไนโตรเจนจากยูเรียราคา '+n(D.urea_n,1)+' บาท/กก.'):('Nitrogen from urea costs '+n(D.urea_n,1)+' baht/kg'));
+        o.innerHTML=s.join('<br>');}
+      ['fc-f','fc-p','fc-w'].forEach(function(i){$(i).addEventListener('input',run)});run();})();
+      </script>
+    </div>
+
+    <h2 id="all-prices">{{ 'ราคาปุ๋ยทุกสูตรที่พบ' if th else 'Every formula we found' }}</h2>
+    <p class="fine">{{ 'ราคาต่อกระสอบ 50 กก. เว้นแต่ระบุ ⚠ คือราคาที่ต่างจากราคากลางของสูตรเดียวกันมาก อาจอ่านป้ายผิดหรือเป็นสินค้าพิเศษ จึงไม่นำมาคิดราคากลาง' if th else 'Per 50 kg bag unless marked. ⚠ marks a price far from the same formula\'s median: possibly a misread board or a special product, so it is left out of the median.' }}</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ตารางราคาปุ๋ย' if th else 'Fertilizer price table' }}"><table class="px-table fert-table">
+      <thead><tr><th scope="col">{{ 'สูตร' if th else 'Formula' }}</th><th scope="col" class="num">{{ 'ราคากลาง' if th else 'Median' }}</th><th scope="col" class="num">{{ 'ต่ำสุด–สูงสุด' if th else 'Range' }}</th>
+        <th scope="col" class="num">{{ 'บาท/กก. ธาตุอาหาร' if th else 'Baht/kg nutrient' }}</th><th scope="col">{{ 'ยี่ห้อและราคา' if th else 'Brands and prices' }}</th></tr></thead>
+      <tbody>
+      {% for f in F.formulas %}
+      <tr><th scope="row">{{ f.npk }}{% if f.npk in NAME %}<br><small>{{ fname(f.npk) }}</small>{% endif %}</th>
+        <td class="num">{{ f.median | pxnum }}</td>
+        <td class="num">{% if f.count > 1 %}{{ f.low | pxnum }}–{{ f.high | pxnum }}{% endif %}</td>
+        <td class="num">{{ '%.1f' % f.per_nutrient if f.per_nutrient else '' }}</td>
+        <td class="fert-brands">{% for i in f['items'] %}<span{% if i.flag %} class="fert-flag" title="{{ 'ต่างจากราคากลางมาก' if th else 'Far from the median' }}"{% endif %}>{{ brand(i) }} {{ i.price | pxnum }}{% if i.size_kg != 50 %} ({{ i.size_kg }} {{ 'กก.' if th else 'kg' }}){% endif %}{% if i.flag %} ⚠{% endif %}</span>{% if not loop.last %} · {% endif %}{% endfor %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+
+    {% if charts.world %}
+    <div class="card px-card">
+      <h2>{{ 'ราคาปุ๋ยในตลาดโลก' if th else 'World fertilizer prices' }}</h2>
+      <p class="fine">{{ 'ดอลลาร์สหรัฐต่อตัน รายเดือน จากธนาคารโลก ไทยนำเข้าแม่ปุ๋ยเกือบทั้งหมด ราคาหน้าร้านจึงตามราคาโลกไปด้วย' if th else 'US dollars per tonne, monthly, World Bank. Thailand imports almost all of its fertilizer raw materials, so shop prices follow world prices.' }}</p>
+      {{ charts.world | safe }}
+      <ul class="fert-world">
+        {% for k in ['urea', 'dap', 'kcl'] if k in F.world %}{% set w = F.world[k] %}
+        <li><b>{{ w.th if th else w.en }}</b>: {{ w.usd | pxnum }} {{ 'ดอลลาร์/ตัน' if th else 'USD/t' }} ({{ w.date | pxdate(lang) }}){% if w.thb_bag %} ≈ {{ w.thb_bag | pxnum }} {{ 'บาทต่อ 50 กก. ก่อนค่าขนส่ง ภาษี และกำไร' if th else 'baht per 50 kg before freight, duties and margins' }}{% endif %}{% if w.y1 is not none %} · {{ '1 ปี' if th else '1 yr' }} {{ w.y1 | pxpct }}{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if F.market %}
+    <h2>{{ 'ความเคลื่อนไหวล่าสุด' if th else 'What is happening' }}</h2>
+    <ul class="fert-news">
+      {% for m in F.market %}
+      <li><b>{{ mdate(m.date) }}</b> · {{ m.th if th else m.en }} <span class="fine">{% for s in m.sources %}<a href="{{ s[1] }}" rel="noopener">{{ s[0] }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</span></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="card px-cite">
+      <h2>{{ 'นำข้อมูลนี้ไปใช้' if th else 'Use this data' }}</h2>
+      <p>{{ 'ใช้ได้ฟรีเมื่อระบุแหล่งที่มา อ้างอิงเป็น' if th else 'Free to use with credit. Cite as' }}: <cite>rice.ag, “{{ 'ราคาปุ๋ยวันนี้' if th else 'Fertilizer prices in Thailand today' }}”, {{ base_url }}{{ url }}</cite></p>
+      <p class="fine"><a href="/static/data/fertilizer.json">{{ 'ดาวน์โหลดข้อมูล (JSON)' if th else 'Download the data (JSON)' }}</a></p>
+    </div>
+
+    <div class="narrow">
+      <h2>{{ 'อ่านตัวเลขเหล่านี้อย่างไร' if th else 'How to read these numbers' }}</h2>
+      {% if th %}
+      <p>สูตรปุ๋ย เช่น 16-20-0 คือร้อยละของไนโตรเจน (N) ฟอสเฟต (P₂O₅) และโพแทส (K₂O) ตามน้ำหนัก กระสอบ 50 กก. สูตร 16-20-0 จึงมีไนโตรเจน 8 กก. และฟอสเฟต 10 กก. ที่เหลือเป็นสารตัวเติม</p>
+      <p>ราคาหน้าร้านต่างกันตามพื้นที่ ค่าขนส่ง ยี่ห้อ และการซื้อเงินสดหรือเงินเชื่อ ตรวจราคาแนะนำของจังหวัดคุณได้ที่<a href="https://www.dit.go.th/" rel="noopener">กรมการค้าภายใน</a> ข้อมูลนี้เพื่อการอ้างอิง ไม่ใช่คำแนะนำการใส่ปุ๋ย ควรตรวจดินและปรึกษาเจ้าหน้าที่เกษตรก่อนเลือกสูตร</p>
+      {% else %}
+      <p>A formula such as 16-20-0 is the percentage by weight of nitrogen (N), phosphate (P₂O₅) and potash (K₂O). A 50 kg bag of 16-20-0 therefore holds 8 kg of nitrogen and 10 kg of phosphate; the rest is carrier.</p>
+      <p>Shop prices vary with area, transport, brand and cash or credit terms. Check your province's recommended retail price at the <a href="https://www.dit.go.th/" rel="noopener">Department of Internal Trade</a>. This is price information, not fertilizer advice: test your soil and ask your local agriculture office before choosing a formula.</p>
+      {% endif %}
+      <h2>{{ 'ราคาข้าว' if th else 'Rice prices' }}</h2>
+      {{ hub_links(hubs, prefix, lang) }}
+    </div>
+  </div>
+</section>

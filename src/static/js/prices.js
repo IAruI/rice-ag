@@ -219,6 +219,7 @@
 
   function table(host) {
     var S = state.data.series, wrap = el('div', 'table-scroll'), tb = el('table', 'px-table');
+    wrap.tabIndex = 0; wrap.setAttribute('role', 'region'); wrap.setAttribute('aria-label', T.series);
     var head = el('tr');
     [T.series, T.basis, T.usd, T.thb, T.date, T.m1, T.y1, T.src].forEach(function (h, i) { var th = el('th', i >= 2 && i !== 4 && i !== 7 ? 'num' : null, h); th.scope = 'col'; head.appendChild(th); });
     var thead = el('thead'); thead.appendChild(head); tb.appendChild(thead);
