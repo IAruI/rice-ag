@@ -50,7 +50,7 @@ def onibars(history, w=280, h=56):
     return ''.join(out)
 
 env.filters.update(fdate=fdate, spark=spark, onibars=onibars,
-                   pxnum=pp.num, pxpct=pp.pct,
+                   pxnum=pp.num, pxpct=pp.pct, pxkg=pp.kg,
                    pxdate=lambda d, lang='en': pp.fdate(d if isinstance(d, datetime.date) else datetime.date.fromisoformat(str(d)[:10]), lang),
                    pxsrc=lambda r, lang='en': pp.srcnames(r, lang))
 PRICES = pp.load_prices()

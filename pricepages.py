@@ -97,6 +97,16 @@ def num(v):
     return f'{v:,.0f}' if v is not None else '–'
 
 
+def kg(v):
+    """Baht per tonne -> baht per kilo, the unit Thai farmers ask about."""
+    return f'{v / 1000:,.2f}' if v is not None else '–'
+
+
+class _Fmt(dict):
+    def __missing__(self, k):
+        return '–'
+
+
 def pct(v):
     if v is None:
         return '–'
@@ -141,7 +151,7 @@ def price_sentence(st, lang, baht=False):
     d = when(st, lang)
     monthly = st['freq'] == 'monthly'
     if lang == 'th':
-        price = f"{num(st['thb'])} บาทต่อตัน (ราว {num(st['usd'])} ดอลลาร์)" if baht and st['thb'] else f"{num(st['usd'])} ดอลลาร์สหรัฐต่อตัน"
+        price = f"กิโลกรัมละ {kg(st['thb'])} บาท ({num(st['thb'])} บาทต่อตัน ราว {num(st['usd'])} ดอลลาร์)" if baht and st['thb'] else f"{num(st['usd'])} ดอลลาร์สหรัฐต่อตัน"
         basis = 'ราคาส่งออก FOB' if st['export'] else 'ราคาในประเทศ'
         out = f"{name} {basis} {price} {'ในเดือน' if monthly else 'ณ วันที่'} {d}"
         moves = [x for x in (m1 and f'{m1} ในรอบเดือน', y1 and f'{y1} ในรอบปี') if x]
@@ -150,7 +160,7 @@ def price_sentence(st, lang, baht=False):
             out += f" ตัวเลขนี้เป็นข้อมูลล่าสุดที่เผยแพร่ ({srcnames(st, lang)} เผยแพร่ช้ากว่าปัจจุบันหลายเดือน)"
         return out
     basis = 'FOB export' if st['export'] else 'domestic price'
-    price = (f"฿{num(st['thb'])} per tonne ({basis}, about ${num(st['usd'])})" if baht and st['thb']
+    price = (f"฿{kg(st['thb'])} per kg, or ฿{num(st['thb'])} per tonne ({basis}, about ${num(st['usd'])})" if baht and st['thb']
              else f"${num(st['usd'])} per tonne ({basis})")
     out = f"{name} was {price} {'in' if monthly else 'on'} {d}"
     moves = [x for x in (m1 and f'{m1} over the month', y1 and f'{y1} over the year') if x]
@@ -228,7 +238,7 @@ def svg_chart(data, ids, baht=False, years=5, label='', lang='en'):
     ids = [i for i in ids if i in S and S[i].get('d')]
     if not ids:
         return ''
-    W, H, M = 760, 340, dict(l=74, r=34, t=26, b=34)
+    W, H, M = 760, 340, dict(l=96, r=34, t=26, b=34)
     tmax = max(S[i]['d'][-1] for i in ids)
     tmin = tmax - int(years * 365.25)
     lines = []
@@ -303,8 +313,8 @@ HUBS = [
          chart=['dit_paddy', 'dit_paddy_hm', 'dit_paddy_pathum', 'dit_paddy_glu'],
          name={'en': 'Thai paddy', 'th': 'ข้าวเปลือกไทย'},
          h1={'en': 'Thai paddy prices today', 'th': 'ราคาข้าวเปลือกวันนี้'},
-         title={'en': 'Thai paddy price today: white paddy ฿{pt}/t, Hom Mali, glutinous, Pathum | rice.ag',
-                'th': 'ราคาข้าวเปลือกวันนี้: ข้าวเปลือกเจ้า {pt} บาท/ตัน หอมมะลิ ข้าวเหนียว ปทุมธานี | rice.ag'},
+         title={'en': 'Thai paddy price today per kg: white ฿{kg_dit_paddy}, Hom Mali ฿{kg_dit_paddy_hm}, glutinous ฿{kg_dit_paddy_glu} | rice.ag',
+                'th': 'ราคาข้าวเปลือกวันนี้ กิโลละกี่บาท: เจ้า {kg_dit_paddy} หอมมะลิ {kg_dit_paddy_hm} เหนียว {kg_dit_paddy_glu} บาท/กก. | rice.ag'},
          desc={'en': 'Daily Thai paddy and wholesale rice prices from the Department of Internal Trade: white paddy ฿{pt} per tonne ({d}), Hom Mali, Pathum Thani and glutinous paddy, Bangkok wholesale. Baht and US dollars.',
                'th': 'ราคาข้าวเปลือกและข้าวสารขายส่งรายวันจากกรมการค้าภายใน: ข้าวเปลือกเจ้า {pt} บาท/ตัน ({d}) ข้าวเปลือกหอมมะลิ ปทุมธานี ข้าวเหนียว และราคาขายส่ง กทม. เป็นบาทและดอลลาร์'},
          body={'en': ["These are Thailand's official daily paddy (unmilled rice) and Bangkok wholesale prices, published by the Department of Internal Trade on business days. Paddy prices are what mills and traders pay farmers, so they move before export prices do.",
@@ -323,8 +333,8 @@ HUBS = [
          series=['dit_paddy_hm', 'dit_hm', 'th_hm', 'dit_paddy'], chart=['dit_paddy_hm', 'dit_paddy'],
          name={'en': 'Hom Mali paddy', 'th': 'ข้าวเปลือกหอมมะลิ'},
          h1={'en': 'Hom Mali paddy price today', 'th': 'ราคาข้าวเปลือกหอมมะลิวันนี้'},
-         title={'en': 'Hom Mali paddy price today: ฿{pt}/t, Thai jasmine paddy, daily | rice.ag',
-                'th': 'ราคาข้าวเปลือกหอมมะลิวันนี้: {pt} บาท/ตัน อัปเดตทุกวัน | rice.ag'},
+         title={'en': 'Hom Mali paddy price today: ฿{kg}/kg (฿{pt}/t), Thai jasmine paddy, daily | rice.ag',
+                'th': 'ราคาข้าวเปลือกหอมมะลิวันนี้: กิโลกรัมละ {kg} บาท ({pt} บาท/ตัน) | rice.ag'},
          desc={'en': 'Daily Thai Hom Mali (jasmine) paddy price from the Department of Internal Trade: ฿{pt} per tonne ({d}), with Bangkok wholesale Hom Mali, the export price and 5 years of history.',
                'th': 'ราคาข้าวเปลือกหอมมะลิรายวันจากกรมการค้าภายใน {pt} บาท/ตัน ({d}) พร้อมราคาข้าวสารหอมมะลิขายส่ง กทม. ราคาส่งออก และกราฟย้อนหลัง 5 ปี'},
          body={'en': ["This is the official daily reference price for Hom Mali (jasmine) paddy, published by Thailand's Department of Internal Trade on business days. It is what mills and traders pay for dry Hom Mali paddy, so it is the number farmers check before selling.",
@@ -339,6 +349,26 @@ HUBS = [
                          'ความต้องการส่งออกข้าวหอมมะลิไทย โดยเฉพาะจากสหรัฐฯ จีน และฮ่องกง',
                          'ความชื้น: ข้าวเปลือกสดจากรถเกี่ยวจะได้ราคาต่ำกว่าราคาอ้างอิงข้าวแห้งนี้',
                          'มาตรการช่วยเหลือชาวนาผู้ปลูกข้าวหอมมะลิของรัฐในบางฤดู']}),
+    dict(slug='glutinous-paddy', kind='type', primary='dit_paddy_glu', baht=True,
+         series=['dit_paddy_glu', 'dit_glu', 'th_glu', 'dit_paddy'], chart=['dit_paddy_glu', 'dit_paddy'],
+         name={'en': 'Glutinous paddy', 'th': 'ข้าวเปลือกเหนียว'},
+         h1={'en': 'Glutinous (sticky) paddy price today', 'th': 'ราคาข้าวเปลือกเหนียววันนี้'},
+         title={'en': 'Glutinous paddy price today: ฿{kg}/kg (฿{pt}/t), Thai sticky rice paddy, daily | rice.ag',
+                'th': 'ราคาข้าวเปลือกเหนียววันนี้: กิโลกรัมละ {kg} บาท ({pt} บาท/ตัน) | rice.ag'},
+         desc={'en': 'Daily Thai glutinous (sticky) paddy price from the Department of Internal Trade: ฿{kg} per kg, ฿{pt} per tonne ({d}), with RD6 Bangkok wholesale, the export price and 5 years of history.',
+               'th': 'ราคาข้าวเปลือกเหนียวเมล็ดยาวรายวันจากกรมการค้าภายใน กิโลกรัมละ {kg} บาท ({pt} บาท/ตัน ณ {d}) พร้อมราคาข้าวสารเหนียว กข.6 ขายส่ง กทม. ราคาส่งออก และกราฟย้อนหลัง 5 ปี'},
+         body={'en': ["This is the official daily reference price for long-grain glutinous (sticky) paddy, published by Thailand's Department of Internal Trade on business days. It is what mills and traders pay for dry glutinous paddy.",
+                      "Glutinous rice is grown mainly in the north and northeast, and much of it is eaten by the families who grow it. That makes the marketable supply small, so the price can swing more than white paddy after a dry season."],
+               'th': ['ราคาอ้างอิงรายวันอย่างเป็นทางการของข้าวเปลือกเหนียวเมล็ดยาว จากกรมการค้าภายใน ประกาศทุกวันทำการ เป็นราคาที่โรงสีและพ่อค้ารับซื้อข้าวเปลือกเหนียวแห้ง',
+                      'ข้าวเหนียวปลูกมากในภาคเหนือและภาคอีสาน และส่วนใหญ่เก็บไว้บริโภคในครัวเรือน ข้าวที่เหลือขายจึงมีน้อย ราคาจึงแกว่งได้มากกว่าข้าวเปลือกเจ้าในปีที่แล้ง']},
+         drivers={'en': ["Wet-season rainfall in the north and northeast.",
+                         "How much farmers keep for their own use after a weak harvest.",
+                         "Demand from China, Laos and Thai food processors.",
+                         "Moisture: wet paddy from the harvester is bought below this dry reference price."],
+                  'th': ['ปริมาณฝนฤดูนาปีในภาคเหนือและภาคอีสาน',
+                         'ปริมาณที่เกษตรกรเก็บไว้บริโภคเองหลังปีที่ผลผลิตไม่ดี',
+                         'ความต้องการจากจีน ลาว และผู้ผลิตอาหารในไทย',
+                         'ความชื้น: ข้าวเปลือกสดจากรถเกี่ยวจะได้ราคาต่ำกว่าราคาอ้างอิงข้าวแห้งนี้']}),
     dict(slug='vietnam', kind='origin', primary='vn_5', series=['vn_5', 'vn_25', 'vn_jas'], chart=['vn_5', 'vn_25', 'vn_jas'],
          name={'en': 'Vietnam', 'th': 'เวียดนาม'},
          h1={'en': 'Vietnam rice prices today', 'th': 'ราคาข้าวเวียดนามวันนี้'},
@@ -526,12 +556,17 @@ def hub_fill(h, data, lang):
     """Title, description and the facts that go into a hub page, with numbers filled in."""
     st = stats(data, h['primary'])
     rows = [x for x in (stats(data, k) for k in h['series']) if x]
-    fmt = dict(p=num(st['usd']) if st else '–', pt=num(st['thb']) if st and st['thb'] else '–',
-               d=when(st, lang) if st else '')
-    title = h['title'][lang].format(**fmt)
-    desc = h['desc'][lang].format(**fmt)
+    fmt = _Fmt(p=num(st['usd']) if st else '–', pt=num(st['thb']) if st and st['thb'] else '–',
+               kg=kg(st['thb']) if st and st['thb'] else '–', d=when(st, lang) if st else '')
+    for r in rows:
+        if r['thb']:
+            fmt['kg_' + r['id']] = kg(r['thb'])
+    title = h['title'][lang].format_map(fmt)
+    desc = h['desc'][lang].format_map(fmt)
     lead = price_sentence(st, lang, baht=h.get('baht')) if st else ''
-    return dict(title=title, desc=desc, lead=lead, rows=rows, primary=st,
+    # baht hubs: one big per-kilo card per domestic paddy price, for farmers checking on a phone
+    cards = [r for r in rows if h.get('baht') and r['paddy'] and r['thb'] and not r['export']]
+    return dict(title=title, desc=desc, lead=lead, rows=rows, primary=st, cards=cards,
                 chart=svg_chart(data, h['chart'], baht=h.get('baht', False), lang=lang,
                                 label=h['h1'][lang]))
 
