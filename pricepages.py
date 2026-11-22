@@ -232,13 +232,13 @@ def _nice(lo, hi, n=5):
     return out
 
 
-def svg_chart(data, ids, baht=False, years=5, label='', lang='en'):
+def svg_chart(data, ids, baht=False, years=5, label='', lang='en', unit=None):
     """A static, accessible multi-line SVG of the last `years` years (USD, or baht)."""
     S = data['series']
     ids = [i for i in ids if i in S and S[i].get('d')]
     if not ids:
         return ''
-    W, H, M = 760, 340, dict(l=96, r=34, t=26, b=34)
+    W, H, M = 760, 350, dict(l=96, r=34, t=40, b=34)
     tmax = max(S[i]['d'][-1] for i in ids)
     tmin = tmax - int(years * 365.25)
     lines = []
@@ -266,12 +266,15 @@ def svg_chart(data, ids, baht=False, years=5, label='', lang='en'):
         o.append(f'<line class="px-grid" x1="{M["l"]}" x2="{W - M["r"]}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>'
                  f'<text class="px-tick" x="{M["l"] - 8}" y="{Y(v) + 4:.1f}" text-anchor="end">{num(v)}</text>')
     y0 = day(tmin).year + 1
+    step = 1 if years <= 6 else 2 if years <= 12 else 5  # keep year labels readable on phones
     for yr in range(y0, day(tmax).year + 1):
+        if (day(tmax).year - yr) % step:
+            continue
         t = (datetime.date(yr, 1, 1) - EPOCH).days
         o.append(f'<text class="px-tick" x="{X(t):.1f}" y="{H - 8}" text-anchor="middle">{yr + 543 if lang == "th" else yr}</text>')
     o.append(f'<line class="px-axis" x1="{M["l"]}" x2="{W - M["r"]}" y1="{H - M["b"]}" y2="{H - M["b"]}"/>')
-    unit = ('บาท/ตัน' if lang == 'th' else 'THB/t') if baht else ('USD/ตัน' if lang == 'th' else 'USD/t')
-    o.append(f'<text class="px-tick" x="4" y="12">{unit}</text>')
+    unit = unit or (('บาท/ตัน' if lang == 'th' else 'THB/t') if baht else ('USD/ตัน' if lang == 'th' else 'USD/t'))
+    o.append(f'<text class="px-tick" x="4" y="22">{unit}</text>')
     for k, sid, pts in lines:
         d = ''.join(f"{'L' if j else 'M'}{X(t):.1f} {Y(v):.1f}" for j, (t, v) in enumerate(pts))
         o.append(f'<path class="px-line" style="stroke:var(--s{k + 1})" d="{d}"/>')
@@ -281,6 +284,26 @@ def svg_chart(data, ids, baht=False, years=5, label='', lang='en'):
     legend = ''.join(f'<li><i style="background:var(--s{k + 1})"></i>{(S[sid]["th"] if lang == "th" else S[sid]["en"])}</li>'
                      for k, sid, _ in lines)
     return ''.join(o) + f'<ul class="px-key">{legend}</ul>'
+
+
+def fert_chart(fert, keys, lang, years=10):
+    """World fertilizer prices (USD/t) from fertilizer.json, drawn with svg_chart."""
+    S = {}
+    for k in keys:
+        w = (fert.get('world') or {}).get(k)
+        if w and w.get('hist'):
+            S[k] = dict(en=w['en'], th=w['th'], d=[(datetime.date.fromisoformat(a) - EPOCH).days for a, _ in w['hist']],
+                        v=[b for _, b in w['hist']])
+    return svg_chart({'series': S}, keys, years=years, lang=lang, label='Fertilizer prices') if S else ''
+
+
+def paddy_bag_chart(fert, lang, years=10):
+    h = (fert.get('paddy') or {}).get('world_hist') or []
+    if len(h) < 12:
+        return ''
+    S = {'x': dict(en='kg of white paddy per 50 kg of urea (world price)', th='ข้าวเปลือกเจ้า (กก.) ต่อยูเรีย 1 กระสอบ (ราคาโลก)',
+                   d=[(datetime.date.fromisoformat(a) - EPOCH).days for a, _ in h], v=[b for _, b in h])}
+    return svg_chart({'series': S}, ['x'], years=years, lang=lang, label=S['x'][lang], unit='กก.' if lang == 'th' else 'kg')
 
 
 # ---------------------------------------------------------------- hub pages
