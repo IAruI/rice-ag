@@ -274,3 +274,49 @@ def world_fill(wp, F):
     return dict(wp=wp, w=w, date=last_d, usd=last_v, m1=round((last_v / m1 - 1) * 100, 1) if m1 else None, y1=w.get('y1'),
                 ath=hi, atl=lo, first=h[0][0], months=list(reversed(h[-24:])), years=yrows, thai=th_f,
                 avg10=round(statistics.mean(v for a, v in h if int(a[:4]) > y - 10)))
+
+
+def seasonality(F, key, start=2006, end=None):
+    """Average % gap between each calendar month and its year's average, over complete years [start, end].
+    Small, noisy numbers: shown with the spread so nobody reads more into them than is there."""
+    import statistics
+    h = ((F.get('world') or {}).get(key) or {}).get('hist') or []
+    years = {}
+    for d, v in h:
+        years.setdefault(int(d[:4]), {})[int(d[5:7])] = v
+    full = sorted(y for y, ms in years.items() if len(ms) == 12 and y >= start and (end is None or y <= end))
+    if len(full) < 8:
+        return None
+    dev = {m: [] for m in range(1, 13)}
+    for y in full:
+        avg = statistics.mean(years[y].values())
+        for m, v in years[y].items():
+            dev[m].append((v / avg - 1) * 100)
+    rows = [dict(m=m, avg=round(statistics.mean(dev[m]), 1), below=sum(1 for x in dev[m] if x < 0)) for m in range(1, 13)]
+    lo = min(rows, key=lambda r: r['avg']); hi = max(rows, key=lambda r: r['avg'])
+    return dict(rows=rows, years=len(full), first=full[0], last=full[-1], low=lo, high=hi)
+
+
+def season_svg(s, lang):
+    """A 12-bar chart of the monthly pattern (bars below zero = cheaper than the year's average)."""
+    if not s:
+        return ''
+    TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+    EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    W, H, L, T, B = 760, 260, 70, 16, 34
+    m = max(abs(r['avg']) for r in s['rows']) or 1
+    m = (int(m) // 2 + 1) * 2
+    bw = (W - L - 10) / 12
+    Y = lambda v: T + (1 - (v + m) / (2 * m)) * (H - T - B)
+    o = [f'<svg class="px-svg px-static" viewBox="0 0 {W} {H}" role="img" aria-label="{"รูปแบบราคาตามเดือน" if lang == "th" else "Price pattern by month"}">']
+    for v in (-m, 0, m):
+        o.append(f'<line class="px-grid" x1="{L}" x2="{W - 10}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>'
+                 f'<text class="px-tick" x="{L - 6}" y="{Y(v) + 4:.1f}" text-anchor="end">{(format(v, "+d") if v else "0")}%</text>')
+    for i, r in enumerate(s['rows']):
+        x = L + i * bw + bw * 0.15
+        y0, y1 = Y(0), Y(r['avg'])
+        cls = 'fs-lo' if r['avg'] < 0 else 'fs-hi'
+        o.append(f'<rect class="{cls}" x="{x:.1f}" y="{min(y0, y1):.1f}" width="{bw * 0.7:.1f}" height="{abs(y1 - y0):.1f}"><title>{(TH if lang == "th" else EN)[i]} {r["avg"]:+.1f}%</title></rect>')
+        o.append(f'<text class="px-tick fs-m" x="{x + bw * 0.35:.1f}" y="{H - 10}" text-anchor="middle">{(TH if lang == "th" else EN)[i]}</text>')
+    o.append('</svg>')
+    return ''.join(o)

@@ -17,6 +17,11 @@
     <p class="fine">{% if th %}ราคาหน้าร้านจากป้ายราคาร้านจำหน่ายปุ๋ย {{ F.survey.shops }} ร้าน สำรวจเดือน{{ F.survey.month_th }}{% if F.survey.area_th %} ({{ F.survey.area_th }}){% endif %} · ราคาโลกจากธนาคารโลก{% else %}Shop prices from the price boards of {{ F.survey.shops }} farm-supply shops, surveyed {{ F.survey.month_en }}{% if F.survey.area_en %} ({{ F.survey.area_en }}){% endif %} · world prices from the World Bank{% endif %}</p>
 
     {{ fert_nav(prefix, lang, 'main') }}
+    <p class="fert-toc fine"><b>{{ 'ในหน้านี้' if th else 'On this page' }}:</b>
+      <a href="#nutrient-cost">{{ 'ธาตุอาหารถูกที่สุด' if th else 'Cheapest nutrient' }}</a> · <a href="#fert-calc">{{ 'คำนวณความคุ้ม' if th else 'Bag calculator' }}</a> ·
+      <a href="#all-prices">{{ 'ทุกสูตร' if th else 'All formulas' }}</a> · <a href="#world">{{ 'ราคาโลก' if th else 'World prices' }}</a> ·
+      <a href="#parity">{{ 'ต้นทุนนำเข้า' if th else 'Import cost' }}</a> · <a href="#season">{{ 'เดือนไหนถูก' if th else 'Cheapest month' }}</a> ·
+      <a href="#brands">{{ 'ยี่ห้อ' if th else 'Brands' }}</a> · <a href="#faq">{{ 'คำถาม' if th else 'Questions' }}</a> · <a href="#report">{{ 'แจ้งราคา' if th else 'Report a price' }}</a></p>
 
     <ul class="px-kg" aria-label="{{ 'ราคาปุ๋ยสูตรหลักต่อกระสอบ' if th else 'Main formulas, price per bag' }}">
       {% for f in F.key %}
@@ -176,6 +181,16 @@
       $('ip-x').addEventListener('change',pick);['ip-p','ip-f','ip-r','ip-l','ip-s'].forEach(function(i){$(i).addEventListener('input',run)});pick();})();
       </script>
       <p class="fine">{{ 'ราคาโลกจากธนาคารโลกเป็นราคา FOB ของแหล่งผลิตหลัก ตรวจสอบภาษีและค่าธรรมเนียมนำเข้ากับกรมศุลกากร เครื่องคำนวณนี้ไม่ได้รวมไว้' if th else 'World Bank prices are FOB at major origins. Check duties and fees with Thai Customs; this calculator assumes none.' }}</p>
+    </div>
+    {% endif %}
+
+    {% if season %}
+    {% set MN = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'] if th else ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+    <div class="card px-card" id="season">
+      <h2>{{ 'ยูเรียถูกที่สุดเดือนไหนของปี' if th else 'Which month urea is cheapest' }}</h2>
+      <p>{% if th %}ในช่วง {{ season.years }} ปี ({{ season.first + 543 }}–{{ season.last + 543 }}) ราคายูเรียโลกเดือน{{ MN[season.low.m - 1] }}ต่ำกว่าค่าเฉลี่ยของปีนั้นโดยเฉลี่ย {{ '%.1f' % (season.low.avg | abs) }}% และต่ำกว่าค่าเฉลี่ยใน {{ season.low.below }} จาก {{ season.years }} ปี เดือนที่แพงที่สุดโดยเฉลี่ยคือ{{ MN[season.high.m - 1] }} (+{{ '%.1f' % season.high.avg }}%){% else %}Over {{ season.years }} years ({{ season.first }}–{{ season.last }}), world urea in {{ MN[season.low.m - 1] }} averaged {{ '%.1f' % (season.low.avg | abs) }}% below that year's average, and was below it in {{ season.low.below }} of {{ season.years }} years. The dearest month on average was {{ MN[season.high.m - 1] }} (+{{ '%.1f' % season.high.avg }}%).{% endif %}</p>
+      {{ charts.season | safe }}
+      <p class="fine">{{ 'เป็นค่าเฉลี่ยระยะยาว ไม่ใช่การพยากรณ์ ปีที่ราคาพุ่งหรือดิ่งแรงจะกลบรูปแบบนี้ได้ ราคาหน้าร้านในไทยมักไม่เปลี่ยนตามราคาโลกทันที' if th else 'A long-run average, not a forecast: a year with a big spike or slump swamps the pattern. Thai shop prices usually follow world prices with a delay.' }}</p>
     </div>
     {% endif %}
 

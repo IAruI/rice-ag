@@ -403,7 +403,7 @@ def main():
                 _paddy = (FERT.get('paddy') or {}).get('baht_per_kg')
                 ctx.update(F=dict(FERT), fert=dict(FERT, lead=fert_lead(FERT, lang)), fpages=FPAGES,
                            fpage_keys=[x['npk'] for x in FPAGES], paddy_kg=_paddy, brands=BRANDS, afford=AFFORD,
-                           faqs=fp.faq(FERT, lang, BLENDT, RICE, AFFORD), worlds=WORLDS)
+                           faqs=fp.faq(FERT, lang, BLENDT, RICE, AFFORD), worlds=WORLDS, season=fp.seasonality(FERT, 'urea'))
             if p['key'] == 'fbrand':
                 ctx.update(brand=p['brand'])
             if p['key'] == 'fworld':
@@ -422,7 +422,8 @@ def main():
                                               '10y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=10),
                                               'all': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=27)},
                                        paddy_bag=pp.paddy_bag_chart(FERT, lang),
-                                       afford=afford_chart(AFFORD, lang)))
+                                       afford=afford_chart(AFFORD, lang),
+                                       season=fp.season_svg(fp.seasonality(FERT, 'urea'), lang)))
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):

@@ -344,3 +344,6 @@ details.adv summary{cursor:pointer;font-weight:600;font-size:.92rem;margin-top:8
 .fert-others a{border:1px solid var(--line);border-radius:999px;padding:4px 12px;text-decoration:none;font-size:.9rem}
 .fert-nav{margin:12px 0}
 .fert-mini{padding:10px 14px;margin:12px 0;font-size:.92rem}
+.fs-lo{fill:var(--s3)}.fs-hi{fill:var(--s2)}
+.fert-toc{line-height:1.9}
+@media (max-width:600px){.px-static .fs-m{font-size:17px}}

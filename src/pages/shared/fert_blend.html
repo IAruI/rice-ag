@@ -13,7 +13,7 @@
     <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ตารางผสมปุ๋ย' if th else 'Blend table' }}"><table class="px-table">
       <thead><tr><th scope="col">{{ 'สูตร' if th else 'Formula' }}</th><th scope="col" class="num">DAP</th><th scope="col" class="num">{{ 'ยูเรีย' if th else 'Urea' }}</th><th scope="col" class="num">{{ 'โพแทส' if th else 'Potash' }}</th><th scope="col" class="num">{{ 'ตัวเติม' if th else 'Filler' }}</th>
         <th scope="col" class="num">{{ 'ค่าผสม' if th else 'Blend cost' }}</th><th scope="col" class="num">{{ 'ซื้อสำเร็จ' if th else 'Ready-made' }}</th><th scope="col" class="num">{{ 'ต่างกัน' if th else 'Difference' }}</th></tr></thead>
-      <tbody>{% for r in B.rows %}<tr><th scope="row"><a href="{{ prefix }}/fertilizer/{{ r.npk }}/">{{ r.npk }}</a></th>
+      <tbody>{% for r in B.rows %}<tr><th scope="row">{% if r.npk in fpage_keys %}<a href="{{ prefix }}/fertilizer/{{ r.npk }}/">{{ r.npk }}</a>{% else %}{{ r.npk }}{% endif %}</th>
         <td class="num">{{ '%g' % r.dap }}</td><td class="num">{{ '%g' % r.urea }}</td><td class="num">{{ '%g' % r.mop }}</td><td class="num">{{ '%g' % r.filler }}</td>
         <td class="num"><b>{{ r.per_bag | pxnum }}</b></td><td class="num">{{ r.shop | pxnum if r.shop else '–' }}</td>
         <td class="num">{% if r.saving is not none %}{{ ('−' if r.saving > 0 else '+') }}{{ (r.saving | abs) | pxnum }}{% endif %}</td></tr>{% endfor %}</tbody>
