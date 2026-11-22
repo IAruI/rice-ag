@@ -188,6 +188,45 @@ def jsonld(p, lang, url):
                       "image": BASE_URL + "/static/img/og.png", "isPartOf": {"@id": BASE_URL + "/#site"}})
     return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
 
+def write_brief_feeds(brief):
+    """/brief/feed.xml and /th/brief/feed.xml. Written even when the brief is missing, so the URL never 404s."""
+    from xml.sax.saxutils import escape
+    import email.utils
+    names = {'oni': ('El Niño (ONI)', 'เอลนีโญ (ONI)'), 'fob': ('Thai 5% export price', 'ราคาส่งออกข้าวขาว 5%'),
+             'paddy': ('Thai paddy price', 'ราคาข้าวเปลือก'), 'fx': ('Baht (USD/THB)', 'ค่าเงินบาท'),
+             'india': ("India's export policy", 'นโยบายส่งออกข้าวของอินเดีย')}
+    sig = {'up': ('pointing up', 'ชี้ขึ้น'), 'down': ('pointing down', 'ชี้ลง'), 'steady': ('steady', 'ทรงตัว'),
+           'unknown': ('no data', 'ไม่มีข้อมูล')}
+    for lang in ('en', 'th'):
+        th = lang == 'th'; k = 1 if th else 0
+        link = BASE_URL + url_for('/brief/', lang)
+        items = ''
+        if brief.get('week_of') and brief.get('summary'):
+            s = brief['summary']
+            wk = fdate(brief['week_of'], lang)
+            title = (f'สรุปตลาดข้าวสัปดาห์ของวันที่ {wk}: {s["up"]} จาก {s["known"]} สัญญาณชี้ว่าราคาข้าวไทยสูงขึ้น' if th else
+                     f'Rice brief, week of {wk}: {s["up"]} of {s["known"]} signals point to higher Thai rice prices')
+            lines = [f'{names.get(i["id"], (i["id"], i["id"]))[k]}: {sig.get(i.get("signal"), sig["unknown"])[k]}'
+                     for i in brief.get('indicators', [])]
+            note = brief.get('note_th' if th else 'note_en')
+            desc = '<p>' + '<br>'.join(escape(x) for x in lines) + '</p>' + (f'<p>{escape(note)}</p>' if note else '')
+            desc += f'<p><a href="{link}">{"อ่านฉบับเต็ม" if th else "Read the full brief"}</a></p>'
+            pub = datetime.datetime.fromisoformat(brief['week_of']).replace(tzinfo=datetime.timezone.utc)
+            items = (f'<item><title>{escape(title)}</title><link>{link}</link>'
+                     f'<guid isPermaLink="false">rice.ag-brief-{lang}-{brief["week_of"]}</guid>'
+                     f'<pubDate>{email.utils.format_datetime(pub)}</pubDate>'
+                     f'<description>{escape(desc)}</description></item>')
+        ch_title = 'rice.ag – สรุปสัญญาณตลาดข้าวรายสัปดาห์' if th else 'rice.ag – weekly rice early-warning brief'
+        ch_desc = ('ห้าสัญญาณที่ขับเคลื่อนราคาข้าวไทย ทุกสัปดาห์' if th else
+                   'The five signals that move Thai rice prices, every week.')
+        xml = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>'
+               f'<title>{escape(ch_title)}</title><link>{link}</link><description>{escape(ch_desc)}</description>'
+               f'<language>{lang}</language><atom:link href="{link}feed.xml" rel="self" type="application/rss+xml"/>'
+               f'{items}</channel></rss>\n')
+        out = DIST / url_for('/brief/', lang).lstrip('/') / 'feed.xml'
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(xml, encoding='utf-8')
+
 def main():
     if DIST.exists(): shutil.rmtree(DIST)
     DIST.mkdir()
@@ -249,6 +288,22 @@ def main():
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(html, encoding='utf-8')
         sitemap.append(p['path'])
+
+    # embeddable charts at /embed/<slug>/ (noindex; framing allowed in _headers)
+    for p in PAGES:
+        if p['key'] != 'hub':
+            continue
+        for lang in ('en', 'th'):
+            prefix = '' if lang == 'en' else '/th'
+            html = env.get_template('embed.html').render(
+                lang=lang, hub=p['hub'], fill=p['fill'][lang], generated=PRICES.get('generated'),
+                base_url=BASE_URL, page_url=url_for(p['path'], lang), ver=ver)
+            out = DIST / f"{prefix.lstrip('/')}/embed/{p['hub']['slug']}/index.html".lstrip('/')
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(html, encoding='utf-8')
+
+    # RSS feed for the weekly brief: one item per week (guid = week), so readers get a new post each Monday
+    write_brief_feeds(load_brief())
 
     # 404 (bilingual, root)
     ctx = dict(lang='en', T=I18N['en'], prefix='', url='/404', base_url=BASE_URL, year=datetime.date.today().year, ver=ver)

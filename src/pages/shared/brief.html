@@ -16,7 +16,7 @@
     {% if not B or not B.indicators %}
     <p class="fine">{{ 'ยังไม่มีข้อมูล' if th else 'No data yet.' }}</p>
     {% else %}
-    <p class="fine">{{ 'สัปดาห์ของวันที่' if th else 'Week of' }} <strong>{{ B.week_of | fdate(lang) }}</strong> · {{ 'อัปเดตอัตโนมัติทุกวัน' if th else 'updated automatically every day' }} · {{ 'คำนวณเมื่อ' if th else 'computed' }} {{ B.generated[:10] | fdate(lang) }}</p>
+    <p class="fine">{{ 'สัปดาห์ของวันที่' if th else 'Week of' }} <strong>{{ B.week_of | fdate(lang) }}</strong> · {{ 'อัปเดตอัตโนมัติทุกวัน' if th else 'updated automatically every day' }} · {{ 'คำนวณเมื่อ' if th else 'computed' }} {{ B.generated[:10] | fdate(lang) }} · <a class="bf-feed" href="{{ prefix }}/brief/feed.xml">{{ 'ติดตามทาง RSS' if th else 'Follow by RSS' }}</a></p>
 
     <div class="card bf-sum">
       <div class="bf-sum-n"><span>{{ B.summary.up }}</span><small>/ {{ B.summary.known }}</small></div>

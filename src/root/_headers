@@ -3,3 +3,22 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), interest-cohort=()
+
+# Embeddable charts: other sites may frame these pages.
+/embed/*
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors *
+/th/embed/*
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors *
+
+# Scripts and data files are not pages: keep them out of Google's index report.
+/static/js/*
+  X-Robots-Tag: noindex
+/static/data/*
+  X-Robots-Tag: noindex
+
+/brief/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+/th/brief/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
