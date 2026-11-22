@@ -38,3 +38,13 @@
   {% for h in hubs if h.kind == 'type' %}<a href="{{ prefix }}/prices/{{ h.slug }}/"{% if h.slug == current %} aria-current="page"{% endif %}>{{ h.name[lang] }}</a>{% endfor %}</p>
 </nav>
 {% endmacro %}
+
+{% macro fert_nav(prefix, lang, current='') %}
+{% set th = lang == 'th' %}
+<nav class="px-hubs fert-nav" aria-label="{{ 'หมวดราคาปุ๋ย' if th else 'Fertilizer sections' }}">
+  <p>{% for k, path, label in [('main', '/fertilizer/', ('ราคาปุ๋ยวันนี้' if th else 'Prices today')),
+                               ('rice', '/fertilizer/rice/', ('ปุ๋ยนาข้าว ต้นทุนต่อไร่' if th else 'Rice: cost per rai')),
+                               ('blend', '/fertilizer/blend/', ('ผสมปุ๋ยใช้เอง' if th else 'Blend your own')),
+                               ('all', '/fertilizer/#all-prices', ('ทุกสูตร' if th else 'All formulas'))] %}<a href="{{ prefix }}{{ path }}"{% if k == current %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}</p>
+</nav>
+{% endmacro %}

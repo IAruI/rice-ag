@@ -337,3 +337,13 @@ details.adv summary{cursor:pointer;font-weight:600;font-size:.92rem;margin-top:8
 .fert-range{position:static;background:none;backdrop-filter:none;margin:10px 0 4px;padding:0}
 .fert-r svg{display:block}
 #world h3{margin:18px 0 6px;font-size:1rem}
+.fert-faq details{border-bottom:1px solid var(--line);padding:10px 0}
+.fert-faq summary{cursor:pointer;font-weight:600}
+.fert-faq p{margin:8px 0 0}
+.fert-others{display:flex;flex-wrap:wrap;gap:8px}
+.fert-others a{border:1px solid var(--line);border-radius:999px;padding:4px 12px;text-decoration:none;font-size:.9rem}
+.fert-nav{margin:12px 0}
+.fert-mini{padding:10px 14px;margin:12px 0;font-size:.92rem}
+.fs-lo{fill:var(--s3)}.fs-hi{fill:var(--s2)}
+.fert-toc{line-height:1.9}
+@media (max-width:600px){.px-static .fs-m{font-size:17px}}

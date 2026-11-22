@@ -1,0 +1,64 @@
+{% from '_px.html' import fert_nav %}
+{% set th = lang == 'th' %}
+{% set f = ff.f %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › {{ f.npk }}</p>
+    <h1>{{ ('ราคาปุ๋ย ' ~ f.npk ~ ' วันนี้') if th else (f.npk ~ ' fertilizer price today') }}{% if ff.name %} <small>{{ ff.name }}</small>{% endif %}</h1>
+    <p class="lead px-lead">{{ ff.lead }}</p>
+    <p class="fine">{% if th %}ราคาหน้าร้านจากป้ายราคา {{ F.survey.shops }} ร้าน สำรวจเดือน{{ F.survey.month_th }}{% else %}Shop board prices from {{ F.survey.shops }} shops, surveyed {{ F.survey.month_en }}{% endif %}</p>
+    {{ fert_nav(prefix, lang) }}
+
+    <ul class="px-kg">
+      <li class="card px-kgc"><span class="px-kgn">{{ 'ราคากลาง' if th else 'Median' }}</span><span class="px-kgv"><b>{{ f.median | pxnum }}</b> {{ 'บาท/กระสอบ' if th else 'baht/bag' }}</span><span class="px-kgs">{{ 'กก.ละ' if th else 'per kg' }} {{ '%.2f' % f.per_kg }}</span></li>
+      {% if f.count > 1 %}<li class="card px-kgc"><span class="px-kgn">{{ 'ต่ำสุด–สูงสุด' if th else 'Range' }}</span><span class="px-kgv"><b>{{ f.low | pxnum }}–{{ f.high | pxnum }}</b></span><span class="px-kgs">{{ f.count }} {{ 'ยี่ห้อ' if th else 'brands' }}</span></li>{% endif %}
+      {% if f.per_nutrient %}<li class="card px-kgc"><span class="px-kgn">{{ 'ต่อธาตุอาหาร 1 กก.' if th else 'Per kg of nutrient' }}</span><span class="px-kgv"><b>{{ '%.1f' % f.per_nutrient }}</b> {{ 'บาท' if th else 'baht' }}</span><span class="px-kgs">N+P₂O₅+K₂O</span></li>{% endif %}
+      {% if ff.blend %}<li class="card px-kgc"><span class="px-kgn">{{ 'ผสมเองจากแม่ปุ๋ย' if th else 'Blend it yourself' }}</span><span class="px-kgv"><b>{{ ff.blend.per_bag | pxnum }}</b> {{ 'บาท/50 กก.' if th else 'baht/50 kg' }}</span><span class="px-kgs"><a href="#blend">{{ 'วิธีผสม' if th else 'Recipe' }} ↓</a></span></li>{% endif %}
+    </ul>
+
+    <h2>{{ 'ในกระสอบ 50 กก. มีอะไร' if th else 'What is in a 50 kg bag' }}</h2>
+    <p>{% if th %}ไนโตรเจน (N) {{ '%g' % ff.kg.n }} กก. · ฟอสเฟต (P₂O₅) {{ '%g' % ff.kg.p }} กก. · โพแทส (K₂O) {{ '%g' % ff.kg.k }} กก. · ที่เหลือ {{ '%g' % (50 - ff.kg.n - ff.kg.p - ff.kg.k) }} กก. เป็นสารประกอบอื่นและสารตัวเติม{% else %}Nitrogen (N) {{ '%g' % ff.kg.n }} kg · phosphate (P₂O₅) {{ '%g' % ff.kg.p }} kg · potash (K₂O) {{ '%g' % ff.kg.k }} kg · the other {{ '%g' % (50 - ff.kg.n - ff.kg.p - ff.kg.k) }} kg is the rest of the compound and carrier.{% endif %}</p>
+    {% if ff.use %}<p>{{ ff.use }}</p>{% endif %}
+
+    <h2>{{ 'ราคาแต่ละยี่ห้อ' if th else 'Price by brand' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ราคาแต่ละยี่ห้อ' if th else 'Price by brand' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'ยี่ห้อ' if th else 'Brand' }}</th><th scope="col" class="num">{{ 'ราคา (บาท)' if th else 'Price (baht)' }}</th><th scope="col" class="num">{{ 'ขนาด' if th else 'Size' }}</th><th scope="col" class="num">{{ 'บาท/กก.' if th else 'Baht/kg' }}</th><th scope="col">{{ 'ร้าน' if th else 'Shop' }}</th></tr></thead>
+      <tbody>{% for i in f['items'] %}<tr{% if i.flag %} class="fert-flag-row"{% endif %}><th scope="row">{{ (i.brand_th or i.brand) if th else i.brand }}{% if i.flag %} ⚠{% endif %}</th><td class="num">{{ i.price | pxnum }}</td><td class="num">{{ i.size_kg }} {{ 'กก.' if th else 'kg' }}</td><td class="num">{{ '%.2f' % (i.price / i.size_kg) }}</td><td>{{ i.shop }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if f['items'] | selectattr('flag') | list %}<p class="fine">⚠ {{ 'ต่างจากราคากลางมาก อาจอ่านป้ายผิดหรือเป็นสินค้าพิเศษ ไม่นำมาคิดราคากลาง' if th else 'Far from the median: possibly a misread board or a special product, left out of the median.' }}</p>{% endif %}
+
+    {% if ff.world %}
+    <div class="card px-verdict">
+      <h2>{{ 'เทียบกับราคาตลาดโลก' if th else 'Against the world price' }}</h2>
+      <p>{% if th %}{{ ff.world.th }} ในตลาดโลก {{ ff.world.usd | pxnum }} ดอลลาร์/ตัน ({{ ff.world.date | pxmonth(lang) }}) เท่ากับราว <b>{{ ff.world.thb_bag | pxnum }} บาทต่อ 50 กก.</b> ก่อนค่าขนส่ง ภาษี และกำไร ส่วนต่างถึงราคาหน้าร้าน ({{ f.median | pxnum }} บาท) คือ <b>{{ ff.gap | pxnum }} บาท</b> ซึ่งรวมค่าเรือ ค่าขนถ่าย บรรจุ ขนส่งในประเทศ และกำไรของผู้นำเข้าและร้านค้า{% else %}{{ ff.world.en }} on the world market was ${{ ff.world.usd | pxnum }}/t ({{ ff.world.date | pxmonth(lang) }}), about <b>{{ ff.world.thb_bag | pxnum }} baht per 50 kg</b> before freight, duties and margins. The gap to the shop price ({{ f.median | pxnum }} baht) is <b>{{ ff.gap | pxnum }} baht</b>: shipping, port handling, bagging, trucking and the importer's and shop's margins.{% endif %}
+        <a href="{{ prefix }}/fertilizer/#parity">{{ 'คำนวณต้นทุนนำเข้า' if th else 'Import cost calculator' }} →</a></p>
+    </div>
+    {% endif %}
+
+    {% if ff.blend %}
+    <div class="card" id="blend">
+      <h2>{{ 'ผสม ' ~ f.npk ~ ' ใช้เอง' if th else 'Blend ' ~ f.npk ~ ' yourself' }}</h2>
+      <p>{{ 'ทำปุ๋ย 50 กก. จากแม่ปุ๋ย ราคาตามราคากลางหน้าร้าน:' if th else 'To make 50 kg from straight fertilizers, at median shop prices:' }}</p>
+      <ul>
+        {% if ff.blend.dap %}<li>18-46-0 (DAP) {{ '%g' % ff.blend.dap }} {{ 'กก.' if th else 'kg' }}</li>{% endif %}
+        {% if ff.blend.urea %}<li>46-0-0 ({{ 'ยูเรีย' if th else 'urea' }}) {{ '%g' % ff.blend.urea }} {{ 'กก.' if th else 'kg' }}</li>{% endif %}
+        {% if ff.blend.mop %}<li>0-0-60 ({{ 'โพแทส' if th else 'potash' }}) {{ '%g' % ff.blend.mop }} {{ 'กก.' if th else 'kg' }}</li>{% endif %}
+        {% if ff.blend.filler %}<li>{{ 'สารตัวเติม (ดิน ทราย หรือปุ๋ยอินทรีย์)' if th else 'Filler (soil, sand or organic fertilizer)' }} {{ '%g' % ff.blend.filler }} {{ 'กก.' if th else 'kg' }}</li>{% endif %}
+      </ul>
+      <p>{% if th %}ค่าแม่ปุ๋ยราว <b>{{ ff.blend.per_bag | pxnum }} บาท</b> เทียบกับซื้อสำเร็จ {{ f.median | pxnum }} บาท{% if f.median > ff.blend.per_bag %} ถูกกว่า {{ (f.median - ff.blend.per_bag) | pxnum }} บาท{% endif %}{% else %}Straights cost about <b>{{ ff.blend.per_bag | pxnum }} baht</b> against {{ f.median | pxnum }} baht ready-made{% if f.median > ff.blend.per_bag %}, {{ (f.median - ff.blend.per_bag) | pxnum }} baht less{% endif %}.{% endif %}
+        <a href="{{ prefix }}/fertilizer/blend/">{{ 'เครื่องคำนวณผสมปุ๋ย' if th else 'Blend calculator' }} →</a></p>
+    </div>
+    {% endif %}
+
+    <div class="card px-cite">
+      <h2>{{ 'นำข้อมูลนี้ไปใช้' if th else 'Use this data' }}</h2>
+      <p>{{ 'อ้างอิงเป็น' if th else 'Cite as' }}: <cite>rice.ag, “{{ ('ราคาปุ๋ย ' ~ f.npk ~ ' วันนี้') if th else (f.npk ~ ' fertilizer price today') }}”, {{ base_url }}{{ url }}</cite></p>
+    </div>
+
+    <div class="narrow">
+      <p class="fine">{{ 'ราคาหน้าร้านต่างกันตามพื้นที่ ยี่ห้อ และเงื่อนไขการซื้อ ข้อมูลเพื่อการอ้างอิง ไม่ใช่คำแนะนำการใส่ปุ๋ย ควรตรวจดินก่อนเลือกสูตร' if th else 'Shop prices vary with area, brand and terms. Price information, not fertilizer advice: test your soil before choosing a formula.' }}</p>
+      <h2>{{ 'สูตรอื่น ๆ' if th else 'Other formulas' }}</h2>
+      <p class="fert-others">{% for o in fpages if o.npk != f.npk %}<a href="{{ prefix }}/fertilizer/{{ o.npk }}/">{{ o.npk }}</a>{% endfor %}</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+{% set th = lang == 'th' %}<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{{ title }} – rice.ag</title>
+<link rel="canonical" href="{{ base_url }}{{ page_url }}">
+<link rel="stylesheet" href="/static/css/site.css?v={{ ver }}">
+<style>body{margin:0;background:var(--bg)}.em{padding:12px 14px}.em h1{font-size:1.05rem;margin:0 0 4px}.em .lead{font-size:.95rem;margin:0 0 8px}
+.em-src{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:6px}.em-src a{font-weight:600}</style>
+</head>
+<body class="prices">
+<div class="em">
+  <h1><a href="{{ base_url }}{{ page_url }}" target="_blank" rel="noopener">{{ title }}</a></h1>
+  {% if lead %}<p class="lead">{{ lead }}</p>{% endif %}
+  {{ chart | safe }}
+  <p class="em-src"><span>{{ unit }} · {{ 'ข้อมูล' if th else 'Data' }}: {{ source }}</span><span>{{ 'ที่มา' if th else 'Source' }}: <a href="{{ base_url }}{{ page_url }}" target="_blank" rel="noopener">rice.ag</a></span></p>
+</div>
+</body>
+</html>

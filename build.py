@@ -4,6 +4,7 @@ import json, shutil, hashlib, datetime, os, re
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import pricepages as pp
+import fertpages as fp
 
 ROOT = Path(__file__).parent
 SRC, DIST = ROOT / 'src', ROOT / 'dist'
@@ -52,7 +53,8 @@ def onibars(history, w=280, h=56):
 env.filters.update(fdate=fdate, spark=spark, onibars=onibars,
                    pxnum=pp.num, pxpct=pp.pct, pxkg=pp.kg,
                    pxdate=lambda d, lang='en': pp.fdate(d if isinstance(d, datetime.date) else datetime.date.fromisoformat(str(d)[:10]), lang),
-                   pxsrc=lambda r, lang='en': pp.srcnames(r, lang))
+                   pxsrc=lambda r, lang='en': pp.srcnames(r, lang),
+                   pxmonth=lambda d, lang='en': pp.fdate(datetime.date.fromisoformat(str(d)[:10]), lang, monthly=True))
 PRICES = pp.load_prices()
 env.globals.update(hubs=pp.HUBS)
 # Cloudflare Web Analytics: set CF_ANALYTICS_TOKEN in Netlify (Site configuration > Environment variables).
@@ -109,6 +111,13 @@ def load_fert():
         sv['month_th'] = f"{pp.TH_MONTHS_LONG[m - 1]} {y + 543}"
         sv['month_en'] = datetime.date(y, m, 1).strftime('%B %Y')
     return F
+
+def afford_chart(A, lang):
+    if not A:
+        return ''
+    S = {'r': dict(en='Tonnes of urea per tonne of Thai 5% rice', th='ยูเรีย (ตัน) ต่อข้าวขาว 5% 1 ตัน',
+                   d=[(datetime.date.fromisoformat(a) - pp.EPOCH).days for a, _ in A['hist']], v=[b for _, b in A['hist']])}
+    return pp.svg_chart({'series': S}, ['r'], years=70, lang=lang, label=S['r'][lang], unit='ตัน' if lang == 'th' else 't')
 
 def fert_lead(F, lang):
     by = {f['npk']: f for f in F.get('formulas', [])}
@@ -204,6 +213,51 @@ if FERT.get('formulas'):
         desc={'en': f"Thai fertilizer shop prices per 50 kg bag for {len(FERT['formulas'])} formulas and brands: urea, 16-20-0, 15-15-15, 0-0-60, 21-0-0. Cheapest source of N, P and K, a price calculator, and world urea, DAP and potash prices.",
               'th': f"ราคาปุ๋ยหน้าร้านต่อกระสอบ 50 กก. {len(FERT['formulas'])} สูตร หลายยี่ห้อ: ยูเรีย 46-0-0 16-20-0 15-15-15 0-0-60 21-0-0 สูตรไหนให้ธาตุอาหารถูกที่สุด เครื่องคำนวณความคุ้มค่า และราคาปุ๋ยตลาดโลก"}))
 
+if FERT.get('formulas'):
+    FPAGES = fp.formula_pages(FERT)
+    for _f in FPAGES:
+        _ff = {l: fp.formula_fill(_f, FERT, l) for l in ('en', 'th')}
+        _nm = fp.INFO.get(_f['npk'], {})
+        PAGES.append(dict(key='fformula', ff=_ff, path=f"/fertilizer/{_f['npk']}/", src='shared/fert_formula.html', section='prices',
+            title={'en': f"{_f['npk']}{(' ' + re.sub(r' *[(].*', '', _nm['en'])) if _nm.get('en') else ''} fertilizer price today: ฿{_f['median']:,} a bag, {_f['count']} brands | rice.ag",
+                   'th': f"ราคาปุ๋ย {_f['npk']}{(' ' + re.sub(r' *[(].*', '', _nm['th'])) if _nm.get('th') else ''} วันนี้ กระสอบละ {_f['median']:,} บาท ({_f['count']} ยี่ห้อ) | rice.ag"},
+            desc={l: _ff[l]['lead'] for l in _ff}))
+    BLENDT = fp.blend_table(FERT)
+    _b = BLENDT.get('best')
+    PAGES.append(dict(key='fblend', path='/fertilizer/blend/', src='shared/fert_blend.html', section='prices',
+        title={'en': 'Blend your own fertilizer: cost vs ready-made 16-20-0, 15-15-15, 16-8-8 | rice.ag',
+               'th': 'ผสมปุ๋ยใช้เอง สูตร 16-20-0 15-15-15 16-8-8 ถูกกว่าซื้อสำเร็จเท่าไร | rice.ag'},
+        desc={'en': f"Make any N-P-K from urea, DAP and potash. At today's Thai shop prices{(', blending ' + _b['npk'] + ' saves about ' + format(_b['saving'], ',') + ' baht a bag') if _b else ''}. Free calculator.",
+              'th': f"ผสมปุ๋ยทุกสูตรจากยูเรีย DAP และโพแทส ที่ราคาหน้าร้านวันนี้{(' สูตร ' + _b['npk'] + ' ผสมเองถูกกว่าราว ' + format(_b['saving'], ',') + ' บาทต่อกระสอบ') if _b else ''} พร้อมเครื่องคำนวณฟรี"}))
+    RICE = fp.rice_defaults(FERT)
+    _c = [e['cost'] for e in RICE['examples']] or [0]
+    PAGES.append(dict(key='frice', path='/fertilizer/rice/', src='shared/fert_rice.html', section='prices',
+        title={'en': f"Rice fertilizer cost per rai: {min(_c):,}–{max(_c):,} baht, which formula for which soil | rice.ag",
+               'th': f"ปุ๋ยนาข้าว ใช้สูตรไหน ต้นทุนไร่ละ {min(_c):,}–{max(_c):,} บาท ตามคำแนะนำกรมการข้าว | rice.ag"},
+        desc={'en': "Rice Department fertilizer recommendations for rice by variety and soil, priced at today's Thai shop prices, with a cost-per-rai calculator.",
+              'th': 'คำแนะนำการใช้ปุ๋ยนาข้าวของกรมการข้าว ตามพันธุ์ข้าวและชนิดดิน คิดราคาตามราคาปุ๋ยหน้าร้านวันนี้ พร้อมเครื่องคำนวณค่าปุ๋ยต่อไร่'}))
+    BRANDS = fp.brand_pages(FERT)
+    for _b in BRANDS:
+        PAGES.append(dict(key='fbrand', brand=_b, path=f"/fertilizer/brand/{_b['slug']}/", src='shared/fert_brand.html', section='prices',
+            title={'en': f"{_b['en']} brand fertilizer prices today: {_b['nf']} formulas, ฿{_b['low']:,}–{_b['high']:,} a bag | rice.ag",
+                   'th': f"ราคาปุ๋ยตรา{_b['th']} วันนี้ {_b['nf']} สูตร กระสอบละ {_b['low']:,}–{_b['high']:,} บาท | rice.ag"},
+            desc={'en': f"Shop prices for {_b['en']} fertilizer in Thailand by formula, compared with the median price of the same formula across brands.",
+                  'th': f"ราคาปุ๋ยตรา{_b['th']} หน้าร้านแยกตามสูตร เทียบกับราคากลางของสูตรเดียวกันจากทุกยี่ห้อ"}))
+    AFFORD = fp.affordability(FERT, PRICES)
+    WORLDS = []
+    for _wp in fp.WORLD_PAGES:
+        _wf = fp.world_fill(_wp, FERT)
+        if not _wf:
+            continue
+        WORLDS.append(_wp)
+        PAGES.append(dict(key='fworld', wf=_wf, path=f"/fertilizer/world/{_wp['slug']}/", src='shared/fert_world.html', section='prices',
+            title={'en': f"{_wp['title_en']} today: ${_wf['usd']:,.0f}/t ({datetime.date.fromisoformat(_wf['date']).strftime('%b %Y')}), chart since {_wf['first'][:4]} | rice.ag",
+                   'th': f"{_wp['title_th']} วันนี้ {_wf['usd']:,.0f} ดอลลาร์/ตัน กราฟย้อนหลังตั้งแต่ปี {int(_wf['first'][:4]) + 543} | rice.ag"},
+            desc={'en': f"{_wp['en']} world price: ${_wf['usd']:,.0f} per tonne in {datetime.date.fromisoformat(_wf['date']).strftime('%B %Y')}, monthly and yearly history since {_wf['first'][:4]} from the World Bank, record high, 10-year average, free CSV.",
+                  'th': f"ราคา{_wp['th']}ตลาดโลก {_wf['usd']:,.0f} ดอลลาร์ต่อตัน ข้อมูลรายเดือนและรายปีจากธนาคารโลกตั้งแต่ปี {int(_wf['first'][:4]) + 543} สูงสุดเป็นประวัติการณ์ ค่าเฉลี่ย 10 ปี ดาวน์โหลด CSV ฟรี"}))
+else:
+    FPAGES, BLENDT, RICE, BRANDS, AFFORD, WORLDS = [], {}, {}, [], None, []
+
 # one page per origin and per rice type (see pricepages.HUBS); titles carry the latest price
 for _h in pp.HUBS:
     _f = {lang: pp.hub_fill(_h, PRICES, lang) for lang in ('en', 'th')}
@@ -241,7 +295,17 @@ def jsonld(p, lang, url):
         graph.append({"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": 'ราคาข้าว' if lang == 'th' else 'Rice prices', "item": BASE_URL + url_for('/', lang)},
             {"@type": "ListItem", "position": 2, "name": h['name'][lang], "item": BASE_URL + url}]})
+    elif p['key'] == 'fworld':
+        _w = p['wf']
+        graph.append({"@type": "Dataset", "name": p['title'][lang].split(' | ')[0], "url": BASE_URL + url, "description": p['desc'][lang],
+                      "inLanguage": lang, "isAccessibleForFree": True, "creator": {"@id": ORG["@id"]},
+                      "temporalCoverage": f"{_w['first'][:7]}/{_w['date'][:7]}", "variableMeasured": f"{_w['wp']['en']} price, USD per tonne",
+                      "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": BASE_URL + "/static/data/fertilizer_world.csv"}]})
     elif p['key'] == 'fertilizer':
+        _fq = fp.faq(FERT, lang, BLENDT, RICE, AFFORD)
+        if _fq:
+            graph.append({"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q,
+                          "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in _fq]})
         graph.append({"@type": "Dataset", "name": p['title'][lang].split(':')[0], "url": BASE_URL + url, "description": p['desc'][lang],
                       "inLanguage": lang, "isAccessibleForFree": True, "creator": {"@id": ORG["@id"]},
                       "variableMeasured": "Fertilizer retail price, THB per 50 kg bag", "spatialCoverage": "Thailand",
@@ -332,12 +396,34 @@ def main():
                                  generated=PRICES.get('generated'))
             if p['key'] == 'hub':
                 ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
+            if p['key'] in ('hub', 'prices') and FERT.get('urea'):
+                ctx.update(fert_mini=dict(urea=FERT['urea']['median'], kg=(FERT.get('paddy') or {}).get('kg_per_urea_bag'),
+                                          rice=(fp.rice_defaults(FERT)['examples'] or [None])[0]))
+            if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice', 'fbrand', 'fworld'):
+                _paddy = (FERT.get('paddy') or {}).get('baht_per_kg')
+                ctx.update(F=dict(FERT), fert=dict(FERT, lead=fert_lead(FERT, lang)), fpages=FPAGES,
+                           fpage_keys=[x['npk'] for x in FPAGES], paddy_kg=_paddy, brands=BRANDS, afford=AFFORD,
+                           faqs=fp.faq(FERT, lang, BLENDT, RICE, AFFORD), worlds=WORLDS, season=fp.seasonality(FERT, 'urea'))
+            if p['key'] == 'fbrand':
+                ctx.update(brand=p['brand'])
+            if p['key'] == 'fworld':
+                _k = [p['wf']['wp']['key']]
+                ctx.update(wf=p['wf'], worlds=WORLDS, charts={'2y': pp.fert_chart(FERT, _k, lang, years=2),
+                           '10y': pp.fert_chart(FERT, _k, lang, years=10), 'all': pp.fert_chart(FERT, _k, lang, years=70)})
+            if p['key'] == 'fformula':
+                ctx.update(ff=p['ff'][lang])
+            if p['key'] == 'fblend':
+                ctx.update(blendt=BLENDT, shopmed=FERT['calc']['formulas'])
+            if p['key'] == 'frice':
+                ctx.update(rice=RICE, ricejs=dict(opts=RICE['opts'], top=RICE['top'], plan=RICE['plan'], paddy=_paddy))
             if p['key'] == 'fertilizer':
                 ctx.update(fert=dict(FERT, lead=fert_lead(FERT, lang)),
                            charts=dict(world={'2y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=2),
                                               '10y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=10),
                                               'all': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=27)},
-                                       paddy_bag=pp.paddy_bag_chart(FERT, lang)))
+                                       paddy_bag=pp.paddy_bag_chart(FERT, lang),
+                                       afford=afford_chart(AFFORD, lang),
+                                       season=fp.season_svg(fp.seasonality(FERT, 'urea'), lang)))
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):
@@ -378,6 +464,32 @@ def main():
             out = DIST / f"{prefix.lstrip('/')}/embed/{p['hub']['slug']}/index.html".lstrip('/')
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(html, encoding='utf-8')
+
+    # world fertilizer CSV and embeddable world charts
+    if FERT.get('world'):
+        keys = [k for k in ('urea', 'dap', 'kcl', 'tsp', 'rock') if k in FERT['world']]
+        rows = {}
+        for k in keys:
+            for d, v in FERT['world'][k]['hist']:
+                rows.setdefault(d, {})[k] = v
+        lines = ['month,' + ','.join(f"{k}_usd_per_t" for k in keys)]
+        lines += [d[:7] + ',' + ','.join(str(rows[d].get(k, '')) for k in keys) for d in sorted(rows)]
+        lines.append('# Source: World Bank Commodity Price Data (Pink Sheet), monthly averages. Compiled by rice.ag/fertilizer/')
+        (DIST / 'static/data/fertilizer_world.csv').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+        for wp in WORLDS:
+            for lang in ('en', 'th'):
+                prefix = '' if lang == 'en' else '/th'
+                wf = fp.world_fill(wp, FERT)
+                html = env.get_template('embed_simple.html').render(
+                    lang=lang, base_url=BASE_URL, ver=ver, page_url=f"{prefix}/fertilizer/world/{wp['slug']}/",
+                    title=(wp['title_th'] if lang == 'th' else wp['title_en']),
+                    lead=(f"{wf['usd']:,.0f} ดอลลาร์/ตัน ({pp.fdate(datetime.date.fromisoformat(wf['date']), 'th', True)})" if lang == 'th'
+                          else f"${wf['usd']:,.0f} per tonne ({datetime.date.fromisoformat(wf['date']).strftime('%B %Y')})"),
+                    chart=pp.fert_chart(FERT, [wp['key']], lang, years=10),
+                    unit=('ดอลลาร์สหรัฐต่อตัน' if lang == 'th' else 'US dollars per tonne'), source=('ธนาคารโลก' if lang == 'th' else 'World Bank'))
+                out = DIST / f"{prefix.lstrip('/')}/embed/fertilizer-{wp['slug']}/index.html".lstrip('/')
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(html, encoding='utf-8')
 
     # RSS feed for the weekly brief: one item per week (guid = week), so readers get a new post each Monday
     write_brief_feeds(load_brief())

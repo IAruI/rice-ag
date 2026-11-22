@@ -266,7 +266,7 @@ def svg_chart(data, ids, baht=False, years=5, label='', lang='en', unit=None):
         o.append(f'<line class="px-grid" x1="{M["l"]}" x2="{W - M["r"]}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>'
                  f'<text class="px-tick" x="{M["l"] - 8}" y="{Y(v) + 4:.1f}" text-anchor="end">{num(v)}</text>')
     y0 = day(tmin).year + 1
-    step = 1 if years <= 6 else 2 if years <= 12 else 5  # keep year labels readable on phones
+    step = 1 if years <= 6 else 2 if years <= 12 else 5 if years <= 30 else 10  # keep year labels readable on phones
     for yr in range(y0, day(tmax).year + 1):
         if (day(tmax).year - yr) % step:
             continue

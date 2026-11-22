@@ -45,6 +45,11 @@
     </div>
     {% endif %}
 
+    {% if hub.baht and fert_mini %}
+    <p class="fert-mini card"><b>{{ 'ค่าปุ๋ยวันนี้' if th else "Today's fertilizer" }}:</b> {% if th %}ยูเรีย 46-0-0 กระสอบละ {{ fert_mini.urea | pxnum }} บาท{% if fert_mini.kg %} เท่ากับข้าวเปลือกเจ้า {{ fert_mini.kg }} กก.{% endif %}{% else %}urea 46-0-0 at {{ fert_mini.urea | pxnum }} baht a bag{% if fert_mini.kg %}, worth {{ fert_mini.kg }} kg of white paddy{% endif %}{% endif %} ·
+      <a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ยทุกสูตร' if th else 'All fertilizer prices' }}</a> · <a href="{{ prefix }}/fertilizer/rice/">{{ 'ค่าปุ๋ยนาข้าวต่อไร่' if th else 'Rice fertilizer cost per rai' }}</a></p>
+    {% endif %}
+
     {% if hub.india and india.status %}
     {% set IND = {'open': ('ส่งออกได้ตามปกติ' if th else 'Exports open'), 'watch': ('จับตา: อาจจำกัดการส่งออก' if th else 'Watch: curbs possible'), 'restricted': ('จำกัดการส่งออก' if th else 'Exports restricted')} %}
     <div class="card px-verdict">

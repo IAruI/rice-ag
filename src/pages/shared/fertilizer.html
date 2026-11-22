@@ -1,4 +1,4 @@
-{% from '_px.html' import hub_links %}
+{% from '_px.html' import hub_links, fert_nav %}
 {% set th = lang == 'th' %}
 {% set F = fert %}
 {% set NAME = {
@@ -16,10 +16,17 @@
     {% if F.lead %}<p class="lead px-lead">{{ F.lead }}</p>{% endif %}
     <p class="fine">{% if th %}ราคาหน้าร้านจากป้ายราคาร้านจำหน่ายปุ๋ย {{ F.survey.shops }} ร้าน สำรวจเดือน{{ F.survey.month_th }}{% if F.survey.area_th %} ({{ F.survey.area_th }}){% endif %} · ราคาโลกจากธนาคารโลก{% else %}Shop prices from the price boards of {{ F.survey.shops }} farm-supply shops, surveyed {{ F.survey.month_en }}{% if F.survey.area_en %} ({{ F.survey.area_en }}){% endif %} · world prices from the World Bank{% endif %}</p>
 
+    {{ fert_nav(prefix, lang, 'main') }}
+    <p class="fert-toc fine"><b>{{ 'ในหน้านี้' if th else 'On this page' }}:</b>
+      <a href="#nutrient-cost">{{ 'ธาตุอาหารถูกที่สุด' if th else 'Cheapest nutrient' }}</a> · <a href="#fert-calc">{{ 'คำนวณความคุ้ม' if th else 'Bag calculator' }}</a> ·
+      <a href="#all-prices">{{ 'ทุกสูตร' if th else 'All formulas' }}</a> · <a href="#world">{{ 'ราคาโลก' if th else 'World prices' }}</a> ·
+      <a href="#parity">{{ 'ต้นทุนนำเข้า' if th else 'Import cost' }}</a> · <a href="#season">{{ 'เดือนไหนถูก' if th else 'Cheapest month' }}</a> ·
+      <a href="#brands">{{ 'ยี่ห้อ' if th else 'Brands' }}</a> · <a href="#faq">{{ 'คำถาม' if th else 'Questions' }}</a> · <a href="#report">{{ 'แจ้งราคา' if th else 'Report a price' }}</a></p>
+
     <ul class="px-kg" aria-label="{{ 'ราคาปุ๋ยสูตรหลักต่อกระสอบ' if th else 'Main formulas, price per bag' }}">
       {% for f in F.key %}
       <li class="card px-kgc">
-        <span class="px-kgn">{{ f.npk }}{% if f.npk in NAME %} <small>{{ fname(f.npk) }}</small>{% endif %}</span>
+        <span class="px-kgn"><a href="{{ prefix }}/fertilizer/{{ f.npk }}/">{{ f.npk }}</a>{% if f.npk in NAME %} <small>{{ fname(f.npk) }}</small>{% endif %}</span>
         <span class="px-kgv"><b>{{ f.median | pxnum }}</b> {{ 'บาท/กระสอบ' if th else 'baht/bag' }}</span>
         <span class="px-kgs">{% if f.count > 1 %}{{ f.low | pxnum }}–{{ f.high | pxnum }} · {{ f.count }} {{ 'ยี่ห้อ' if th else 'brands' }}{% else %}1 {{ 'ยี่ห้อ' if th else 'brand' }}{% endif %} · {{ 'กก.ละ' if th else 'per kg' }} {{ '%.2f' % f.per_kg }}</span>
       </li>
@@ -37,6 +44,16 @@
       <p class="fine">{{ 'ย้อนหลัง: ใช้ราคายูเรียโลก (ยังไม่รวมค่าขนส่งและกำไรร้านค้า) เทียบกับราคาข้าวเปลือกเฉลี่ยรายเดือน จึงต่ำกว่าตัวเลขหน้าร้าน แต่ใช้ดูแนวโน้มได้' if th else 'History uses the world urea price (before freight and shop margins) against the monthly average paddy price, so it sits below the shop figure, but shows the trend.' }}</p>
       {{ charts.paddy_bag | safe }}
       {% endif %}
+    </div>
+    {% endif %}
+
+    {% if afford %}
+    <div class="card px-verdict" id="rice-vs-urea">
+      <h2>{{ 'ข้าว 1 ตัน ซื้อยูเรียได้กี่ตัน (ตั้งแต่ปี 2503)' if th else 'How much urea a tonne of rice buys, since 1960' }}</h2>
+      <p class="fert-big"><b>{{ '%.2f' % afford.current }}</b> {{ 'ตัน' if th else 'tonnes' }}</p>
+      <p>{% if th %}ข้าวขาว 5% ของไทย 1 ตันซื้อยูเรียได้ {{ '%.2f' % afford.current }} ตัน ({{ afford.date | pxmonth(lang) }}) ค่ากลางตั้งแต่ปี 2503 คือ {{ '%.2f' % afford.median }} ตัน มีเพียงราว {{ afford.pct }}% ของเดือนตั้งแต่ปี 2503 ที่ปุ๋ยแพงเทียบกับข้าวเท่านี้หรือมากกว่า ต่ำสุดคือ {{ '%.2f' % afford.low[1] }} ตันในช่วงราคาปุ๋ยพุ่ง {{ afford.low[0] | pxmonth(lang) }}{% else %}A tonne of Thai 5% white rice buys {{ '%.2f' % afford.current }} tonnes of urea ({{ afford.date | pxmonth(lang) }}), against a median of {{ '%.2f' % afford.median }} since 1960. Fertilizer has been this dear relative to rice, or dearer, in only about {{ afford.pct }}% of months since 1960. The low was {{ '%.2f' % afford.low[1] }} tonnes during the price spike of {{ afford.low[0] | pxmonth(lang) }}.{% endif %}</p>
+      {{ charts.afford | safe }}
+      <p class="fine">{{ 'ราคาส่งออก FOB ข้าวขาว 5% ของไทย (TREA, FAO, ธนาคารโลก) หารด้วยราคายูเรียโลก (ธนาคารโลก) รายเดือน ดอลลาร์ต่อตันทั้งคู่' if th else 'Thai 5% white rice FOB (TREA, FAO, World Bank) divided by world urea (World Bank), monthly, both in US dollars per tonne.' }}</p>
     </div>
     {% endif %}
 
@@ -90,7 +107,7 @@
         <th scope="col" class="num">{{ 'บาท/กก. ธาตุอาหาร' if th else 'Baht/kg nutrient' }}</th><th scope="col">{{ 'ยี่ห้อและราคา' if th else 'Brands and prices' }}</th></tr></thead>
       <tbody>
       {% for f in F.formulas %}
-      <tr><th scope="row">{{ f.npk }}{% if f.npk in NAME %}<br><small>{{ fname(f.npk) }}</small>{% endif %}</th>
+      <tr><th scope="row">{% if f.npk in fpage_keys %}<a href="{{ prefix }}/fertilizer/{{ f.npk }}/">{{ f.npk }}</a>{% else %}{{ f.npk }}{% endif %}{% if f.npk in NAME %}<br><small>{{ fname(f.npk) }}</small>{% endif %}</th>
         <td class="num">{{ f.median | pxnum }}</td>
         <td class="num">{% if f.count > 1 %}{{ f.low | pxnum }}–{{ f.high | pxnum }}{% endif %}</td>
         <td class="num">{{ '%.1f' % f.per_nutrient if f.per_nutrient else '' }}</td>
@@ -116,9 +133,10 @@
       </script>
       <ul class="fert-world">
         {% for k in ['urea', 'dap', 'kcl'] if k in F.world %}{% set w = F.world[k] %}
-        <li><b>{{ w.th if th else w.en }}</b>: {{ w.usd | pxnum }} {{ 'ดอลลาร์/ตัน' if th else 'USD/t' }} ({{ w.date | pxdate(lang) }}){% if w.thb_bag %} ≈ {{ w.thb_bag | pxnum }} {{ 'บาทต่อ 50 กก. ก่อนค่าขนส่ง ภาษี และกำไร' if th else 'baht per 50 kg before freight, duties and margins' }}{% endif %}{% if w.y1 is not none %} · {{ '1 ปี' if th else '1 yr' }} {{ w.y1 | pxpct }}{% endif %}</li>
+        <li><b>{{ w.th if th else w.en }}</b>: {{ w.usd | pxnum }} {{ 'ดอลลาร์/ตัน' if th else 'USD/t' }} ({{ w.date | pxmonth(lang) }}){% if w.thb_bag %} ≈ {{ w.thb_bag | pxnum }} {{ 'บาทต่อ 50 กก. ก่อนค่าขนส่ง ภาษี และกำไร' if th else 'baht per 50 kg before freight, duties and margins' }}{% endif %}{% if w.y1 is not none %} · {{ '1 ปี' if th else '1 yr' }} {{ w.y1 | pxpct }}{% endif %}</li>
         {% endfor %}
       </ul>
+      {% if worlds %}<p class="fert-others">{% for o in worlds %}<a href="{{ prefix }}/fertilizer/world/{{ o.slug }}/">{{ o.th if th else o.en }} →</a>{% endfor %}</p>{% endif %}
       {% if F.years %}
       <h3>{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}</h3>
       <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}"><table class="px-table">
@@ -138,6 +156,44 @@
     </div>
     {% endif %}
 
+    {% if F.world.urea is defined %}
+    <div class="card px-wet" id="parity">
+      <h2>{{ 'ต้นทุนนำเข้าถึงไทย เทียบราคาหน้าร้าน' if th else 'Import cost to Thailand vs the shop price' }}</h2>
+      <p class="fine">{{ 'ไทยนำเข้าแม่ปุ๋ยเกือบทั้งหมด ใส่ราคาโลก ค่าเรือ และค่าใช้จ่ายในประเทศ เพื่อดูว่าส่วนต่างถึงราคาหน้าร้านเหลือเท่าไร ค่าเรือและค่าใช้จ่ายเป็นค่าสมมติ ปรับให้ตรงกับที่คุณรู้' if th else 'Thailand imports almost all of these. Enter a world price, freight and local costs to see what is left between the landed cost and the shop price. Freight and local costs are assumptions: change them to what you know.' }}</p>
+      <div class="px-wet-f">
+        <div class="field"><label for="ip-x">{{ 'ปุ๋ย' if th else 'Product' }}</label><select id="ip-x">{% for k, f in [('urea', '46-0-0'), ('dap', '18-46-0'), ('kcl', '0-0-60')] if k in F.world %}<option value="{{ k }}" data-usd="{{ F.world[k].usd }}" data-shop="{{ (F.calc.formulas[f]) or '' }}">{{ F.world[k].th if th else F.world[k].en }}</option>{% endfor %}</select></div>
+        <div class="field"><label for="ip-p">{{ 'ราคาโลก FOB (ดอลลาร์/ตัน)' if th else 'World price FOB (USD/t)' }}</label><input type="number" id="ip-p" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="ip-f">{{ 'ค่าเรือถึงไทย (ดอลลาร์/ตัน)' if th else 'Freight to Thailand (USD/t)' }}</label><input type="number" id="ip-f" value="35" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="ip-r">{{ 'อัตราแลกเปลี่ยน (บาท/ดอลลาร์)' if th else 'Exchange rate (THB per USD)' }}</label><input type="number" id="ip-r" value="{{ '%.2f' % F.fx.thb if F.fx.thb else 34 }}" min="1" step="0.01" inputmode="decimal"></div>
+        <div class="field"><label for="ip-l">{{ 'ค่าขนถ่าย บรรจุ ขนส่งในประเทศ (บาท/กระสอบ)' if th else 'Port, bagging, trucking (baht/bag)' }}</label><input type="number" id="ip-l" value="80" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="ip-s">{{ 'ราคาหน้าร้าน (บาท/กระสอบ)' if th else 'Shop price (baht/bag)' }}</label><input type="number" id="ip-s" min="0" step="1" inputmode="numeric"></div>
+      </div>
+      <div class="px-wet-out" aria-live="polite" id="ip-o"></div>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},th={{ 'true' if th else 'false' }};
+      function n(x){return Math.round(x).toLocaleString('en-US')}
+      function pick(){var o=$('ip-x').selectedOptions[0];$('ip-p').value=o.dataset.usd;$('ip-s').value=o.dataset.shop;run()}
+      function run(){var p=+$('ip-p').value,f=+$('ip-f').value,r=+$('ip-r').value,l=+$('ip-l').value,s=+$('ip-s').value,o=$('ip-o');
+        if(!(p>0&&r>0)){o.textContent='';return}
+        var cif=(p+f)*r/20,landed=cif+l,gap=s-landed;
+        o.innerHTML=(th?'ราคาถึงท่าเรือไทย (CIF) ':'Landed at a Thai port (CIF) ')+'<b>'+n(cif)+'</b> · '+(th?'ถึงร้านก่อนกำไร ':'At the shop before margins ')+'<b>'+n(landed)+(th?' บาท/กระสอบ':' baht/bag')+'</b>'
+          +(s>0?'<br>'+(th?'ส่วนต่างถึงราคาหน้าร้าน (กำไรผู้นำเข้า ตัวแทน และร้านค้า รวมค่าใช้จ่ายอื่น) ':'Left for importer, dealer and shop margins and other costs ')+'<b>'+n(gap)+(th?' บาท':' baht')+'</b> ('+Math.round(gap/s*100)+'%)':'');}
+      $('ip-x').addEventListener('change',pick);['ip-p','ip-f','ip-r','ip-l','ip-s'].forEach(function(i){$(i).addEventListener('input',run)});pick();})();
+      </script>
+      <p class="fine">{{ 'ราคาโลกจากธนาคารโลกเป็นราคา FOB ของแหล่งผลิตหลัก ตรวจสอบภาษีและค่าธรรมเนียมนำเข้ากับกรมศุลกากร เครื่องคำนวณนี้ไม่ได้รวมไว้' if th else 'World Bank prices are FOB at major origins. Check duties and fees with Thai Customs; this calculator assumes none.' }}</p>
+    </div>
+    {% endif %}
+
+    {% if season %}
+    {% set MN = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'] if th else ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+    <div class="card px-card" id="season">
+      <h2>{{ 'ยูเรียถูกที่สุดเดือนไหนของปี' if th else 'Which month urea is cheapest' }}</h2>
+      <p>{% if th %}ในช่วง {{ season.years }} ปี ({{ season.first + 543 }}–{{ season.last + 543 }}) ราคายูเรียโลกเดือน{{ MN[season.low.m - 1] }}ต่ำกว่าค่าเฉลี่ยของปีนั้นโดยเฉลี่ย {{ '%.1f' % (season.low.avg | abs) }}% และต่ำกว่าค่าเฉลี่ยใน {{ season.low.below }} จาก {{ season.years }} ปี เดือนที่แพงที่สุดโดยเฉลี่ยคือ{{ MN[season.high.m - 1] }} (+{{ '%.1f' % season.high.avg }}%){% else %}Over {{ season.years }} years ({{ season.first }}–{{ season.last }}), world urea in {{ MN[season.low.m - 1] }} averaged {{ '%.1f' % (season.low.avg | abs) }}% below that year's average, and was below it in {{ season.low.below }} of {{ season.years }} years. The dearest month on average was {{ MN[season.high.m - 1] }} (+{{ '%.1f' % season.high.avg }}%).{% endif %}</p>
+      {{ charts.season | safe }}
+      <p class="fine">{{ 'เป็นค่าเฉลี่ยระยะยาว ไม่ใช่การพยากรณ์ ปีที่ราคาพุ่งหรือดิ่งแรงจะกลบรูปแบบนี้ได้ ราคาหน้าร้านในไทยมักไม่เปลี่ยนตามราคาโลกทันที' if th else 'A long-run average, not a forecast: a year with a big spike or slump swamps the pattern. Thai shop prices usually follow world prices with a delay.' }}</p>
+    </div>
+    {% endif %}
+
     {% if F.market %}
     <h2>{{ 'ความเคลื่อนไหวล่าสุด' if th else 'What is happening' }}</h2>
     <ul class="fert-news">
@@ -146,6 +202,39 @@
       {% endfor %}
     </ul>
     {% endif %}
+
+    {% if brands %}
+    <h2 id="brands">{{ 'ราคาตามยี่ห้อ' if th else 'Prices by brand' }}</h2>
+    <p class="fert-others">{% for o in brands %}<a href="{{ prefix }}/fertilizer/brand/{{ o.slug }}/">{{ ('ตรา' ~ o.th) if th else o.en }}</a>{% endfor %}</p>
+    {% endif %}
+
+    {% if faqs %}
+    <h2 id="faq">{{ 'คำถามที่พบบ่อย' if th else 'Common questions' }}</h2>
+    <div class="fert-faq">{% for q, a in faqs %}<details><summary>{{ q }}</summary><p>{{ a }}</p></details>{% endfor %}</div>
+    {% endif %}
+
+    <div class="card px-wet" id="report">
+      <h2>{{ 'แจ้งราคาปุ๋ยในพื้นที่ของคุณ' if th else 'Report a fertilizer price near you' }}</h2>
+      <p class="fine">{{ 'ช่วยให้ข้อมูลครอบคลุมทั่วประเทศ กรอกแล้วกดส่ง ระบบจะเปิดอีเมลพร้อมข้อความให้คุณส่งเอง ไม่มีการเก็บข้อมูลบนเว็บนี้' if th else 'Help cover the whole country. Fill this in and press send: it opens an email with the details for you to send. Nothing is stored by this site.' }}</p>
+      <div class="px-wet-f">
+        <div class="field"><label for="rp-pv">{{ 'จังหวัด / อำเภอ' if th else 'Province / district' }}</label><input type="text" id="rp-pv" autocomplete="address-level1"></div>
+        <div class="field"><label for="rp-f">{{ 'สูตร' if th else 'Formula' }}</label><input type="text" id="rp-f" placeholder="46-0-0" inputmode="numeric"></div>
+        <div class="field"><label for="rp-b">{{ 'ยี่ห้อ' if th else 'Brand' }}</label><input type="text" id="rp-b"></div>
+        <div class="field"><label for="rp-p">{{ 'ราคา (บาท)' if th else 'Price (baht)' }}</label><input type="number" id="rp-p" min="0" inputmode="numeric"></div>
+        <div class="field"><label for="rp-w">{{ 'ขนาดกระสอบ (กก.)' if th else 'Bag size (kg)' }}</label><input type="number" id="rp-w" value="50" min="1" inputmode="numeric"></div>
+        <div class="field"><label for="rp-d">{{ 'วันที่เห็นราคา' if th else 'Date seen' }}</label><input type="date" id="rp-d"></div>
+      </div>
+      <p><a class="btn" id="rp-go" href="mailto:aryan@wildfield.org">{{ 'ส่งราคาทางอีเมล' if th else 'Send by email' }}</a></p>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},go=$('rp-go'),th={{ 'true' if th else 'false' }};
+      try{$('rp-d').valueAsDate=new Date()}catch(e){}
+      function upd(){var t=th?['จังหวัด/อำเภอ','สูตร','ยี่ห้อ','ราคา','ขนาดกระสอบ','วันที่']:['Province/district','Formula','Brand','Price','Bag size','Date'];
+        var v=[$('rp-pv').value,$('rp-f').value,$('rp-b').value,$('rp-p').value,$('rp-w').value,$('rp-d').value];
+        var body=t.map(function(k,i){return k+': '+v[i]}).join('\n')+'\n\n'+(th?'(แนบรูปป้ายราคาได้)':'(Feel free to attach a photo of the price board.)');
+        go.href='mailto:aryan@wildfield.org?subject='+encodeURIComponent((th?'ราคาปุ๋ย ':'Fertilizer price ')+v[1]+' '+v[0])+'&body='+encodeURIComponent(body);}
+      ['rp-pv','rp-f','rp-b','rp-p','rp-w','rp-d'].forEach(function(i){$(i).addEventListener('input',upd)});upd();})();
+      </script>
+    </div>
 
     <div class="card px-cite">
       <h2>{{ 'นำข้อมูลนี้ไปใช้' if th else 'Use this data' }}</h2>

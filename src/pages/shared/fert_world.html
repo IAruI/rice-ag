@@ -1,0 +1,65 @@
+{% from '_px.html' import fert_nav %}
+{% set th = lang == 'th' %}
+{% set X = wf %}
+{% set wp = X.wp %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › {{ 'ตลาดโลก' if th else 'World' }} › {{ wp.th if th else wp.en }}</p>
+    <h1>{{ (wp.title_th ~ ' วันนี้') if th else (wp.title_en ~ ' today') }}</h1>
+    <p class="lead px-lead">{% if th %}{{ wp.th }} ในตลาดโลกเฉลี่ย {{ X.usd | pxnum }} ดอลลาร์ต่อตันในเดือน{{ X.date | pxmonth(lang) }}{% if X.m1 is not none %} {{ 'เพิ่มขึ้น' if X.m1 > 0 else 'ลดลง' }} {{ '%.1f' % (X.m1 | abs) }}% จากเดือนก่อน{% endif %}{% if X.y1 is not none %} และ{{ 'เพิ่มขึ้น' if X.y1 > 0 else 'ลดลง' }} {{ '%.1f' % (X.y1 | abs) }}% ในรอบปี{% endif %} ค่าเฉลี่ย 10 ปี {{ X.avg10 | pxnum }} ดอลลาร์{% else %}{{ wp.en }} averaged ${{ X.usd | pxnum }} per tonne in {{ X.date | pxmonth(lang) }}{% if X.m1 is not none %}, {{ 'up' if X.m1 > 0 else 'down' }} {{ '%.1f' % (X.m1 | abs) }}% on the month{% endif %}{% if X.y1 is not none %} and {{ 'up' if X.y1 > 0 else 'down' }} {{ '%.1f' % (X.y1 | abs) }}% on the year{% endif %}. The 10-year average is ${{ X.avg10 | pxnum }}.{% endif %}</p>
+    <p class="fine">{{ 'ธนาคารโลก ชุดข้อมูล' if th else 'World Bank Pink Sheet series' }} “{{ wp.wb }}”, {{ 'ค่าเฉลี่ยรายเดือน ดอลลาร์สหรัฐต่อตัน ข้อมูลตั้งแต่' if th else 'monthly average, US dollars per tonne, from' }} {{ X.first[:4] | int + (543 if th else 0) }}</p>
+    {{ fert_nav(prefix, lang) }}
+
+    <ul class="px-kg">
+      <li class="card px-kgc"><span class="px-kgn">{{ 'ล่าสุด' if th else 'Latest' }}</span><span class="px-kgv"><b>{{ X.usd | pxnum }}</b> USD/t</span><span class="px-kgs">{{ X.date | pxmonth(lang) }}{% if X.w.thb_bag %} · ≈ {{ X.w.thb_bag | pxnum }} {{ 'บาท/50 กก.' if th else 'baht/50 kg' }}{% endif %}</span></li>
+      <li class="card px-kgc"><span class="px-kgn">{{ '1 ปี' if th else '1 year' }}</span><span class="px-kgv"><b>{{ X.y1 | pxpct if X.y1 is not none else '–' }}</b></span><span class="px-kgs">{{ '1 เดือน' if th else '1 month' }} {{ X.m1 | pxpct if X.m1 is not none else '–' }}</span></li>
+      <li class="card px-kgc"><span class="px-kgn">{{ 'สูงสุดเป็นประวัติการณ์' if th else 'Record high' }}</span><span class="px-kgv"><b>{{ X.ath[1] | pxnum }}</b> USD/t</span><span class="px-kgs">{{ X.ath[0] | pxmonth(lang) }}</span></li>
+      <li class="card px-kgc"><span class="px-kgn">{{ 'ค่าเฉลี่ย 10 ปี' if th else '10-year average' }}</span><span class="px-kgv"><b>{{ X.avg10 | pxnum }}</b> USD/t</span><span class="px-kgs">{{ 'ล่าสุด' if th else 'Latest' }} {{ ((X.usd / X.avg10 - 1) * 100) | pxpct }}</span></li>
+    </ul>
+
+    <div class="card px-card" id="world">
+      <div class="px-range fert-range" role="group" aria-label="{{ 'ช่วงเวลา' if th else 'Time range' }}">
+        {% for k, label in [('2y', ('2 ปี' if th else '2 years')), ('10y', ('10 ปี' if th else '10 years')), ('all', ('ทั้งหมด' if th else 'All'))] %}
+        <button type="button" class="btn" data-r="{{ k }}" aria-pressed="{{ 'true' if k == '10y' else 'false' }}">{{ label }}</button>
+        {% endfor %}
+      </div>
+      {% for k in ['2y', '10y', 'all'] %}<div class="fert-r" data-r="{{ k }}"{% if k != '10y' %} hidden{% endif %}>{{ charts[k] | safe }}</div>{% endfor %}
+      <script>
+      (function(){var c=document.getElementById('world');c.querySelectorAll('.fert-range button').forEach(function(b){b.addEventListener('click',function(){
+        c.querySelectorAll('.fert-range button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+        c.querySelectorAll('.fert-r').forEach(function(d){d.hidden=d.dataset.r!==b.dataset.r})})})})();
+      </script>
+    </div>
+
+    {% if X.thai %}
+    <p class="fert-mini card">{% if th %}ราคาหน้าร้านในไทย สูตร {{ X.thai.npk }} กระสอบ 50 กก. ราว <b>{{ X.thai.median | pxnum }} บาท</b> เทียบราคาโลกที่ราว {{ X.w.thb_bag | pxnum }} บาท ส่วนต่างรวมค่าขนส่งและกำไรของผู้นำเข้าและร้านค้า{% else %}In Thai shops a 50 kg bag of {{ X.thai.npk }} costs about <b>{{ X.thai.median | pxnum }} baht</b>, against about {{ X.w.thb_bag | pxnum }} baht at the world price; the gap covers shipping and the importer's and shop's margins.{% endif %}
+      <a href="{{ prefix }}/fertilizer/{{ X.thai.npk }}/">{{ ('ราคาปุ๋ย ' ~ X.thai.npk ~ ' ในไทย') if th else (X.thai.npk ~ ' prices in Thailand') }} →</a></p>
+    {% endif %}
+
+    <h2>{{ 'รายเดือน 24 เดือนล่าสุด' if th else 'Monthly, last 24 months' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'รายเดือน' if th else 'Monthly' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'เดือน' if th else 'Month' }}</th><th scope="col" class="num">USD/t</th></tr></thead>
+      <tbody>{% for d, v in X.months %}<tr><th scope="row">{{ d | pxmonth(lang) }}</th><td class="num">{{ '%.1f' % v }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+
+    <h2>{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'ปี' if th else 'Year' }}</th><th scope="col" class="num">{{ 'เฉลี่ย' if th else 'Average' }}</th><th scope="col" class="num">{{ 'ต่ำสุด' if th else 'Low' }}</th><th scope="col" class="num">{{ 'สูงสุด' if th else 'High' }}</th><th scope="col" class="num">{{ 'เทียบปีก่อน' if th else 'vs prior year' }}</th></tr></thead>
+      <tbody>{% for r in X.years %}<tr><th scope="row">{{ r.year + 543 if th else r.year }}{% if r.months < 12 %} <small>({{ r.months }} {{ 'เดือน' if th else 'mo' }})</small>{% endif %}</th>
+        <td class="num">{{ r.avg | pxnum }}</td><td class="num">{{ r.lo | pxnum }}</td><td class="num">{{ r.hi | pxnum }}</td><td class="num">{{ r.chg | pxpct if r.chg is defined else '' }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+
+    <div class="card px-cite">
+      <h2>{{ 'นำข้อมูลนี้ไปใช้' if th else 'Use this data' }}</h2>
+      <p>{{ 'อ้างอิงเป็น' if th else 'Cite as' }}: <cite>rice.ag, “{{ (wp.title_th ~ ' วันนี้') if th else (wp.title_en ~ ' today') }}”, {{ base_url }}{{ url }}</cite> · {{ 'ข้อมูลต้นทาง: ธนาคารโลก' if th else 'Original data: World Bank' }}</p>
+      <p class="fine"><a href="/static/data/fertilizer_world.csv" download>{{ 'ดาวน์โหลดราคาปุ๋ยโลกทั้งหมด (CSV)' if th else 'Download all world fertilizer prices (CSV)' }}</a></p>
+      <label for="fw-embed">{{ 'ฝังกราฟนี้ในเว็บไซต์ของคุณ' if th else 'Embed this chart on your site' }}</label>
+      <textarea id="fw-embed" class="px-embed-code" rows="3" readonly onfocus="this.select()">&lt;iframe src="{{ base_url }}{{ prefix }}/embed/fertilizer-{{ wp.slug }}/" title="{{ (wp.title_th) if th else (wp.title_en) }} – rice.ag" width="100%" height="460" style="border:0;max-width:760px" loading="lazy"&gt;&lt;/iframe&gt;</textarea>
+    </div>
+
+    <div class="narrow">
+      <h2>{{ 'ราคาปุ๋ยตลาดโลกอื่น ๆ' if th else 'Other world fertilizer prices' }}</h2>
+      <p class="fert-others">{% for o in worlds if o.slug != wp.slug %}<a href="{{ prefix }}/fertilizer/world/{{ o.slug }}/">{{ o.th if th else o.en }}</a>{% endfor %}</p>
+    </div>
+  </div>
+</section>

@@ -174,7 +174,7 @@ def build(shops, wb_store, fx_store, prices):
         en, th, n, p, k = WORLD[key]
         world[key] = dict(en=en, th=th, date=d, usd=v, y1=round((v / yr - 1) * 100, 1) if yr else None,
                           thb_bag=round(v * fx * BAG / 1000) if fx else None,
-                          hist=[[a, b] for a, b in pts if a >= '2000-01-01'])
+                          hist=[[a, b] for a, b in pts])
     # kg of paddy a farmer sells to buy one 50 kg bag of urea
     paddy = (prices.get('series') or {}).get('dit_paddy') or {}
     paddy_kg = (paddy.get('thb') or [None])[-1]
