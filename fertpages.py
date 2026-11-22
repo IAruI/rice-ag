@@ -235,3 +235,42 @@ def faq(F, lang, blendt=None, rice=None, afford=None):
                 ('ตรวจราคาแนะนำของจังหวัดที่เว็บไซต์กรมการค้าภายใน และแจ้งสำนักงานพาณิชย์จังหวัด หรือสายด่วน 1569' if th else
                  "Check your province's recommended price on the Department of Internal Trade website, then contact the provincial commerce office or the 1569 hotline.")))
     return out
+
+
+# ---------------------------------------------------------------- world benchmark pages
+WORLD_PAGES = [  # slug, World Bank series id, the World Bank's own name for the series
+    dict(slug='urea', key='urea', wb='Urea, E. Europe', thai='46-0-0',
+         en='Urea', th='ยูเรีย', title_en='Urea price', title_th='ราคายูเรียตลาดโลก'),
+    dict(slug='dap', key='dap', wb='DAP', thai='18-46-0', en='DAP (diammonium phosphate)', th='DAP (ไดแอมโมเนียมฟอสเฟต)',
+         title_en='DAP price', title_th='ราคา DAP ตลาดโลก'),
+    dict(slug='potash', key='kcl', wb='Potassium chloride', thai='0-0-60', en='Potash (potassium chloride)', th='โพแทสเซียมคลอไรด์',
+         title_en='Potash price', title_th='ราคาโพแทสตลาดโลก'),
+    dict(slug='tsp', key='tsp', wb='TSP', thai=None, en='TSP (triple superphosphate)', th='TSP (ทริปเปิลซูเปอร์ฟอสเฟต)',
+         title_en='TSP price', title_th='ราคา TSP ตลาดโลก'),
+    dict(slug='phosphate-rock', key='rock', wb='Phosphate rock', thai=None, en='Phosphate rock', th='หินฟอสเฟต',
+         title_en='Phosphate rock price', title_th='ราคาหินฟอสเฟตตลาดโลก'),
+]
+
+
+def world_fill(wp, F):
+    """Facts for one world benchmark page, from fertilizer.json."""
+    import statistics
+    w = (F.get('world') or {}).get(wp['key'])
+    if not w or len(w.get('hist') or []) < 24:
+        return None
+    h = w['hist']
+    d = dict(h)
+    last_d, last_v = h[-1]
+    y, m = int(last_d[:4]), int(last_d[5:7])
+    m1 = d.get(f"{y if m > 1 else y - 1}-{(m - 1 or 12):02d}-01")
+    years = {}
+    for a, v in h:
+        years.setdefault(int(a[:4]), []).append(v)
+    yrows = [dict(year=yy, avg=round(statistics.mean(v)), lo=round(min(v)), hi=round(max(v)), months=len(v)) for yy, v in sorted(years.items(), reverse=True)]
+    for i, r in enumerate(yrows[:-1]):
+        r['chg'] = round((r['avg'] / yrows[i + 1]['avg'] - 1) * 100, 1)
+    hi = max(h, key=lambda p: p[1]); lo = min(h, key=lambda p: p[1])
+    th_f = next((f for f in F.get('formulas', []) if f['npk'] == wp['thai']), None) if wp['thai'] else None
+    return dict(wp=wp, w=w, date=last_d, usd=last_v, m1=round((last_v / m1 - 1) * 100, 1) if m1 else None, y1=w.get('y1'),
+                ath=hi, atl=lo, first=h[0][0], months=list(reversed(h[-24:])), years=yrows, thai=th_f,
+                avg10=round(statistics.mean(v for a, v in h if int(a[:4]) > y - 10)))

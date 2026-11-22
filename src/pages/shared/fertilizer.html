@@ -46,7 +46,7 @@
     <div class="card px-verdict" id="rice-vs-urea">
       <h2>{{ 'ข้าว 1 ตัน ซื้อยูเรียได้กี่ตัน (ตั้งแต่ปี 2503)' if th else 'How much urea a tonne of rice buys, since 1960' }}</h2>
       <p class="fert-big"><b>{{ '%.2f' % afford.current }}</b> {{ 'ตัน' if th else 'tonnes' }}</p>
-      <p>{% if th %}ข้าวขาว 5% ของไทย 1 ตันซื้อยูเรียได้ {{ '%.2f' % afford.current }} ตัน ({{ afford.date | pxdate(lang) }}) ค่ากลางตั้งแต่ปี 2503 คือ {{ '%.2f' % afford.median }} ตัน มีเพียงราว {{ afford.pct }}% ของเดือนตั้งแต่ปี 2503 ที่ปุ๋ยแพงเทียบกับข้าวเท่านี้หรือมากกว่า ต่ำสุดคือ {{ '%.2f' % afford.low[1] }} ตันในช่วงราคาปุ๋ยพุ่ง {{ afford.low[0] | pxdate(lang) }}{% else %}A tonne of Thai 5% white rice buys {{ '%.2f' % afford.current }} tonnes of urea ({{ afford.date | pxdate(lang) }}), against a median of {{ '%.2f' % afford.median }} since 1960. Fertilizer has been this dear relative to rice, or dearer, in only about {{ afford.pct }}% of months since 1960. The low was {{ '%.2f' % afford.low[1] }} tonnes during the price spike of {{ afford.low[0] | pxdate(lang) }}.{% endif %}</p>
+      <p>{% if th %}ข้าวขาว 5% ของไทย 1 ตันซื้อยูเรียได้ {{ '%.2f' % afford.current }} ตัน ({{ afford.date | pxmonth(lang) }}) ค่ากลางตั้งแต่ปี 2503 คือ {{ '%.2f' % afford.median }} ตัน มีเพียงราว {{ afford.pct }}% ของเดือนตั้งแต่ปี 2503 ที่ปุ๋ยแพงเทียบกับข้าวเท่านี้หรือมากกว่า ต่ำสุดคือ {{ '%.2f' % afford.low[1] }} ตันในช่วงราคาปุ๋ยพุ่ง {{ afford.low[0] | pxmonth(lang) }}{% else %}A tonne of Thai 5% white rice buys {{ '%.2f' % afford.current }} tonnes of urea ({{ afford.date | pxmonth(lang) }}), against a median of {{ '%.2f' % afford.median }} since 1960. Fertilizer has been this dear relative to rice, or dearer, in only about {{ afford.pct }}% of months since 1960. The low was {{ '%.2f' % afford.low[1] }} tonnes during the price spike of {{ afford.low[0] | pxmonth(lang) }}.{% endif %}</p>
       {{ charts.afford | safe }}
       <p class="fine">{{ 'ราคาส่งออก FOB ข้าวขาว 5% ของไทย (TREA, FAO, ธนาคารโลก) หารด้วยราคายูเรียโลก (ธนาคารโลก) รายเดือน ดอลลาร์ต่อตันทั้งคู่' if th else 'Thai 5% white rice FOB (TREA, FAO, World Bank) divided by world urea (World Bank), monthly, both in US dollars per tonne.' }}</p>
     </div>
@@ -128,9 +128,10 @@
       </script>
       <ul class="fert-world">
         {% for k in ['urea', 'dap', 'kcl'] if k in F.world %}{% set w = F.world[k] %}
-        <li><b>{{ w.th if th else w.en }}</b>: {{ w.usd | pxnum }} {{ 'ดอลลาร์/ตัน' if th else 'USD/t' }} ({{ w.date | pxdate(lang) }}){% if w.thb_bag %} ≈ {{ w.thb_bag | pxnum }} {{ 'บาทต่อ 50 กก. ก่อนค่าขนส่ง ภาษี และกำไร' if th else 'baht per 50 kg before freight, duties and margins' }}{% endif %}{% if w.y1 is not none %} · {{ '1 ปี' if th else '1 yr' }} {{ w.y1 | pxpct }}{% endif %}</li>
+        <li><b>{{ w.th if th else w.en }}</b>: {{ w.usd | pxnum }} {{ 'ดอลลาร์/ตัน' if th else 'USD/t' }} ({{ w.date | pxmonth(lang) }}){% if w.thb_bag %} ≈ {{ w.thb_bag | pxnum }} {{ 'บาทต่อ 50 กก. ก่อนค่าขนส่ง ภาษี และกำไร' if th else 'baht per 50 kg before freight, duties and margins' }}{% endif %}{% if w.y1 is not none %} · {{ '1 ปี' if th else '1 yr' }} {{ w.y1 | pxpct }}{% endif %}</li>
         {% endfor %}
       </ul>
+      {% if worlds %}<p class="fert-others">{% for o in worlds %}<a href="{{ prefix }}/fertilizer/world/{{ o.slug }}/">{{ o.th if th else o.en }} →</a>{% endfor %}</p>{% endif %}
       {% if F.years %}
       <h3>{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}</h3>
       <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}"><table class="px-table">

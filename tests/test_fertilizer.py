@@ -66,3 +66,11 @@ e = {(x['variety'], x['soil']): x for x in r['examples']}
 assert e[('sensitive', 'clay')]['cost'] == round(25 * 1000 / 50 + 5 * 1100 / 50)
 assert e[('nonsensitive', 'sand')]['basal_f'] == '15-15-15' and e[('nonsensitive', 'sand')]['cost'] == round(30 * 1200 / 50 + 10 * 1100 / 50)
 print('fertpages tests ok')
+
+# world benchmark page facts
+Fw = {'world': {'urea': {'hist': [[f'{y}-{m:02d}-01', 100.0 + y - 2000 + m] for y in range(2015, 2027) for m in range(1, 13)], 'y1': 5.0}},
+      'formulas': [dict(npk='46-0-0', median=1000)]}
+wf = P.world_fill(P.WORLD_PAGES[0], Fw)
+assert wf['date'] == '2026-12-01' and wf['usd'] == 138.0 and wf['ath'][1] == 138.0 and wf['first'] == '2015-01-01'
+assert wf['m1'] == round((138 / 137 - 1) * 100, 1) and wf['years'][0]['year'] == 2026 and 'chg' in wf['years'][0] and wf['thai']['npk'] == '46-0-0'
+print('world page tests ok')
