@@ -68,3 +68,9 @@ Cloudflare Web Analytics (cookieless, filters most bots). Create a site in Cloud
 - Signal rules (what counts as up / steady / down) are constants at the top of `pipeline/brief.py` and are printed on the page.
 - **India's export policy is edited by hand** in `data/brief_notes.json`: set `status` to `open`, `watch` or `restricted`, update `updated` and the EN/TH notes, push. Pushing that file re-runs the Action and the site rebuilds. Optional top-level `note_en` / `note_th` show as an editor's note above the cards.
 - Tests (offline): `python3 tests/test_brief.py`
+
+## Fertilizer prices (/fertilizer/)
+`pipeline/fertilizer.py` runs in the daily Action after the rice prices (a failure never blocks them). It pulls World Bank monthly urea, DAP, TSP, potash and phosphate rock into `data/raw/fert_wb.json`, reads the shop survey in `data/fertilizer_shops.json`, and writes `src/static/data/fertilizer.json`.
+- **New shop survey:** edit `data/fertilizer_shops.json` (set `survey.month`, replace `items`; `market` holds dated news notes with sources). Push, and the Action rebuilds.
+- Daily urea futures (CME) are licensed and TradingView's free widget refuses them, so the page links out instead.
+- Tests (offline): `python3 tests/test_fertilizer.py`

@@ -87,6 +87,21 @@ def load_fert():
     F['key'] = [by[k] for k in ('46-0-0', '16-20-0', '15-15-15', '0-0-60', '21-0-0', '16-8-8', '13-13-21', '18-46-0') if k in by]
     F['urea'] = by.get('46-0-0')
     un = next((r for r in F.get('nutrients', {}).get('N', []) if r['npk'] == '46-0-0'), None)
+    # yearly averages of the world series (complete years, plus the current year to date)
+    years = {}
+    for k in ('urea', 'dap', 'kcl'):
+        for d, v in (F.get('world', {}).get(k, {}).get('hist') or []):
+            years.setdefault(int(d[:4]), {}).setdefault(k, []).append(v)
+    rows = []
+    for y in sorted(years, reverse=True)[:12]:
+        r = {'year': y, 'months': max(len(v) for v in years[y].values()), 'urea_chg': None}
+        for k, v in years[y].items():
+            r[k] = round(sum(v) / len(v))
+        rows.append(r)
+    for i, r in enumerate(rows[:-1]):
+        prev = rows[i + 1]
+        r['urea_chg'] = round((r['urea'] / prev['urea'] - 1) * 100, 1) if r.get('urea') and prev.get('urea') else None
+    F['years'] = rows
     F['calc'] = {'formulas': {k: f['median'] for k, f in by.items()}, 'urea_n': un['baht_per_kg'] if un else None}
     sv = F.setdefault('survey', {})
     if sv.get('month'):
@@ -319,7 +334,10 @@ def main():
                 ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
             if p['key'] == 'fertilizer':
                 ctx.update(fert=dict(FERT, lead=fert_lead(FERT, lang)),
-                           charts=dict(world=pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang), paddy_bag=pp.paddy_bag_chart(FERT, lang)))
+                           charts=dict(world={'2y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=2),
+                                              '10y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=10),
+                                              'all': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=27)},
+                                       paddy_bag=pp.paddy_bag_chart(FERT, lang)))
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):
