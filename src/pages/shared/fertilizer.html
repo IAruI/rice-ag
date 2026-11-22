@@ -99,16 +99,42 @@
       </tbody>
     </table></div>
 
-    {% if charts.world %}
-    <div class="card px-card">
+    {% if charts.world['10y'] %}
+    <div class="card px-card" id="world">
       <h2>{{ 'ราคาปุ๋ยในตลาดโลก' if th else 'World fertilizer prices' }}</h2>
       <p class="fine">{{ 'ดอลลาร์สหรัฐต่อตัน รายเดือน จากธนาคารโลก ไทยนำเข้าแม่ปุ๋ยเกือบทั้งหมด ราคาหน้าร้านจึงตามราคาโลกไปด้วย' if th else 'US dollars per tonne, monthly, World Bank. Thailand imports almost all of its fertilizer raw materials, so shop prices follow world prices.' }}</p>
-      {{ charts.world | safe }}
+      <div class="px-range fert-range" role="group" aria-label="{{ 'ช่วงเวลา' if th else 'Time range' }}">
+        {% for k, label in [('2y', ('2 ปี' if th else '2 years')), ('10y', ('10 ปี' if th else '10 years')), ('all', ('ตั้งแต่ 2543' if th else 'Since 2000'))] %}
+        <button type="button" class="btn" data-r="{{ k }}" aria-pressed="{{ 'true' if k == '10y' else 'false' }}">{{ label }}</button>
+        {% endfor %}
+      </div>
+      {% for k in ['2y', '10y', 'all'] %}<div class="fert-r" data-r="{{ k }}"{% if k != '10y' %} hidden{% endif %}>{{ charts.world[k] | safe }}</div>{% endfor %}
+      <script>
+      (function(){var c=document.getElementById('world');c.querySelectorAll('.fert-range button').forEach(function(b){b.addEventListener('click',function(){
+        c.querySelectorAll('.fert-range button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+        c.querySelectorAll('.fert-r').forEach(function(d){d.hidden=d.dataset.r!==b.dataset.r})})})})();
+      </script>
       <ul class="fert-world">
         {% for k in ['urea', 'dap', 'kcl'] if k in F.world %}{% set w = F.world[k] %}
         <li><b>{{ w.th if th else w.en }}</b>: {{ w.usd | pxnum }} {{ 'ดอลลาร์/ตัน' if th else 'USD/t' }} ({{ w.date | pxdate(lang) }}){% if w.thb_bag %} ≈ {{ w.thb_bag | pxnum }} {{ 'บาทต่อ 50 กก. ก่อนค่าขนส่ง ภาษี และกำไร' if th else 'baht per 50 kg before freight, duties and margins' }}{% endif %}{% if w.y1 is not none %} · {{ '1 ปี' if th else '1 yr' }} {{ w.y1 | pxpct }}{% endif %}</li>
         {% endfor %}
       </ul>
+      {% if F.years %}
+      <h3>{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}</h3>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ค่าเฉลี่ยรายปี' if th else 'Yearly averages' }}"><table class="px-table">
+        <thead><tr><th scope="col">{{ 'ปี' if th else 'Year' }}</th><th scope="col" class="num">{{ 'ยูเรีย' if th else 'Urea' }}</th><th scope="col" class="num">{{ 'เทียบปีก่อน' if th else 'vs prior year' }}</th><th scope="col" class="num">DAP</th><th scope="col" class="num">{{ 'โพแทส' if th else 'Potash' }}</th></tr></thead>
+        <tbody>{% for r in F.years %}<tr><th scope="row">{{ r.year + 543 if th else r.year }}{% if r.months < 12 %} <small>({{ r.months }} {{ 'เดือน' if th else 'mo' }})</small>{% endif %}</th>
+          <td class="num">{{ r.urea | pxnum if r.urea else '' }}</td><td class="num">{{ r.urea_chg | pxpct if r.urea_chg is not none else '' }}</td>
+          <td class="num">{{ r.dap | pxnum if r.dap else '' }}</td><td class="num">{{ r.kcl | pxnum if r.kcl else '' }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+      <p class="fine">{{ 'ดอลลาร์สหรัฐต่อตัน' if th else 'US dollars per tonne' }}</p>
+      {% endif %}
+      <div class="px-upd"><b>{{ 'ราคาฟิวเจอร์สยูเรียรายวัน' if th else 'Daily urea futures' }}</b>
+        <p class="fine">{{ 'ธนาคารโลกเผยแพร่รายเดือน ดูราคารายวันได้จากสัญญาฟิวเจอร์สยูเรียของ CME (ข้อมูลมีลิขสิทธิ์ เราจึงลิงก์ไปแทนการแสดงบนหน้านี้)' if th else 'The World Bank publishes monthly. For daily moves, follow CME urea futures; that data is licensed, so we link to it rather than show it here.' }}
+          <a href="https://www.investing.com/commodities/urea-granular-fob-middle-east-futures" rel="noopener">{{ 'ยูเรีย FOB ตะวันออกกลาง' if th else 'Urea FOB Middle East' }} (Investing.com)</a> ·
+          <a href="https://www.tradingview.com/symbols/CBOT-UFE1!/" rel="noopener">{{ 'ยูเรีย FOB อียิปต์' if th else 'Urea FOB Egypt' }} (TradingView)</a> ·
+          <a href="https://www.tradingview.com/symbols/CBOT-UFV1!/" rel="noopener">{{ 'ยูเรีย FOB อ่าวสหรัฐฯ' if th else 'Urea FOB US Gulf' }} (TradingView)</a></p>
+      </div>
     </div>
     {% endif %}
 
