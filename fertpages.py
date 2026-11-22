@@ -141,3 +141,97 @@ def rice_defaults(F):
             examples.append(dict(variety=variety, soil=soil, basal_f=bf, basal_kg=plan['basal'], top_f=tf, top_kg=plan['top'],
                                  cost=round(cost)))
     return dict(opts=opts, top=top, plan=RICE_PLAN, examples=examples)
+
+
+# ---------------------------------------------------------------- rice vs urea, since 1960
+def affordability(F, prices):
+    """Tonnes of urea one tonne of Thai 5% white rice buys, month by month (both World Bank / TREA USD prices)."""
+    import datetime, statistics
+    th5 = (prices.get('series') or {}).get('th_5') or {}
+    urea = dict(((F.get('world') or {}).get('urea') or {}).get('hist') or [])
+    if not th5.get('d') or not urea:
+        return None
+    epoch = datetime.date(1970, 1, 1)
+    rice = {}
+    for t, v in zip(th5['d'], th5['v']):
+        if v:
+            m = (epoch + datetime.timedelta(days=int(t))).strftime('%Y-%m-01')
+            rice.setdefault(m, []).append(v)
+    pts = [[m, round(statistics.mean(rice[m]) / u, 3)] for m, u in sorted(urea.items()) if m in rice and u]
+    if len(pts) < 24:
+        return None
+    vals = sorted(v for _, v in pts)
+    cur = pts[-1][1]
+    rank = sum(1 for v in vals if v <= cur) / len(vals)  # share of months since 1960 with a ratio at or below today's
+    return dict(hist=pts, current=cur, date=pts[-1][0], median=round(statistics.median(vals), 2),
+                low=min(pts, key=lambda p: p[1]), high=max(pts, key=lambda p: p[1]), pct=round(rank * 100))
+
+
+# ---------------------------------------------------------------- brands
+BRANDS = {  # slug: shop-sheet brand name (only brands named clearly on the boards, with 6+ prices)
+    'rabbit': 'Rabbit', 'crown': 'Crown', 'openbill-stork': 'Openbill Stork', 'yara': 'Sailboat / Yara',
+    'thip': 'Thip', 'cow-head': 'Cow Head', 'cow-head-plough': 'Cow Head & Plough'}
+
+
+def brand_pages(F):
+    """One entry per brand: every formula it was seen at, and how far its price sits from that formula's median."""
+    med = {f['npk']: f['median'] for f in F.get('formulas', [])}
+    out = []
+    for slug, name in BRANDS.items():
+        rows, prem = [], []
+        for f in F.get('formulas', []):
+            for i in f['items']:
+                if i['brand'] == name:
+                    d = (i['price'] / f['median'] - 1) * 100 if i['size_kg'] == BAG and f['count'] > 1 else None
+                    if d is not None and not i['flag']:
+                        prem.append(d)
+                    rows.append(dict(npk=f['npk'], price=i['price'], size_kg=i['size_kg'], median=med.get(f['npk']), shop=i['shop'],
+                                     diff=round(d, 1) if d is not None else None, flag=i['flag'], count=f['count']))
+        if len(rows) < 3:
+            continue
+        th = next((i['brand_th'] for f in F.get('formulas', []) for i in f['items'] if i['brand'] == name and i['brand_th']), None)
+        full = [r['price'] for r in rows if r['size_kg'] == BAG]
+        out.append(dict(slug=slug, en=name, th=th or name, rows=sorted(rows, key=lambda r: r['npk']),
+                        n=len(rows), nf=len({r['npk'] for r in rows}), low=min(full) if full else None, high=max(full) if full else None,
+                        premium=round(sum(prem) / len(prem), 1) if len(prem) >= 2 else None))
+    return out
+
+
+def faq(F, lang, blendt=None, rice=None, afford=None):
+    """Questions people search, answered from today's numbers. Used for the page and FAQPage JSON-LD."""
+    th = lang == 'th'
+    by = {f['npk']: f for f in F.get('formulas', [])}
+    out = []
+    u = by.get('46-0-0')
+    if u:
+        out.append(('ปุ๋ยยูเรีย 46-0-0 ราคากระสอบละเท่าไร' if th else 'How much is a bag of urea (46-0-0) in Thailand?',
+                    (f"ราคาหน้าร้านราว {u['median']:,} บาทต่อกระสอบ 50 กก. (พบ {u['low']:,}–{u['high']:,} บาท) ราคาแนะนำของแต่ละจังหวัดดูได้ที่กรมการค้าภายใน" if th else
+                     f"About {u['median']:,} baht for a 50 kg bag at shops ({u['low']:,}–{u['high']:,} baht seen). Each province's recommended retail price is published by the Department of Internal Trade.")))
+    a = by.get('16-20-0')
+    if a:
+        out.append(('ปุ๋ย 16-20-0 ใช้กับอะไร ราคาเท่าไร' if th else 'What is 16-20-0 used for, and what does it cost?',
+                    (f"เป็นปุ๋ยรองพื้นนาข้าวในดินเหนียวตามคำแนะนำของกรมการข้าว อัตรา 25-35 กก./ไร่ ราคาหน้าร้านราว {a['median']:,} บาทต่อกระสอบ" if th else
+                     f"It is the Rice Department's recommended basal fertilizer for rice on clay soils, at 25-35 kg per rai. Shops charge about {a['median']:,} baht a bag.")))
+    n = (F.get('nutrients') or {}).get('N') or []
+    if n:
+        out.append(('ปุ๋ยสูตรไหนให้ไนโตรเจนถูกที่สุด' if th else 'Which fertilizer gives the cheapest nitrogen?',
+                    (f"ตอนนี้ {n[0]['npk']} ให้ไนโตรเจนราว {n[0]['baht_per_kg']:.1f} บาทต่อกก. รองลงมาคือ " + ', '.join(f"{x['npk']} {x['baht_per_kg']:.1f}" for x in n[1:3]) + " บาท" if th else
+                     f"Right now {n[0]['npk']}, at about {n[0]['baht_per_kg']:.1f} baht per kg of nitrogen, then " + ', '.join(f"{x['npk']} at {x['baht_per_kg']:.1f}" for x in n[1:3]) + '.')))
+    if blendt and blendt.get('best'):
+        b = blendt['best']
+        out.append(('ผสมปุ๋ยใช้เองถูกกว่าซื้อสำเร็จไหม' if th else 'Is it cheaper to blend your own fertilizer?',
+                    (f"มักถูกกว่า ที่ราคาวันนี้ สูตร {b['npk']} ผสมจากยูเรีย DAP และโพแทส ถูกกว่าซื้อสำเร็จราว {b['saving']:,} บาทต่อกระสอบ ยังไม่รวมค่าแรงผสม" if th else
+                     f"Usually. At today's prices, mixing {b['npk']} from urea, DAP and potash costs about {b['saving']:,} baht a bag less than buying it ready-made, before mixing labour.")))
+    if rice and rice.get('examples'):
+        c = [e['cost'] for e in rice['examples']]
+        out.append(('ใส่ปุ๋ยนาข้าว ต้นทุนไร่ละเท่าไร' if th else 'How much does fertilizer for rice cost per rai?',
+                    (f"ตามอัตราที่กรมการข้าวแนะนำ ค่าปุ๋ยเคมีราว {min(c):,}–{max(c):,} บาทต่อไร่ต่อฤดู ขึ้นกับพันธุ์ข้าวและชนิดดิน" if th else
+                     f"At the Rice Department's recommended rates, about {min(c):,}–{max(c):,} baht per rai per season, depending on variety and soil.")))
+    if afford:
+        out.append(('ตอนนี้ปุ๋ยแพงเมื่อเทียบกับราคาข้าวไหม' if th else 'Is fertilizer expensive compared with rice right now?',
+                    (f"ใช่ ข้าวขาว 5% 1 ตันซื้อยูเรียได้ {afford['current']:.2f} ตัน ต่ำกว่าค่ากลางตั้งแต่ปี 2503 ที่ {afford['median']:.2f} ตัน มีเพียงราว {afford['pct']}% ของเดือนตั้งแต่ปี 2503 ที่ต่ำกว่าหรือเท่านี้" if th else
+                     f"Yes. A tonne of Thai 5% rice buys {afford['current']:.2f} tonnes of urea, against a median of {afford['median']:.2f} since 1960; only about {afford['pct']}% of months since 1960 were as low or lower.")))
+    out.append(('ร้านขายปุ๋ยแพงเกินไป แจ้งได้ที่ไหน' if th else 'Where can I report a shop overcharging for fertilizer?',
+                ('ตรวจราคาแนะนำของจังหวัดที่เว็บไซต์กรมการค้าภายใน และแจ้งสำนักงานพาณิชย์จังหวัด หรือสายด่วน 1569' if th else
+                 "Check your province's recommended price on the Department of Internal Trade website, then contact the provincial commerce office or the 1569 hotline.")))
+    return out

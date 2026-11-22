@@ -111,6 +111,13 @@ def load_fert():
         sv['month_en'] = datetime.date(y, m, 1).strftime('%B %Y')
     return F
 
+def afford_chart(A, lang):
+    if not A:
+        return ''
+    S = {'r': dict(en='Tonnes of urea per tonne of Thai 5% rice', th='ยูเรีย (ตัน) ต่อข้าวขาว 5% 1 ตัน',
+                   d=[(datetime.date.fromisoformat(a) - pp.EPOCH).days for a, _ in A['hist']], v=[b for _, b in A['hist']])}
+    return pp.svg_chart({'series': S}, ['r'], years=70, lang=lang, label=S['r'][lang], unit='ตัน' if lang == 'th' else 't')
+
 def fert_lead(F, lang):
     by = {f['npk']: f for f in F.get('formulas', [])}
     u, a, b = by.get('46-0-0'), by.get('16-20-0'), by.get('15-15-15')
@@ -228,8 +235,16 @@ if FERT.get('formulas'):
                'th': f"ปุ๋ยนาข้าว ใช้สูตรไหน ต้นทุนไร่ละ {min(_c):,}–{max(_c):,} บาท ตามคำแนะนำกรมการข้าว | rice.ag"},
         desc={'en': "Rice Department fertilizer recommendations for rice by variety and soil, priced at today's Thai shop prices, with a cost-per-rai calculator.",
               'th': 'คำแนะนำการใช้ปุ๋ยนาข้าวของกรมการข้าว ตามพันธุ์ข้าวและชนิดดิน คิดราคาตามราคาปุ๋ยหน้าร้านวันนี้ พร้อมเครื่องคำนวณค่าปุ๋ยต่อไร่'}))
+    BRANDS = fp.brand_pages(FERT)
+    for _b in BRANDS:
+        PAGES.append(dict(key='fbrand', brand=_b, path=f"/fertilizer/brand/{_b['slug']}/", src='shared/fert_brand.html', section='prices',
+            title={'en': f"{_b['en']} brand fertilizer prices today: {_b['nf']} formulas, ฿{_b['low']:,}–{_b['high']:,} a bag | rice.ag",
+                   'th': f"ราคาปุ๋ยตรา{_b['th']} วันนี้ {_b['nf']} สูตร กระสอบละ {_b['low']:,}–{_b['high']:,} บาท | rice.ag"},
+            desc={'en': f"Shop prices for {_b['en']} fertilizer in Thailand by formula, compared with the median price of the same formula across brands.",
+                  'th': f"ราคาปุ๋ยตรา{_b['th']} หน้าร้านแยกตามสูตร เทียบกับราคากลางของสูตรเดียวกันจากทุกยี่ห้อ"}))
+    AFFORD = fp.affordability(FERT, PRICES)
 else:
-    FPAGES, BLENDT, RICE = [], {}, {}
+    FPAGES, BLENDT, RICE, BRANDS, AFFORD = [], {}, {}, [], None
 
 # one page per origin and per rice type (see pricepages.HUBS); titles carry the latest price
 for _h in pp.HUBS:
@@ -269,6 +284,10 @@ def jsonld(p, lang, url):
             {"@type": "ListItem", "position": 1, "name": 'ราคาข้าว' if lang == 'th' else 'Rice prices', "item": BASE_URL + url_for('/', lang)},
             {"@type": "ListItem", "position": 2, "name": h['name'][lang], "item": BASE_URL + url}]})
     elif p['key'] == 'fertilizer':
+        _fq = fp.faq(FERT, lang, BLENDT, RICE, AFFORD)
+        if _fq:
+            graph.append({"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q,
+                          "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in _fq]})
         graph.append({"@type": "Dataset", "name": p['title'][lang].split(':')[0], "url": BASE_URL + url, "description": p['desc'][lang],
                       "inLanguage": lang, "isAccessibleForFree": True, "creator": {"@id": ORG["@id"]},
                       "variableMeasured": "Fertilizer retail price, THB per 50 kg bag", "spatialCoverage": "Thailand",
@@ -359,10 +378,16 @@ def main():
                                  generated=PRICES.get('generated'))
             if p['key'] == 'hub':
                 ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
-            if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice'):
+            if p['key'] in ('hub', 'prices') and FERT.get('urea'):
+                ctx.update(fert_mini=dict(urea=FERT['urea']['median'], kg=(FERT.get('paddy') or {}).get('kg_per_urea_bag'),
+                                          rice=(fp.rice_defaults(FERT)['examples'] or [None])[0]))
+            if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice', 'fbrand'):
                 _paddy = (FERT.get('paddy') or {}).get('baht_per_kg')
                 ctx.update(F=dict(FERT), fert=dict(FERT, lead=fert_lead(FERT, lang)), fpages=FPAGES,
-                           fpage_keys=[x['npk'] for x in FPAGES], paddy_kg=_paddy)
+                           fpage_keys=[x['npk'] for x in FPAGES], paddy_kg=_paddy, brands=BRANDS, afford=AFFORD,
+                           faqs=fp.faq(FERT, lang, BLENDT, RICE, AFFORD))
+            if p['key'] == 'fbrand':
+                ctx.update(brand=p['brand'])
             if p['key'] == 'fformula':
                 ctx.update(ff=p['ff'][lang])
             if p['key'] == 'fblend':
@@ -374,7 +399,8 @@ def main():
                            charts=dict(world={'2y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=2),
                                               '10y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=10),
                                               'all': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=27)},
-                                       paddy_bag=pp.paddy_bag_chart(FERT, lang)))
+                                       paddy_bag=pp.paddy_bag_chart(FERT, lang),
+                                       afford=afford_chart(AFFORD, lang)))
             if p['src'].startswith('shared/'):
                 body = ''
                 if p.get('body'):

@@ -12,7 +12,7 @@
     <div class="card px-verdict">
       <h2>{{ 'ตลาดข้าวตอนนี้' if th else 'How rice is doing' }}</h2>
       <p>{{ px.verdict | join(' ') }}</p>
-      <p class="fine"><a href="{{ prefix }}/brief/">{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์ →' if th else 'Weekly early-warning brief: El Niño, prices, baht and India →' }}</a></p>
+      <p class="fine"><a href="{{ prefix }}/brief/">{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์ →' if th else 'Weekly early-warning brief: El Niño, prices, baht and India →' }}</a>{% if fert_mini %} · <a href="{{ prefix }}/fertilizer/">{{ ('ราคาปุ๋ยวันนี้: ยูเรีย ' ~ (fert_mini.urea | pxnum) ~ ' บาท/กระสอบ →') if th else ('Fertilizer prices: urea ' ~ (fert_mini.urea | pxnum) ~ ' baht a bag →') }}</a>{% endif %}</p>
     </div>
     {% else %}
     <p class="px-brief-link"><a href="{{ prefix }}/brief/">{{ 'สรุปสัญญาณเตือนตลาดข้าวรายสัปดาห์ →' if th else 'Weekly early-warning brief: El Niño, prices, baht and India →' }}</a></p>

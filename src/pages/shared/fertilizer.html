@@ -42,6 +42,16 @@
     </div>
     {% endif %}
 
+    {% if afford %}
+    <div class="card px-verdict" id="rice-vs-urea">
+      <h2>{{ 'ข้าว 1 ตัน ซื้อยูเรียได้กี่ตัน (ตั้งแต่ปี 2503)' if th else 'How much urea a tonne of rice buys, since 1960' }}</h2>
+      <p class="fert-big"><b>{{ '%.2f' % afford.current }}</b> {{ 'ตัน' if th else 'tonnes' }}</p>
+      <p>{% if th %}ข้าวขาว 5% ของไทย 1 ตันซื้อยูเรียได้ {{ '%.2f' % afford.current }} ตัน ({{ afford.date | pxdate(lang) }}) ค่ากลางตั้งแต่ปี 2503 คือ {{ '%.2f' % afford.median }} ตัน มีเพียงราว {{ afford.pct }}% ของเดือนตั้งแต่ปี 2503 ที่ปุ๋ยแพงเทียบกับข้าวเท่านี้หรือมากกว่า ต่ำสุดคือ {{ '%.2f' % afford.low[1] }} ตันในช่วงราคาปุ๋ยพุ่ง {{ afford.low[0] | pxdate(lang) }}{% else %}A tonne of Thai 5% white rice buys {{ '%.2f' % afford.current }} tonnes of urea ({{ afford.date | pxdate(lang) }}), against a median of {{ '%.2f' % afford.median }} since 1960. Fertilizer has been this dear relative to rice, or dearer, in only about {{ afford.pct }}% of months since 1960. The low was {{ '%.2f' % afford.low[1] }} tonnes during the price spike of {{ afford.low[0] | pxdate(lang) }}.{% endif %}</p>
+      {{ charts.afford | safe }}
+      <p class="fine">{{ 'ราคาส่งออก FOB ข้าวขาว 5% ของไทย (TREA, FAO, ธนาคารโลก) หารด้วยราคายูเรียโลก (ธนาคารโลก) รายเดือน ดอลลาร์ต่อตันทั้งคู่' if th else 'Thai 5% white rice FOB (TREA, FAO, World Bank) divided by world urea (World Bank), monthly, both in US dollars per tonne.' }}</p>
+    </div>
+    {% endif %}
+
     <h2 id="nutrient-cost">{{ 'ซื้อธาตุอาหารจากสูตรไหนถูกที่สุด' if th else 'Which fertilizer gives the cheapest nutrient' }}</h2>
     <p>{{ 'พืชต้องการธาตุอาหาร ไม่ใช่น้ำหนักกระสอบ ตารางนี้คิดราคาต่อธาตุอาหาร 1 กก. จากราคากลางหน้าร้าน' if th else 'Crops need nutrients, not bag weight. This compares the price of 1 kg of each nutrient, from the median shop prices.' }}</p>
     <div class="fert-nut">
@@ -176,6 +186,39 @@
       {% endfor %}
     </ul>
     {% endif %}
+
+    {% if brands %}
+    <h2 id="brands">{{ 'ราคาตามยี่ห้อ' if th else 'Prices by brand' }}</h2>
+    <p class="fert-others">{% for o in brands %}<a href="{{ prefix }}/fertilizer/brand/{{ o.slug }}/">{{ ('ตรา' ~ o.th) if th else o.en }}</a>{% endfor %}</p>
+    {% endif %}
+
+    {% if faqs %}
+    <h2 id="faq">{{ 'คำถามที่พบบ่อย' if th else 'Common questions' }}</h2>
+    <div class="fert-faq">{% for q, a in faqs %}<details><summary>{{ q }}</summary><p>{{ a }}</p></details>{% endfor %}</div>
+    {% endif %}
+
+    <div class="card px-wet" id="report">
+      <h2>{{ 'แจ้งราคาปุ๋ยในพื้นที่ของคุณ' if th else 'Report a fertilizer price near you' }}</h2>
+      <p class="fine">{{ 'ช่วยให้ข้อมูลครอบคลุมทั่วประเทศ กรอกแล้วกดส่ง ระบบจะเปิดอีเมลพร้อมข้อความให้คุณส่งเอง ไม่มีการเก็บข้อมูลบนเว็บนี้' if th else 'Help cover the whole country. Fill this in and press send: it opens an email with the details for you to send. Nothing is stored by this site.' }}</p>
+      <div class="px-wet-f">
+        <div class="field"><label for="rp-pv">{{ 'จังหวัด / อำเภอ' if th else 'Province / district' }}</label><input type="text" id="rp-pv" autocomplete="address-level1"></div>
+        <div class="field"><label for="rp-f">{{ 'สูตร' if th else 'Formula' }}</label><input type="text" id="rp-f" placeholder="46-0-0" inputmode="numeric"></div>
+        <div class="field"><label for="rp-b">{{ 'ยี่ห้อ' if th else 'Brand' }}</label><input type="text" id="rp-b"></div>
+        <div class="field"><label for="rp-p">{{ 'ราคา (บาท)' if th else 'Price (baht)' }}</label><input type="number" id="rp-p" min="0" inputmode="numeric"></div>
+        <div class="field"><label for="rp-w">{{ 'ขนาดกระสอบ (กก.)' if th else 'Bag size (kg)' }}</label><input type="number" id="rp-w" value="50" min="1" inputmode="numeric"></div>
+        <div class="field"><label for="rp-d">{{ 'วันที่เห็นราคา' if th else 'Date seen' }}</label><input type="date" id="rp-d"></div>
+      </div>
+      <p><a class="btn" id="rp-go" href="mailto:aryan@wildfield.org">{{ 'ส่งราคาทางอีเมล' if th else 'Send by email' }}</a></p>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},go=$('rp-go'),th={{ 'true' if th else 'false' }};
+      try{$('rp-d').valueAsDate=new Date()}catch(e){}
+      function upd(){var t=th?['จังหวัด/อำเภอ','สูตร','ยี่ห้อ','ราคา','ขนาดกระสอบ','วันที่']:['Province/district','Formula','Brand','Price','Bag size','Date'];
+        var v=[$('rp-pv').value,$('rp-f').value,$('rp-b').value,$('rp-p').value,$('rp-w').value,$('rp-d').value];
+        var body=t.map(function(k,i){return k+': '+v[i]}).join('\n')+'\n\n'+(th?'(แนบรูปป้ายราคาได้)':'(Feel free to attach a photo of the price board.)');
+        go.href='mailto:aryan@wildfield.org?subject='+encodeURIComponent((th?'ราคาปุ๋ย ':'Fertilizer price ')+v[1]+' '+v[0])+'&body='+encodeURIComponent(body);}
+      ['rp-pv','rp-f','rp-b','rp-p','rp-w','rp-d'].forEach(function(i){$(i).addEventListener('input',upd)});upd();})();
+      </script>
+    </div>
 
     <div class="card px-cite">
       <h2>{{ 'นำข้อมูลนี้ไปใช้' if th else 'Use this data' }}</h2>
