@@ -4,6 +4,7 @@ import json, shutil, hashlib, datetime, os, re
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import pricepages as pp
+import fertpages as fp
 
 ROOT = Path(__file__).parent
 SRC, DIST = ROOT / 'src', ROOT / 'dist'
@@ -204,6 +205,32 @@ if FERT.get('formulas'):
         desc={'en': f"Thai fertilizer shop prices per 50 kg bag for {len(FERT['formulas'])} formulas and brands: urea, 16-20-0, 15-15-15, 0-0-60, 21-0-0. Cheapest source of N, P and K, a price calculator, and world urea, DAP and potash prices.",
               'th': f"ราคาปุ๋ยหน้าร้านต่อกระสอบ 50 กก. {len(FERT['formulas'])} สูตร หลายยี่ห้อ: ยูเรีย 46-0-0 16-20-0 15-15-15 0-0-60 21-0-0 สูตรไหนให้ธาตุอาหารถูกที่สุด เครื่องคำนวณความคุ้มค่า และราคาปุ๋ยตลาดโลก"}))
 
+if FERT.get('formulas'):
+    FPAGES = fp.formula_pages(FERT)
+    for _f in FPAGES:
+        _ff = {l: fp.formula_fill(_f, FERT, l) for l in ('en', 'th')}
+        _nm = fp.INFO.get(_f['npk'], {})
+        PAGES.append(dict(key='fformula', ff=_ff, path=f"/fertilizer/{_f['npk']}/", src='shared/fert_formula.html', section='prices',
+            title={'en': f"{_f['npk']}{(' ' + re.sub(r' *[(].*', '', _nm['en'])) if _nm.get('en') else ''} fertilizer price today: ฿{_f['median']:,} a bag, {_f['count']} brands | rice.ag",
+                   'th': f"ราคาปุ๋ย {_f['npk']}{(' ' + re.sub(r' *[(].*', '', _nm['th'])) if _nm.get('th') else ''} วันนี้ กระสอบละ {_f['median']:,} บาท ({_f['count']} ยี่ห้อ) | rice.ag"},
+            desc={l: _ff[l]['lead'] for l in _ff}))
+    BLENDT = fp.blend_table(FERT)
+    _b = BLENDT.get('best')
+    PAGES.append(dict(key='fblend', path='/fertilizer/blend/', src='shared/fert_blend.html', section='prices',
+        title={'en': 'Blend your own fertilizer: cost vs ready-made 16-20-0, 15-15-15, 16-8-8 | rice.ag',
+               'th': 'ผสมปุ๋ยใช้เอง สูตร 16-20-0 15-15-15 16-8-8 ถูกกว่าซื้อสำเร็จเท่าไร | rice.ag'},
+        desc={'en': f"Make any N-P-K from urea, DAP and potash. At today's Thai shop prices{(', blending ' + _b['npk'] + ' saves about ' + format(_b['saving'], ',') + ' baht a bag') if _b else ''}. Free calculator.",
+              'th': f"ผสมปุ๋ยทุกสูตรจากยูเรีย DAP และโพแทส ที่ราคาหน้าร้านวันนี้{(' สูตร ' + _b['npk'] + ' ผสมเองถูกกว่าราว ' + format(_b['saving'], ',') + ' บาทต่อกระสอบ') if _b else ''} พร้อมเครื่องคำนวณฟรี"}))
+    RICE = fp.rice_defaults(FERT)
+    _c = [e['cost'] for e in RICE['examples']] or [0]
+    PAGES.append(dict(key='frice', path='/fertilizer/rice/', src='shared/fert_rice.html', section='prices',
+        title={'en': f"Rice fertilizer cost per rai: {min(_c):,}–{max(_c):,} baht, which formula for which soil | rice.ag",
+               'th': f"ปุ๋ยนาข้าว ใช้สูตรไหน ต้นทุนไร่ละ {min(_c):,}–{max(_c):,} บาท ตามคำแนะนำกรมการข้าว | rice.ag"},
+        desc={'en': "Rice Department fertilizer recommendations for rice by variety and soil, priced at today's Thai shop prices, with a cost-per-rai calculator.",
+              'th': 'คำแนะนำการใช้ปุ๋ยนาข้าวของกรมการข้าว ตามพันธุ์ข้าวและชนิดดิน คิดราคาตามราคาปุ๋ยหน้าร้านวันนี้ พร้อมเครื่องคำนวณค่าปุ๋ยต่อไร่'}))
+else:
+    FPAGES, BLENDT, RICE = [], {}, {}
+
 # one page per origin and per rice type (see pricepages.HUBS); titles carry the latest price
 for _h in pp.HUBS:
     _f = {lang: pp.hub_fill(_h, PRICES, lang) for lang in ('en', 'th')}
@@ -332,6 +359,16 @@ def main():
                                  generated=PRICES.get('generated'))
             if p['key'] == 'hub':
                 ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
+            if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice'):
+                _paddy = (FERT.get('paddy') or {}).get('baht_per_kg')
+                ctx.update(F=dict(FERT), fert=dict(FERT, lead=fert_lead(FERT, lang)), fpages=FPAGES,
+                           fpage_keys=[x['npk'] for x in FPAGES], paddy_kg=_paddy)
+            if p['key'] == 'fformula':
+                ctx.update(ff=p['ff'][lang])
+            if p['key'] == 'fblend':
+                ctx.update(blendt=BLENDT, shopmed=FERT['calc']['formulas'])
+            if p['key'] == 'frice':
+                ctx.update(rice=RICE, ricejs=dict(opts=RICE['opts'], top=RICE['top'], plan=RICE['plan'], paddy=_paddy))
             if p['key'] == 'fertilizer':
                 ctx.update(fert=dict(FERT, lead=fert_lead(FERT, lang)),
                            charts=dict(world={'2y': pp.fert_chart(FERT, ['urea', 'dap', 'kcl'], lang, years=2),

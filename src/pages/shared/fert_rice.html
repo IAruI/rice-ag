@@ -1,0 +1,78 @@
+{% from '_px.html' import fert_nav %}
+{% set th = lang == 'th' %}
+{% set R = rice %}
+{% set VAR = {'sensitive': ('ข้าวไวต่อช่วงแสง (เช่น หอมมะลิ)' if th else 'Photoperiod-sensitive (e.g. Hom Mali)'), 'nonsensitive': ('ข้าวไม่ไวต่อช่วงแสง (เช่น ชัยนาท 1 ปทุมธานี)' if th else 'Non-sensitive (e.g. Chainat 1, Pathum Thani)')} %}
+{% set SOIL = {'clay': ('ดินเหนียว' if th else 'clay soil'), 'sand': ('ดินร่วน/ดินทราย' if th else 'loam or sandy soil')} %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › {{ 'ปุ๋ยนาข้าว' if th else 'Rice' }}</p>
+    <h1>{{ 'ปุ๋ยนาข้าว ใช้สูตรไหน ต้นทุนไร่ละเท่าไร' if th else 'Fertilizer for rice: which formula, and what it costs per rai' }}</h1>
+    {% set e0 = R.examples[0] if R.examples else none %}
+    <p class="lead px-lead">{% if th %}ตามคำแนะนำของกรมการข้าว ค่าปุ๋ยเคมีนาข้าวที่ราคาหน้าร้านวันนี้อยู่ราว {{ (R.examples | map(attribute='cost') | min) | pxnum }}–{{ (R.examples | map(attribute='cost') | max) | pxnum }} บาทต่อไร่ต่อฤดู ขึ้นกับพันธุ์ข้าวและชนิดดิน{% else %}Following the Rice Department's recommendations, chemical fertilizer for rice costs about {{ (R.examples | map(attribute='cost') | min) | pxnum }}–{{ (R.examples | map(attribute='cost') | max) | pxnum }} baht per rai per season at today's shop prices, depending on variety and soil.{% endif %}</p>
+    {{ fert_nav(prefix, lang, 'rice') }}
+
+    <h2>{{ 'ต้นทุนปุ๋ยต่อไร่ ตามคำแนะนำ' if th else 'Fertilizer cost per rai, by recommendation' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ต้นทุนปุ๋ยต่อไร่' if th else 'Cost per rai' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'พันธุ์ข้าว' if th else 'Variety' }}</th><th scope="col">{{ 'ดิน' if th else 'Soil' }}</th><th scope="col" class="num">{{ 'บาท/ไร่' if th else 'Baht/rai' }}</th><th scope="col" class="num">{{ 'ข้าวเปลือก (กก.)' if th else 'Paddy (kg)' }}</th><th scope="col">{{ 'ปุ๋ยรองพื้น' if th else 'Basal' }}</th><th scope="col">{{ 'ปุ๋ยแต่งหน้า' if th else 'Top-dressing' }}</th></tr></thead>
+      <tbody>{% for e in R.examples %}<tr><th scope="row">{{ VAR[e.variety] }}</th><td>{{ SOIL[e.soil] }}</td>
+        <td class="num"><b>{{ e.cost | pxnum }}</b></td><td class="num">{{ (e.cost / paddy_kg) | round | int if paddy_kg else '' }}</td>
+        <td><a href="{{ prefix }}/fertilizer/{{ e.basal_f }}/">{{ e.basal_f }}</a> {{ e.basal_kg }} {{ 'กก.' if th else 'kg' }}</td>
+        <td><a href="{{ prefix }}/fertilizer/{{ e.top_f }}/">{{ e.top_f }}</a> {{ e.top_kg }} {{ 'กก.' if th else 'kg' }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    <p class="fine">{% if th %}อัตราจากคลังความรู้เรื่องข้าว กรมการข้าว: รองพื้นด้วย 16-20-0 (ดินเหนียว) หรือ 16-16-8 (ดินร่วน/ดินทราย) ข้าวไวแสง 25 กก./ไร่ ข้าวไม่ไวแสง 30 กก./ไร่ แต่งหน้าด้วยยูเรีย 5 และ 10 กก./ไร่ ตามลำดับ ไม่มีราคา 16-16-8 ในการสำรวจ จึงใช้ 15-15-15 ซึ่งกรมการข้าวระบุเป็นทางเลือกสำหรับดินร่วนและดินทราย · คอลัมน์สุดท้ายคือข้าวเปลือกเจ้าที่ต้องขายเพื่อจ่ายค่าปุ๋ย ที่ราคา {{ '%.2f' % paddy_kg }} บาท/กก.{% else %}Rates from the Rice Department's Rice Knowledge Bank: basal 16-20-0 (clay) or 16-16-8 (loam/sand), 25 kg/rai for photoperiod-sensitive rice and 30 kg/rai for non-sensitive; urea top-dressing 5 and 10 kg/rai. 16-16-8 had no price in the survey, so 15-15-15, which the Rice Department lists as an option for loam and sandy soils, is used. · The last column is the white paddy a farmer sells to pay for it, at {{ '%.2f' % paddy_kg }} baht/kg.{% endif %}</p>
+
+    <div class="card px-wet" id="rice-calc">
+      <h2>{{ 'คำนวณค่าปุ๋ยนาของคุณ' if th else 'Work out your own field' }}</h2>
+      <div class="px-wet-f">
+        <div class="field"><label for="rc-v">{{ 'พันธุ์ข้าว' if th else 'Variety' }}</label><select id="rc-v"><option value="sensitive">{{ VAR.sensitive }}</option><option value="nonsensitive">{{ VAR.nonsensitive }}</option></select></div>
+        <div class="field"><label for="rc-s">{{ 'ชนิดดิน' if th else 'Soil' }}</label><select id="rc-s"><option value="clay">{{ SOIL.clay }}</option><option value="sand">{{ SOIL.sand }}</option></select></div>
+        <div class="field"><label for="rc-r">{{ 'พื้นที่ (ไร่)' if th else 'Area (rai)' }}</label><input type="number" id="rc-r" value="10" min="0" step="0.5" inputmode="decimal"></div>
+        <div class="field"><label for="rc-bf">{{ 'ปุ๋ยรองพื้น' if th else 'Basal fertilizer' }}</label><select id="rc-bf"></select></div>
+        <div class="field"><label for="rc-bk">{{ 'อัตรารองพื้น (กก./ไร่)' if th else 'Basal rate (kg/rai)' }}</label><input type="number" id="rc-bk" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="rc-bp">{{ 'ราคาปุ๋ยรองพื้น (บาท/กระสอบ)' if th else 'Basal price (baht/bag)' }}</label><input type="number" id="rc-bp" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="rc-tf">{{ 'ปุ๋ยแต่งหน้า' if th else 'Top-dressing' }}</label><select id="rc-tf"></select></div>
+        <div class="field"><label for="rc-tk">{{ 'อัตราแต่งหน้า (กก./ไร่)' if th else 'Top-dress rate (kg/rai)' }}</label><input type="number" id="rc-tk" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="rc-tp">{{ 'ราคาปุ๋ยแต่งหน้า (บาท/กระสอบ)' if th else 'Top-dress price (baht/bag)' }}</label><input type="number" id="rc-tp" min="0" step="1" inputmode="numeric"></div>
+      </div>
+      <div class="px-wet-out" aria-live="polite" id="rc-o"></div>
+      <script type="application/json" id="rc-d">{{ ricejs | tojson }}</script>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},D=JSON.parse($('rc-d').textContent),th={{ 'true' if th else 'false' }};
+      function n(x,d){return x.toLocaleString('en-US',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+      function fill(sel,opts){sel.innerHTML=opts.map(function(o){return '<option value="'+o[0]+'" data-p="'+o[1]+'">'+o[0]+' ('+n(o[1])+')</option>'}).join('')}
+      function setDefaults(){var v=$('rc-v').value,s=$('rc-s').value,P=D.plan[v];fill($('rc-bf'),D.opts[s]);fill($('rc-tf'),D.top);
+        $('rc-bk').value=P.basal;$('rc-tk').value=($('rc-tf').value==='21-0-0'?P.top*2:P.top);
+        $('rc-bp').value=$('rc-bf').selectedOptions[0]?$('rc-bf').selectedOptions[0].dataset.p:'';$('rc-tp').value=$('rc-tf').selectedOptions[0]?$('rc-tf').selectedOptions[0].dataset.p:'';run();}
+      function run(){var r=+$('rc-r').value,bk=+$('rc-bk').value,tk=+$('rc-tk').value,bp=+$('rc-bp').value,tp=+$('rc-tp').value,o=$('rc-o');
+        if(!(r>=0)){o.textContent='';return}
+        var per=bk*bp/50+tk*tp/50,tot=per*r,bb=bk*r/50,tb=tk*r/50,L=th?['ต่อไร่','รวม','บาท','กระสอบ','ข้าวเปลือกเจ้าที่ต้องขาย','กก.']:['per rai','total','baht','bags','White paddy to sell','kg'];
+        var s='<b>'+n(per)+' '+L[2]+'</b> '+L[0]+' · '+L[1]+' <b>'+n(tot)+' '+L[2]+'</b><br>'+$('rc-bf').value+': '+n(bb,1)+' '+L[3]+' · '+$('rc-tf').value+': '+n(tb,1)+' '+L[3];
+        if(D.paddy)s+='<br>'+L[4]+' '+n(tot/D.paddy)+' '+L[5]+' ('+n(per/D.paddy)+' '+L[5]+' '+L[0]+')';o.innerHTML=s;}
+      $('rc-v').addEventListener('change',setDefaults);$('rc-s').addEventListener('change',setDefaults);
+      $('rc-bf').addEventListener('change',function(){$('rc-bp').value=this.selectedOptions[0].dataset.p;run()});
+      $('rc-tf').addEventListener('change',function(){var P=D.plan[$('rc-v').value];$('rc-tp').value=this.selectedOptions[0].dataset.p;$('rc-tk').value=(this.value==='21-0-0'?P.top*2:P.top);run()});
+      ['rc-r','rc-bk','rc-bp','rc-tk','rc-tp'].forEach(function(i){$(i).addEventListener('input',run)});setDefaults();})();
+      </script>
+    </div>
+
+    <div class="narrow">
+      <h2>{{ 'ใส่ปุ๋ยเมื่อไร' if th else 'When to apply' }}</h2>
+      {% if th %}
+      <ul>
+        <li><b>ปุ๋ยรองพื้น:</b> นาดำใส่วันปักดำ นาหว่านใส่หลังข้าวงอกราว 20 วัน</li>
+        <li><b>ปุ๋ยแต่งหน้า (ยูเรีย):</b> ช่วงข้าวแตกกอสูงสุด และช่วงกำเนิดช่อดอก</li>
+        <li>หากใช้แอมโมเนียมซัลเฟต 21-0-0 แทนยูเรีย ใช้อัตราราวสองเท่า (กรมการข้าวระบุ 20-30 กก./ไร่ เทียบยูเรีย 10-15 กก./ไร่)</li>
+        <li>อัตราเหล่านี้เป็นคำแนะนำทั่วไป การตรวจดินช่วยปรับอัตราให้เหมาะกับแปลงและอาจลดต้นทุนได้</li>
+      </ul>
+      {% else %}
+      <ul>
+        <li><b>Basal:</b> on transplanting day for transplanted rice, or about 20 days after germination for broadcast rice.</li>
+        <li><b>Top-dressing (urea):</b> at maximum tillering and at panicle initiation.</li>
+        <li>Using ammonium sulfate (21-0-0) instead of urea, apply about twice as much (the Rice Department gives 20-30 kg/rai against 10-15 kg/rai of urea).</li>
+        <li>These are general recommendations. A soil test tunes the rates to your field and can cut the bill.</li>
+      </ul>
+      {% endif %}
+      <p class="fine">{{ 'ที่มา: คลังความรู้เรื่องข้าว กรมการข้าว' if th else 'Source: Rice Knowledge Bank, Rice Department of Thailand' }} (<a href="https://rkb.ricethailand.go.th/" rel="noopener">rkb.ricethailand.go.th</a>)</p>
+    </div>
+  </div>
+</section>

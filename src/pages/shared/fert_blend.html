@@ -1,0 +1,72 @@
+{% from '_px.html' import fert_nav %}
+{% set th = lang == 'th' %}
+{% set B = blendt %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › {{ 'ผสมปุ๋ยใช้เอง' if th else 'Blend your own' }}</p>
+    <h1>{{ 'ผสมปุ๋ยใช้เอง: สูตรไหนถูกกว่าซื้อสำเร็จ' if th else 'Blend your own fertilizer: when it beats buying the compound' }}</h1>
+    {% set best = B.best %}
+    <p class="lead px-lead">{% if th %}ผสมจากแม่ปุ๋ย 3 ชนิด คือ ยูเรีย 46-0-0, DAP 18-46-0 และโพแทส 0-0-60 ทำได้เกือบทุกสูตร ที่ราคาหน้าร้านวันนี้{% if best %} สูตร {{ best.npk }} ผสมเองถูกกว่าซื้อสำเร็จราว {{ best.saving | pxnum }} บาทต่อกระสอบ{% endif %}{% else %}Three straights, urea (46-0-0), DAP (18-46-0) and potash (0-0-60), can make most formulas. At today's shop prices{% if best %}, blending {{ best.npk }} yourself costs about {{ best.saving | pxnum }} baht a bag less than buying it ready-made{% endif %}.{% endif %}</p>
+    {{ fert_nav(prefix, lang, 'blend') }}
+
+    <h2>{{ 'ผสมเองเทียบซื้อสำเร็จ ต่อ 50 กก.' if th else 'Blend vs ready-made, per 50 kg' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ตารางผสมปุ๋ย' if th else 'Blend table' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'สูตร' if th else 'Formula' }}</th><th scope="col" class="num">DAP</th><th scope="col" class="num">{{ 'ยูเรีย' if th else 'Urea' }}</th><th scope="col" class="num">{{ 'โพแทส' if th else 'Potash' }}</th><th scope="col" class="num">{{ 'ตัวเติม' if th else 'Filler' }}</th>
+        <th scope="col" class="num">{{ 'ค่าผสม' if th else 'Blend cost' }}</th><th scope="col" class="num">{{ 'ซื้อสำเร็จ' if th else 'Ready-made' }}</th><th scope="col" class="num">{{ 'ต่างกัน' if th else 'Difference' }}</th></tr></thead>
+      <tbody>{% for r in B.rows %}<tr><th scope="row"><a href="{{ prefix }}/fertilizer/{{ r.npk }}/">{{ r.npk }}</a></th>
+        <td class="num">{{ '%g' % r.dap }}</td><td class="num">{{ '%g' % r.urea }}</td><td class="num">{{ '%g' % r.mop }}</td><td class="num">{{ '%g' % r.filler }}</td>
+        <td class="num"><b>{{ r.per_bag | pxnum }}</b></td><td class="num">{{ r.shop | pxnum if r.shop else '–' }}</td>
+        <td class="num">{% if r.saving is not none %}{{ ('−' if r.saving > 0 else '+') }}{{ (r.saving | abs) | pxnum }}{% endif %}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    <p class="fine">{% if th %}กิโลกรัมของแม่ปุ๋ยต่อปุ๋ยผสม 50 กก. ราคาแม่ปุ๋ยตามราคากลางหน้าร้าน: ยูเรีย {{ B.prices['46-0-0'] | pxnum }} DAP {{ B.prices['18-46-0'] | pxnum }} โพแทส {{ B.prices['0-0-60'] | pxnum }} บาท/กระสอบ ยังไม่รวมค่าแรงผสมและสารตัวเติม{% else %}Kg of each straight per 50 kg of blend. Straights at median shop prices: urea {{ B.prices['46-0-0'] | pxnum }}, DAP {{ B.prices['18-46-0'] | pxnum }}, potash {{ B.prices['0-0-60'] | pxnum }} baht a bag. Mixing labour and filler not included.{% endif %}</p>
+
+    <div class="card px-wet" id="blend-calc">
+      <h2>{{ 'คำนวณสูตรผสมของคุณ' if th else 'Work out your own blend' }}</h2>
+      <div class="px-wet-f">
+        <div class="field"><label for="bl-t">{{ 'สูตรที่ต้องการ (N-P-K)' if th else 'Target formula (N-P-K)' }}</label><input type="text" id="bl-t" value="16-20-0" inputmode="numeric" autocomplete="off"></div>
+        <div class="field"><label for="bl-a">{{ 'ปริมาณที่ต้องการ (กก.)' if th else 'Amount to make (kg)' }}</label><input type="number" id="bl-a" value="1000" min="1" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="bl-u">{{ 'ราคายูเรีย 46-0-0 (บาท/กระสอบ)' if th else 'Urea 46-0-0 price (baht/bag)' }}</label><input type="number" id="bl-u" value="{{ B.prices['46-0-0'] }}" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="bl-d">{{ 'ราคา DAP 18-46-0 (บาท/กระสอบ)' if th else 'DAP 18-46-0 price (baht/bag)' }}</label><input type="number" id="bl-d" value="{{ B.prices['18-46-0'] }}" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="bl-m">{{ 'ราคาโพแทส 0-0-60 (บาท/กระสอบ)' if th else 'Potash 0-0-60 price (baht/bag)' }}</label><input type="number" id="bl-m" value="{{ B.prices['0-0-60'] }}" min="0" step="1" inputmode="numeric"></div>
+      </div>
+      <div class="px-wet-out" aria-live="polite" id="bl-o"></div>
+      <script type="application/json" id="bl-shop">{{ shopmed | tojson }}</script>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},S=JSON.parse($('bl-shop').textContent),th={{ 'true' if th else 'false' }};
+      function n(x,d){return x.toLocaleString('en-US',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+      function run(){var o=$('bl-o'),m=($('bl-t').value||'').replace(/\s/g,'').match(/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/),A=+$('bl-a').value;
+        if(!m||!(A>0)){o.textContent=th?'ใส่สูตรแบบ 16-20-0 และปริมาณ':'Enter a formula like 16-20-0 and an amount.';return}
+        var N=+m[1],P=+m[2],K=+m[3],dap=A*P/46,urea=(A*N/100-dap*0.18)/0.46,mop=A*K/60,fill=A-dap-urea-mop;
+        if(urea<-1e-6){o.textContent=th?'สูตรนี้มีไนโตรเจนต่ำเกินกว่าที่ DAP ให้มา ผสมจากแม่ปุ๋ย 3 ชนิดนี้ไม่ได้':'This formula has less nitrogen than the DAP alone brings, so these three straights cannot make it.';return}
+        if(fill<-0.5){o.textContent=th?'สูตรนี้เข้มข้นเกินกว่าจะผสมจากแม่ปุ๋ย 3 ชนิดนี้ได้':'This formula is too concentrated to make from these three straights.';return}
+        urea=Math.max(urea,0);fill=Math.max(fill,0);
+        var cost=urea*$('bl-u').value/50+dap*$('bl-d').value/50+mop*$('bl-m').value/50,per=cost*50/A,key=[m[1],m[2],m[3]].join('-'),r=[];
+        var L=th?{u:'ยูเรีย 46-0-0',d:'DAP 18-46-0',m:'โพแทส 0-0-60',f:'สารตัวเติม',kg:'กก.'}:{u:'Urea 46-0-0',d:'DAP 18-46-0',m:'Potash 0-0-60',f:'Filler',kg:'kg'};
+        r.push('<ul class="bl-list">'+[[L.d,dap],[L.u,urea],[L.m,mop],[L.f,fill]].filter(function(x){return x[1]>0.05}).map(function(x){return '<li>'+x[0]+': <b>'+n(x[1],1)+' '+L.kg+'</b> ('+n(x[1]/50,1)+(th?' กระสอบ':' bags')+')</li>'}).join('')+'</ul>');
+        r.push((th?'ค่าแม่ปุ๋ยรวม ':'Straights cost ')+'<b>'+n(cost)+(th?' บาท':' baht')+'</b> · '+(th?'ต่อ 50 กก. ':'per 50 kg ')+'<b>'+n(per)+'</b>');
+        if(S[key]){var d=S[key]-per;r.push(th?('ซื้อสำเร็จราคากลาง '+n(S[key])+' บาท/กระสอบ · ผสมเอง'+(d>=0?'ถูกกว่า ':'แพงกว่า ')+n(Math.abs(d))+' บาท/กระสอบ'):('Ready-made median '+n(S[key])+' baht a bag · blending is '+n(Math.abs(d))+' baht a bag '+(d>=0?'cheaper':'dearer')));}
+        o.innerHTML=r.join('<br>');}
+      ['bl-t','bl-a','bl-u','bl-d','bl-m'].forEach(function(i){$(i).addEventListener('input',run)});run();})();
+      </script>
+    </div>
+
+    <div class="narrow">
+      <h2>{{ 'ก่อนผสมเอง' if th else 'Before you blend' }}</h2>
+      {% if th %}
+      <ul>
+        <li>ปุ๋ยผสมให้ธาตุอาหาร N-P-K ตามสูตรเท่ากัน แต่ปุ๋ยสูตรสำเร็จจากโรงงานบางชนิดมีธาตุอื่นด้วย เช่น กำมะถัน หรือมีเม็ดปุ๋ยที่สม่ำเสมอกว่า</li>
+        <li>ยูเรียดูดความชื้นง่ายเมื่อผสมกับแม่ปุ๋ยอื่น ควรผสมใกล้วันใช้ และเก็บในที่แห้ง</li>
+        <li>ผสมให้เข้ากันดีบนพื้นที่สะอาด เม็ดปุ๋ยขนาดต่างกันมากจะแยกตัวเมื่อหว่าน</li>
+        <li>วิธีคิด: DAP ให้ฟอสเฟตทั้งหมดและไนโตรเจนบางส่วน ยูเรียเติมไนโตรเจนที่เหลือ โพแทสให้โพแทสเซียม ส่วนที่เหลือคือสารตัวเติม</li>
+      </ul>
+      {% else %}
+      <ul>
+        <li>A blend gives the same N-P-K, but some factory compounds also carry other nutrients such as sulfur, or have more even granules.</li>
+        <li>Urea picks up moisture once mixed with other straights: mix close to when you apply, and keep it dry.</li>
+        <li>Mix thoroughly on a clean floor; granules of very different sizes separate when spread.</li>
+        <li>How it is worked out: DAP supplies all the phosphate and some nitrogen, urea tops up the nitrogen, potash supplies the potassium, and filler makes up the weight.</li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+</section>

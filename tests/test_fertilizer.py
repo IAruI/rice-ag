@@ -50,3 +50,19 @@ assert out['world']['urea']['y1'] == round((445 / 410 - 1) * 100, 1) and out['wo
 assert out['paddy']['kg_per_urea_bag'] == round(1050 / 9.7)
 assert out['paddy']['world_hist'] and out['paddy']['world_hist'][0][0] == '2026-10-01', out['paddy']
 print('fertilizer tests ok')
+
+# fertpages: blend maths and rice defaults
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import fertpages as P
+px = {'46-0-0': 1100, '18-46-0': 1600, '0-0-60': 900}
+b = P.blend((16, 20, 0), px, 100)
+assert abs(b['dap'] - 43.5) < 0.1 and abs(b['urea'] - 17.8) < 0.1 and b['mop'] == 0 and abs(b['filler'] - 38.8) < 0.2, b
+assert abs(b['cost'] - (17.78 * 22 + 43.48 * 32)) < 2, b
+assert P.blend((46, 46, 46), px) is None, 'too concentrated'
+assert P.blend((5, 40, 0), px) is None, 'less N than DAP brings'
+assert P.blend((0, 0, 60), px)['mop'] == 100
+r = P.rice_defaults({'formulas': [dict(npk='16-20-0', median=1000), dict(npk='15-15-15', median=1200), dict(npk='46-0-0', median=1100)]})
+e = {(x['variety'], x['soil']): x for x in r['examples']}
+assert e[('sensitive', 'clay')]['cost'] == round(25 * 1000 / 50 + 5 * 1100 / 50)
+assert e[('nonsensitive', 'sand')]['basal_f'] == '15-15-15' and e[('nonsensitive', 'sand')]['cost'] == round(30 * 1200 / 50 + 10 * 1100 / 50)
+print('fertpages tests ok')

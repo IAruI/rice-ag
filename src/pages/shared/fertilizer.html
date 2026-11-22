@@ -1,4 +1,4 @@
-{% from '_px.html' import hub_links %}
+{% from '_px.html' import hub_links, fert_nav %}
 {% set th = lang == 'th' %}
 {% set F = fert %}
 {% set NAME = {
@@ -16,10 +16,12 @@
     {% if F.lead %}<p class="lead px-lead">{{ F.lead }}</p>{% endif %}
     <p class="fine">{% if th %}ราคาหน้าร้านจากป้ายราคาร้านจำหน่ายปุ๋ย {{ F.survey.shops }} ร้าน สำรวจเดือน{{ F.survey.month_th }}{% if F.survey.area_th %} ({{ F.survey.area_th }}){% endif %} · ราคาโลกจากธนาคารโลก{% else %}Shop prices from the price boards of {{ F.survey.shops }} farm-supply shops, surveyed {{ F.survey.month_en }}{% if F.survey.area_en %} ({{ F.survey.area_en }}){% endif %} · world prices from the World Bank{% endif %}</p>
 
+    {{ fert_nav(prefix, lang, 'main') }}
+
     <ul class="px-kg" aria-label="{{ 'ราคาปุ๋ยสูตรหลักต่อกระสอบ' if th else 'Main formulas, price per bag' }}">
       {% for f in F.key %}
       <li class="card px-kgc">
-        <span class="px-kgn">{{ f.npk }}{% if f.npk in NAME %} <small>{{ fname(f.npk) }}</small>{% endif %}</span>
+        <span class="px-kgn"><a href="{{ prefix }}/fertilizer/{{ f.npk }}/">{{ f.npk }}</a>{% if f.npk in NAME %} <small>{{ fname(f.npk) }}</small>{% endif %}</span>
         <span class="px-kgv"><b>{{ f.median | pxnum }}</b> {{ 'บาท/กระสอบ' if th else 'baht/bag' }}</span>
         <span class="px-kgs">{% if f.count > 1 %}{{ f.low | pxnum }}–{{ f.high | pxnum }} · {{ f.count }} {{ 'ยี่ห้อ' if th else 'brands' }}{% else %}1 {{ 'ยี่ห้อ' if th else 'brand' }}{% endif %} · {{ 'กก.ละ' if th else 'per kg' }} {{ '%.2f' % f.per_kg }}</span>
       </li>
@@ -90,7 +92,7 @@
         <th scope="col" class="num">{{ 'บาท/กก. ธาตุอาหาร' if th else 'Baht/kg nutrient' }}</th><th scope="col">{{ 'ยี่ห้อและราคา' if th else 'Brands and prices' }}</th></tr></thead>
       <tbody>
       {% for f in F.formulas %}
-      <tr><th scope="row">{{ f.npk }}{% if f.npk in NAME %}<br><small>{{ fname(f.npk) }}</small>{% endif %}</th>
+      <tr><th scope="row">{% if f.npk in fpage_keys %}<a href="{{ prefix }}/fertilizer/{{ f.npk }}/">{{ f.npk }}</a>{% else %}{{ f.npk }}{% endif %}{% if f.npk in NAME %}<br><small>{{ fname(f.npk) }}</small>{% endif %}</th>
         <td class="num">{{ f.median | pxnum }}</td>
         <td class="num">{% if f.count > 1 %}{{ f.low | pxnum }}–{{ f.high | pxnum }}{% endif %}</td>
         <td class="num">{{ '%.1f' % f.per_nutrient if f.per_nutrient else '' }}</td>
@@ -135,6 +137,34 @@
           <a href="https://www.tradingview.com/symbols/CBOT-UFE1!/" rel="noopener">{{ 'ยูเรีย FOB อียิปต์' if th else 'Urea FOB Egypt' }} (TradingView)</a> ·
           <a href="https://www.tradingview.com/symbols/CBOT-UFV1!/" rel="noopener">{{ 'ยูเรีย FOB อ่าวสหรัฐฯ' if th else 'Urea FOB US Gulf' }} (TradingView)</a></p>
       </div>
+    </div>
+    {% endif %}
+
+    {% if F.world.urea is defined %}
+    <div class="card px-wet" id="parity">
+      <h2>{{ 'ต้นทุนนำเข้าถึงไทย เทียบราคาหน้าร้าน' if th else 'Import cost to Thailand vs the shop price' }}</h2>
+      <p class="fine">{{ 'ไทยนำเข้าแม่ปุ๋ยเกือบทั้งหมด ใส่ราคาโลก ค่าเรือ และค่าใช้จ่ายในประเทศ เพื่อดูว่าส่วนต่างถึงราคาหน้าร้านเหลือเท่าไร ค่าเรือและค่าใช้จ่ายเป็นค่าสมมติ ปรับให้ตรงกับที่คุณรู้' if th else 'Thailand imports almost all of these. Enter a world price, freight and local costs to see what is left between the landed cost and the shop price. Freight and local costs are assumptions: change them to what you know.' }}</p>
+      <div class="px-wet-f">
+        <div class="field"><label for="ip-x">{{ 'ปุ๋ย' if th else 'Product' }}</label><select id="ip-x">{% for k, f in [('urea', '46-0-0'), ('dap', '18-46-0'), ('kcl', '0-0-60')] if k in F.world %}<option value="{{ k }}" data-usd="{{ F.world[k].usd }}" data-shop="{{ (F.calc.formulas[f]) or '' }}">{{ F.world[k].th if th else F.world[k].en }}</option>{% endfor %}</select></div>
+        <div class="field"><label for="ip-p">{{ 'ราคาโลก FOB (ดอลลาร์/ตัน)' if th else 'World price FOB (USD/t)' }}</label><input type="number" id="ip-p" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="ip-f">{{ 'ค่าเรือถึงไทย (ดอลลาร์/ตัน)' if th else 'Freight to Thailand (USD/t)' }}</label><input type="number" id="ip-f" value="35" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="ip-r">{{ 'อัตราแลกเปลี่ยน (บาท/ดอลลาร์)' if th else 'Exchange rate (THB per USD)' }}</label><input type="number" id="ip-r" value="{{ '%.2f' % F.fx.thb if F.fx.thb else 34 }}" min="1" step="0.01" inputmode="decimal"></div>
+        <div class="field"><label for="ip-l">{{ 'ค่าขนถ่าย บรรจุ ขนส่งในประเทศ (บาท/กระสอบ)' if th else 'Port, bagging, trucking (baht/bag)' }}</label><input type="number" id="ip-l" value="80" min="0" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="ip-s">{{ 'ราคาหน้าร้าน (บาท/กระสอบ)' if th else 'Shop price (baht/bag)' }}</label><input type="number" id="ip-s" min="0" step="1" inputmode="numeric"></div>
+      </div>
+      <div class="px-wet-out" aria-live="polite" id="ip-o"></div>
+      <script>
+      (function(){var $=function(i){return document.getElementById(i)},th={{ 'true' if th else 'false' }};
+      function n(x){return Math.round(x).toLocaleString('en-US')}
+      function pick(){var o=$('ip-x').selectedOptions[0];$('ip-p').value=o.dataset.usd;$('ip-s').value=o.dataset.shop;run()}
+      function run(){var p=+$('ip-p').value,f=+$('ip-f').value,r=+$('ip-r').value,l=+$('ip-l').value,s=+$('ip-s').value,o=$('ip-o');
+        if(!(p>0&&r>0)){o.textContent='';return}
+        var cif=(p+f)*r/20,landed=cif+l,gap=s-landed;
+        o.innerHTML=(th?'ราคาถึงท่าเรือไทย (CIF) ':'Landed at a Thai port (CIF) ')+'<b>'+n(cif)+'</b> · '+(th?'ถึงร้านก่อนกำไร ':'At the shop before margins ')+'<b>'+n(landed)+(th?' บาท/กระสอบ':' baht/bag')+'</b>'
+          +(s>0?'<br>'+(th?'ส่วนต่างถึงราคาหน้าร้าน (กำไรผู้นำเข้า ตัวแทน และร้านค้า รวมค่าใช้จ่ายอื่น) ':'Left for importer, dealer and shop margins and other costs ')+'<b>'+n(gap)+(th?' บาท':' baht')+'</b> ('+Math.round(gap/s*100)+'%)':'');}
+      $('ip-x').addEventListener('change',pick);['ip-p','ip-f','ip-r','ip-l','ip-s'].forEach(function(i){$(i).addEventListener('input',run)});pick();})();
+      </script>
+      <p class="fine">{{ 'ราคาโลกจากธนาคารโลกเป็นราคา FOB ของแหล่งผลิตหลัก ตรวจสอบภาษีและค่าธรรมเนียมนำเข้ากับกรมศุลกากร เครื่องคำนวณนี้ไม่ได้รวมไว้' if th else 'World Bank prices are FOB at major origins. Check duties and fees with Thai Customs; this calculator assumes none.' }}</p>
     </div>
     {% endif %}
 
