@@ -76,11 +76,11 @@ def read_page(path):
     H = groups(np.where(dark.sum(1) > 0.25 * a.shape[1])[0])
     body = [(H[i], H[i + 1]) for i in range(len(H) - 1) if 40 < H[i + 1] - H[i] < 80]
     # a column rule is dark through (nearly) the full height of most rows; stacked digits never are
-    light = a < 180
+    light = a < 200
     cnt = np.zeros(a.shape[1])
     for y0, y1 in body:
         f = light[y0 + 5:y1 - 5].mean(0)
-        cnt += np.maximum.reduce([np.roll(f, k) for k in (-2, -1, 0, 1, 2)]) > 0.8
+        cnt += np.maximum.reduce([np.roll(f, k) for k in range(-6, 7)]) > 0.7   # tolerate a little skew
     V = []
     for v in groups(np.where(cnt > 0.5 * len(body))[0]):
         if not V or v - V[-1] >= 60:
