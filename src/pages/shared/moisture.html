@@ -3,6 +3,7 @@
     <div class="crumbs"><a href="{{ prefix }}/">rice.ag</a> / {{ T.nav_moisture }}</div>
     <h1>{{ T.mc_title }}</h1>
     <p class="lead" style="max-width:760px;color:var(--muted);font-size:1.08rem">{{ T.mc_intro }}</p>
+    {% if paddy_now %}<p class="card px-note">{% if lang == 'th' %}ราคาข้าวเปลือกวันนี้ ({{ paddy_now.d }}): {% for x in paddy_now.rows %}{{ x.th }} <b>{{ x.kg }}</b> บาท/กก.{% if not loop.last %} · {% endif %}{% endfor %} · <a href="/th/prices/thailand-paddy/">ราคาข้าวเปลือกทั้งหมด →</a>{% else %}Thai paddy today ({{ paddy_now.d }}): {% for x in paddy_now.rows %}{{ x.en }} <b>{{ x.kg }}</b> baht/kg{% if not loop.last %} · {% endif %}{% endfor %} · <a href="/prices/thailand-paddy/">All paddy prices →</a>{% endif %}</p>{% endif %}
     <div class="calc">
       <div class="panel">
         <h2>{{ T.mc_a_title }}</h2>
