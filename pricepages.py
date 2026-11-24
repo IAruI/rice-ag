@@ -337,7 +337,7 @@ HUBS = [
          name={'en': 'Thai paddy', 'th': 'ข้าวเปลือกไทย'},
          h1={'en': 'Thai paddy prices today', 'th': 'ราคาข้าวเปลือกวันนี้'},
          title={'en': 'Thai paddy price today per kg: white ฿{kg_dit_paddy}, Hom Mali ฿{kg_dit_paddy_hm}, glutinous ฿{kg_dit_paddy_glu} | rice.ag',
-                'th': 'ราคาข้าวเปลือกวันนี้ กิโลละกี่บาท: เจ้า {kg_dit_paddy} หอมมะลิ {kg_dit_paddy_hm} เหนียว {kg_dit_paddy_glu} บาท/กก. | rice.ag'},
+                'th': 'ราคาข้าวเปลือกวันนี้ {d} กิโลละกี่บาท: เจ้า {kg_dit_paddy} หอมมะลิ {kg_dit_paddy_hm} เหนียว {kg_dit_paddy_glu} บาท/กก. | rice.ag'},
          desc={'en': 'Daily Thai paddy and wholesale rice prices from the Department of Internal Trade: white paddy ฿{pt} per tonne ({d}), Hom Mali, Pathum Thani and glutinous paddy, Bangkok wholesale. Baht and US dollars.',
                'th': 'ราคาข้าวเปลือกและข้าวสารขายส่งรายวันจากกรมการค้าภายใน: ข้าวเปลือกเจ้า {pt} บาท/ตัน ({d}) ข้าวเปลือกหอมมะลิ ปทุมธานี ข้าวเหนียว และราคาขายส่ง กทม. เป็นบาทและดอลลาร์'},
          body={'en': ["These are Thailand's official daily paddy (unmilled rice) and Bangkok wholesale prices, published by the Department of Internal Trade on business days. Paddy prices are what mills and traders pay farmers, so they move before export prices do.",
@@ -377,7 +377,7 @@ HUBS = [
          name={'en': 'Glutinous paddy', 'th': 'ข้าวเปลือกเหนียว'},
          h1={'en': 'Glutinous (sticky) paddy price today', 'th': 'ราคาข้าวเปลือกเหนียววันนี้'},
          title={'en': 'Glutinous paddy price today: ฿{kg}/kg (฿{pt}/t), Thai sticky rice paddy, daily | rice.ag',
-                'th': 'ราคาข้าวเปลือกเหนียววันนี้: กิโลกรัมละ {kg} บาท ({pt} บาท/ตัน) | rice.ag'},
+                'th': 'ราคาข้าวเปลือกเหนียววันนี้ {d} (ข้าวเหนียวเปลือก) กิโลกรัมละ {kg} บาท ตันละ {pt} | rice.ag'},
          desc={'en': 'Daily Thai glutinous (sticky) paddy price from the Department of Internal Trade: ฿{kg} per kg, ฿{pt} per tonne ({d}), with RD6 Bangkok wholesale, the export price and 5 years of history.',
                'th': 'ราคาข้าวเปลือกเหนียวเมล็ดยาวรายวันจากกรมการค้าภายใน กิโลกรัมละ {kg} บาท ({pt} บาท/ตัน ณ {d}) พร้อมราคาข้าวสารเหนียว กข.6 ขายส่ง กทม. ราคาส่งออก และกราฟย้อนหลัง 5 ปี'},
          body={'en': ["This is the official daily reference price for long-grain glutinous (sticky) paddy, published by Thailand's Department of Internal Trade on business days. It is what mills and traders pay for dry glutinous paddy.",
@@ -603,3 +603,65 @@ def dataset_ld(h, data, lang, url, base_url, org_id):
             "variableMeasured": [x['en'] for x in rows],
             "creator": {"@id": org_id},
             "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": base_url + "/static/data/prices.csv"}]}
+
+
+# ---------------------------------------------------------------- paddy questions, answered with today's numbers
+
+def paddy_faq(data, lang):
+    """The questions farmers actually type into Google (see Search Console), answered from the DIT daily prices.
+    Used on the Thai paddy hubs and as FAQPage structured data."""
+    th = lang == 'th'
+    S = {k: stats(data, k) for k in ('dit_paddy', 'dit_paddy_hm', 'dit_paddy_glu', 'dit_paddy_pathum', 'dit_paddy_supan')}
+    w, hm, glu = S['dit_paddy'], S['dit_paddy_hm'], S['dit_paddy_glu']
+    if not (w and w['thb']):
+        return []
+    d = fdate(w['date'], lang)
+    def name(st):
+        return st['th'] if th else st['en']
+    have = [x for x in (w, hm, S['dit_paddy_pathum'], S['dit_paddy_supan'], glu) if x and x['thb']]
+    out = []
+    if th:
+        out.append(('ราคาข้าวเปลือกวันนี้ กิโลละกี่บาท',
+                    f"ราคาอ้างอิงของกรมการค้าภายใน ณ {d}: " + ' · '.join(f"{name(x)} {kg(x['thb'])} บาท/กก." for x in have)
+                    + ' เป็นราคาข้าวเปลือกแห้ง (ความชื้นมาตรฐาน 15%) ที่โรงสีและพ่อค้ารับซื้อ'))
+        out.append(('ราคาข้าวเปลือกวันนี้ ตันละเท่าไร',
+                    ' · '.join(f"{name(x)} {num(x['thb'])} บาท/ตัน" for x in have) + f" (ณ {d}) ราคาต่อตัน = ราคาต่อกิโลกรัม × 1,000"))
+        if glu and glu['thb']:
+            out.append(('ราคาข้าวเหนียวเปลือกวันนี้ กิโลกรัมละเท่าไร',
+                        f"{name(glu)} {kg(glu['thb'])} บาท/กก. ({num(glu['thb'])} บาท/ตัน) ณ {d}"
+                        + (f" เปลี่ยนแปลง {pct(glu['m1'])} ในรอบเดือน" if glu['m1'] is not None else '')))
+        wet = w['thb'] / 1000 * (100 - 25) / (100 - 15)
+        out.append(('ข้าวเปลือกสด ความชื้น 25% ขายได้กิโลละเท่าไร',
+                    f"ราว {wet:.2f} บาท/กก. เมื่อข้าวเปลือกเจ้าแห้งราคา {kg(w['thb'])} บาท/กก. คิดจากน้ำหนักเนื้อข้าวแห้งเท่านั้น "
+                    "(ข้าวสด 1,000 กก. ที่ความชื้น 25% เท่ากับข้าวแห้ง 15% ราว 882 กก.) โรงสียังหักค่าอบ สิ่งเจือปน และข้าวลีบเพิ่ม ราคาที่ได้จริงจึงมักต่ำกว่านี้"))
+        if w['m1'] is not None or w['y1'] is not None:
+            out.append(('ราคาข้าวเปลือกขึ้นหรือลง',
+                        f"ข้าวเปลือกเจ้า {kg(w['thb'])} บาท/กก. "
+                        + (f"เปลี่ยนแปลง {pct(w['m1'])} เทียบเดือนก่อน " if w['m1'] is not None else '')
+                        + (f"และ {pct(w['y1'])} เทียบปีก่อน" if w['y1'] is not None else '')))
+        out.append(('ราคาข้าวเปลือกนี้มาจากไหน อัปเดตเมื่อไร',
+                    'ราคาอ้างอิงรายวันของกรมการค้าภายใน กระทรวงพาณิชย์ ประกาศทุกวันทำการ rice.ag ดึงข้อมูลอัตโนมัติทุกวัน '
+                    'ราคาที่โรงสีในพื้นที่จ่ายจริงต่างกันตามความชื้น คุณภาพ และระยะทาง'))
+    else:
+        out.append(('How much is Thai paddy per kg today?',
+                    f"Department of Internal Trade reference prices on {d}: " + ' · '.join(f"{name(x)} {kg(x['thb'])} baht/kg" for x in have)
+                    + '. These are for dry paddy (15% standard moisture) bought by mills and traders.'))
+        out.append(('What is the Thai paddy price per tonne?',
+                    ' · '.join(f"{name(x)} {num(x['thb'])} baht/t" for x in have) + f" ({d}). Per tonne = per kilo × 1,000."))
+        if glu and glu['thb']:
+            out.append(('What is the glutinous (sticky) paddy price today?',
+                        f"{name(glu)} {kg(glu['thb'])} baht/kg ({num(glu['thb'])} baht/t) on {d}"
+                        + (f", {pct(glu['m1'])} on the month." if glu['m1'] is not None else '.')))
+        wet = w['thb'] / 1000 * (100 - 25) / (100 - 15)
+        out.append(('What is wet paddy at 25% moisture worth per kg?',
+                    f"About {wet:.2f} baht/kg when dry white paddy is {kg(w['thb'])} baht/kg, on dry weight alone "
+                    "(1,000 kg at 25% moisture is about 882 kg at 15%). Mills also deduct drying, dirt and empty grains, so the real price is usually lower."))
+        if w['m1'] is not None or w['y1'] is not None:
+            out.append(('Are Thai paddy prices going up or down?',
+                        f"White paddy is {kg(w['thb'])} baht/kg"
+                        + (f", {pct(w['m1'])} on the month" if w['m1'] is not None else '')
+                        + (f" and {pct(w['y1'])} on the year." if w['y1'] is not None else '.')))
+        out.append(('Where do these paddy prices come from?',
+                    "The Department of Internal Trade's daily reference prices, published on business days; rice.ag pulls them every day. "
+                    'What a local mill pays depends on moisture, quality and distance.'))
+    return out

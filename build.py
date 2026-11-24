@@ -61,6 +61,7 @@ env.filters.update(fdate=fdate, spark=spark, onibars=onibars,
                    pxsrc=lambda r, lang='en': pp.srcnames(r, lang),
                    pxmonth=lambda d, lang='en': pp.fdate(datetime.date.fromisoformat(str(d)[:10]), lang, monthly=True))
 PRICES = pp.load_prices()
+PADDY_FAQ_HUBS = ('thailand-paddy', 'glutinous-paddy')   # the paddy questions people search for
 env.globals.update(hubs=pp.HUBS)
 _PROV = {r[2]: (r[1], r[0]) for r in json.loads((ROOT / 'data/provinces.json').read_text(encoding='utf-8'))} if (ROOT / 'data/provinces.json').exists() else {}
 env.filters.update(
@@ -396,6 +397,11 @@ def jsonld(p, lang, url):
     elif p['key'] == 'hub':
         h = p['hub']
         graph.append(pp.dataset_ld(h, PRICES, lang, url, BASE_URL, ORG['@id']))
+        if h['slug'] in PADDY_FAQ_HUBS:
+            _fq = pp.paddy_faq(PRICES, lang)
+            if _fq:
+                graph.append({"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q,
+                              "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in _fq]})
         graph.append({"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": 'ราคาข้าว' if lang == 'th' else 'Rice prices', "item": BASE_URL + url_for('/', lang)},
             {"@type": "ListItem", "position": 2, "name": h['name'][lang], "item": BASE_URL + url}]})
@@ -533,8 +539,12 @@ def main():
                     groups.append((gr[lang], rows))
                 ctx['px'] = dict(groups=[g for g in groups if g[1]], verdict=pp.market_verdict(PRICES, load_brief(), lang),
                                  generated=PRICES.get('generated'))
+            if p['key'] == 'moisture':
+                _r = [x for x in (pp.stats(PRICES, k) for k in ('dit_paddy', 'dit_paddy_hm', 'dit_paddy_glu')) if x and x['thb']]
+                ctx['paddy_now'] = dict(d=pp.fdate(_r[0]['date'], lang), rows=[dict(th=x['th'], en=x['en'], kg=pp.kg(x['thb'])) for x in _r]) if _r else None
             if p['key'] == 'hub':
-                ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'))
+                ctx.update(hub=p['hub'], fill=p['fill'][lang], india=pp.load_india(), generated=PRICES.get('generated'),
+                           paddy_faq=pp.paddy_faq(PRICES, lang) if p['hub']['slug'] in PADDY_FAQ_HUBS else [])
             if p['key'] in ('hub', 'prices') and FERT.get('urea'):
                 ctx.update(fert_mini=dict(urea=FERT['urea']['median'], kg=(FERT.get('paddy') or {}).get('kg_per_urea_bag'),
                                           rice=(fp.rice_defaults(FERT)['examples'] or [None])[0]))
