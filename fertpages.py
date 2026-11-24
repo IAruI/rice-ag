@@ -320,3 +320,105 @@ def season_svg(s, lang):
         o.append(f'<text class="px-tick fs-m" x="{x + bw * 0.35:.1f}" y="{H - 10}" text-anchor="middle">{(TH if lang == "th" else EN)[i]}</text>')
     o.append('</svg>')
     return ''.join(o)
+
+
+# ---------------------------------------------------------------- Thai prices from every source (fert_local)
+
+SRC = {'dit': ('DIT recommended price (77 provinces)', 'ราคาแนะนำ กรมการค้าภายใน (77 จังหวัด)'),
+       'coop': ('Tha Bo co-op, Nong Khai', 'สหกรณ์การเกษตรท่าบ่อ หนองคาย'),
+       'report': ('Provincial commerce office and news checks', 'สำนักงานพาณิชย์จังหวัดและข่าว'),
+       'survey': ('rice.ag shop survey', 'สำรวจหน้าร้านของ rice.ag')}
+BRAND_NAMES = {'rabbit': ('Rabbit', 'กระต่าย'), 'cow-plough': ('Cow Head & Plough', 'หัววัวคันไถ'), 'top-one': ('Top One', 'ท็อปวัน'),
+               'rung-arun': ('Rung Arun', 'รุ่งอรุณ'), 'crown': ('Crown', 'มงกุฎ'), 'yara': ('Yara', 'ยาร่า'), 'entec': ('Entec', 'เอ็นเทค'),
+               'other': ('Other brand', 'ยี่ห้ออื่น')}
+
+
+def bname(slug, lang, extra=None):
+    n = (extra or {}).get(slug) or BRAND_NAMES.get(slug)
+    if not n:
+        return slug
+    return n[1] if lang == 'th' else n[0]
+
+
+def tracker_svg(points, lang, label=''):
+    """Thai bag prices for one formula, every source on one time axis. points from fert_local.tracker."""
+    import datetime as _dt
+    pts = [p for p in points if p.get('low')]
+    if len(pts) < 2:
+        return ''
+    d = lambda s: _dt.date.fromisoformat(s[:10])
+    t0 = min(d(p['date']) for p in pts).replace(day=1)
+    t1 = max(_dt.date.today(), max(d(p['date']) for p in pts))
+    W, H, M = 760, 330, dict(l=70, r=20, t=34, b=40)
+    lo = min(p['low'] for p in pts); hi = max(p.get('high') or p['low'] for p in pts)
+    pad = max(40, (hi - lo) * 0.1); lo -= pad; hi += pad
+    step = 100 if hi - lo < 900 else 200
+    ticks = list(range(int(lo // step + 1) * step, int(hi) + 1, step))
+    span = (t1 - t0).days or 1
+    X = lambda t: M['l'] + (t - t0).days / span * (W - M['l'] - M['r'])
+    Y = lambda v: M['t'] + (1 - (v - lo) / (hi - lo)) * (H - M['t'] - M['b'])
+    o = [f'<svg class="px-svg px-static fl-track" viewBox="0 0 {W} {H}" role="img" aria-label="{label}">']
+    for v in ticks:
+        o.append(f'<line class="px-grid" x1="{M["l"]}" x2="{W - M["r"]}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>'
+                 f'<text class="px-tick" x="{M["l"] - 8}" y="{Y(v) + 4:.1f}" text-anchor="end">{v:,}</text>')
+    mon_th = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+    m = t0; every = 1 if span < 400 else 3
+    while m <= t1:
+        if (m.month - 1) % every == 0:
+            lab = mon_th[m.month - 1] if lang == 'th' else m.strftime('%b')
+            if m.month == 1 or m == t0:
+                lab += f" {(m.year + 543) % 100 if lang == 'th' else m.year}" if lang == 'th' else f' {m.year}'
+            o.append(f'<text class="px-tick" x="{X(m):.1f}" y="{H - 14}" text-anchor="middle">{lab}</text>')
+        m = (m.replace(day=28) + _dt.timedelta(days=4)).replace(day=1)
+    o.append(f'<line class="px-axis" x1="{M["l"]}" x2="{W - M["r"]}" y1="{H - M["b"]}" y2="{H - M["b"]}"/>')
+    o.append(f'<text class="px-tick" x="4" y="20">{"บาท/กระสอบ 50 กก." if lang == "th" else "baht per 50 kg bag"}</text>')
+    style = {'dit': 1, 'report': 2, 'coop': 3, 'survey': 4}
+    for p in pts:
+        x = X(d(p['date'])); k = style[p['src']]; h = p.get('high') or p['low']
+        tip = f"{p['date']} · {bname(p['src'], lang, {s: v for s, v in SRC.items()})}: {p['low']:,}{('–' + format(h, ',')) if h != p['low'] else ''}"
+        if p['src'] == 'dit':
+            o.append(f'<rect class="fl-dit" x="{x - 6:.1f}" y="{Y(h):.1f}" width="12" height="{max(2, Y(p["low"]) - Y(h)):.1f}" style="fill:var(--s{k})"><title>{tip}</title></rect>')
+        elif p['src'] == 'report':
+            o.append(f'<g style="stroke:var(--s{k})"><title>{tip}</title><line class="fl-rng" x1="{x:.1f}" x2="{x:.1f}" y1="{Y(h):.1f}" y2="{Y(p["low"]):.1f}"/>'
+                     f'<circle r="3" cx="{x:.1f}" cy="{Y((p["low"] + h) / 2):.1f}" style="fill:var(--s{k})"/></g>')
+        elif p['src'] == 'coop':
+            o.append(f'<circle class="fl-coop" r="5" cx="{x:.1f}" cy="{Y(p["low"]):.1f}" style="fill:var(--s{k})"><title>{tip}</title></circle>')
+        else:
+            o.append(f'<path d="M{x:.1f} {Y(p["low"]) - 7:.1f}l7 7-7 7-7-7z" style="fill:var(--s{k})"><title>{tip}</title></path>')
+    o.append('</svg>')
+    used = [s for s in ('dit', 'report', 'coop', 'survey') if any(p['src'] == s for p in pts)]
+    legend = ''.join(f'<li><i style="background:var(--s{style[s]})"></i>{SRC[s][1] if lang == "th" else SRC[s][0]}</li>' for s in used)
+    return ''.join(o) + f'<ul class="px-key">{legend}</ul>'
+
+
+def province_pages(F):
+    L = F.get('local') or {}
+    return (L.get('dit') or {}).get('provinces') or []
+
+
+def province_fill(row, F, lang):
+    """Context for /fertilizer/province/<slug>/."""
+    L = F['local']; dit = L['dit']; rows = dit['provinces']
+    th = lang == 'th'
+    order = ['46-0-0', '16-20-0', '15-15-15', '21-0-0', '0-0-60', '18-46-0']
+    table = []
+    for f in order:
+        bs = row['prices'].get(f)
+        if not bs:
+            continue
+        nat = dit['national'][f]
+        items = sorted(bs.items(), key=lambda kv: kv[1])
+        table.append(dict(npk=f, items=[dict(brand=b, name=bname(b, lang), price=p) for b, p in items],
+                          low=items[0][1], high=items[-1][1], nat_low=nat['low'], nat_high=nat['high']))
+    deltas = sorted({r['delta'] for r in rows})
+    rank = sum(1 for r in rows if r['delta'] < row['delta']) + 1
+    same = [r for r in rows if r['region'] == row['region'] and r['slug'] != row['slug']]
+    reports = [r for r in L.get('reports', []) if r.get('province') == row['slug']]
+    coop = L.get('coop') if (L.get('coop') or {}).get('province') == row['slug'] else None
+    urea = next((t for t in table if t['npk'] == '46-0-0'), None)
+    name = row['th'] if th else row['en']
+    lead = ((f"ราคาจำหน่ายปลีกแนะนำของกรมการค้าภายใน จ.{name}: ยูเรีย 46-0-0 กระสอบละ {urea['low']:,}–{urea['high']:,} บาท แล้วแต่ยี่ห้อ"
+             if th else f"DIT recommended retail price for {name}: urea 46-0-0 at {urea['low']:,}–{urea['high']:,} baht a bag, depending on brand")
+            if urea else '')
+    return dict(row=row, name=name, table=table, rank=rank, n=len(rows), cheapest_delta=deltas[0], dearest_delta=deltas[-1],
+                region=sorted(same, key=lambda r: r['delta'])[:12], reports=reports, coop=coop, lead=lead)

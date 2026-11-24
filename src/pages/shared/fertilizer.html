@@ -1,4 +1,5 @@
 {% from '_px.html' import hub_links, fert_nav %}
+{% from '_fl.html' import latest_table, sources %}
 {% set th = lang == 'th' %}
 {% set F = fert %}
 {% set NAME = {
@@ -19,6 +20,7 @@
     {{ fert_nav(prefix, lang, 'main') }}
     <p class="fert-toc fine"><b>{{ 'ในหน้านี้' if th else 'On this page' }}:</b>
       <a href="#nutrient-cost">{{ 'ธาตุอาหารถูกที่สุด' if th else 'Cheapest nutrient' }}</a> · <a href="#fert-calc">{{ 'คำนวณความคุ้ม' if th else 'Bag calculator' }}</a> ·
+      <a href="#latest">{{ 'ราคาจากทุกแหล่ง' if th else 'Every source' }}</a> · <a href="{{ prefix }}/fertilizer/province/">{{ 'รายจังหวัด' if th else 'By province' }}</a> ·
       <a href="#all-prices">{{ 'ทุกสูตร' if th else 'All formulas' }}</a> · <a href="#world">{{ 'ราคาโลก' if th else 'World prices' }}</a> ·
       <a href="#parity">{{ 'ต้นทุนนำเข้า' if th else 'Import cost' }}</a> · <a href="#season">{{ 'เดือนไหนถูก' if th else 'Cheapest month' }}</a> ·
       <a href="#brands">{{ 'ยี่ห้อ' if th else 'Brands' }}</a> · <a href="#faq">{{ 'คำถาม' if th else 'Questions' }}</a> · <a href="#report">{{ 'แจ้งราคา' if th else 'Report a price' }}</a></p>
@@ -33,6 +35,26 @@
       {% endfor %}
     </ul>
     <p class="fine">{{ 'กระสอบ 50 กก. ราคากลาง (มัธยฐาน) ของทุกยี่ห้อที่พบ' if th else '50 kg bags. The middle (median) price across the brands seen.' }}</p>
+
+    {% if F.local %}{% set L = F.local %}
+    <h2 id="latest">{{ 'ราคาล่าสุดจากทุกแหล่ง' if th else 'The latest price from every source' }}</h2>
+    <p>{% if th %}ไม่มีแหล่งใดแหล่งเดียวที่บอกราคาปุ๋ยทั่วประเทศได้ทุกวัน rice.ag จึงรวมทุกแหล่งที่มีวันที่และที่มาชัดเจนไว้ในตารางเดียว{% else %}No single source gives Thai fertilizer prices nationwide every day, so rice.ag puts every dated, sourced price side by side.{% endif %}</p>
+    {{ latest_table(L, F, lang, prefix) }}
+    {{ sources(L, F, lang, prefix) }}
+    {% if track and track['46-0-0'] %}
+    <figure class="px-fig">{{ track['46-0-0'] | safe }}<figcaption class="fine">{{ 'ยูเรีย 46-0-0 ตลอดปี 2569 จากทุกแหล่ง' if th else 'Urea 46-0-0 through 2026, every source' }} · <a href="{{ prefix }}/fertilizer/reports/">{{ 'กราฟทุกสูตร' if th else 'charts for every formula' }} →</a></figcaption></figure>
+    {% endif %}
+    {% if L.dit %}
+    <form class="fl-pick" action="{{ prefix }}/fertilizer/province/" onsubmit="var v=this.p.value;if(v){location.href=v;return false}">
+      <label for="fl-p">{{ 'ราคาแนะนำในจังหวัดของคุณ' if th else 'Recommended prices in your province' }}</label>
+      <select id="fl-p" name="p" onchange="if(this.value)location.href=this.value">
+        <option value="">—</option>
+        {% for r in L.dit.provinces | sort(attribute=('th' if th else 'en')) %}<option value="{{ prefix }}/fertilizer/province/{{ r.slug }}/">{{ r.th if th else r.en }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit">{{ 'ไป' if th else 'Go' }}</button></noscript>
+    </form>
+    {% endif %}
+    {% endif %}
 
     {% if F.paddy.kg_per_urea_bag %}
     <div class="card px-verdict">

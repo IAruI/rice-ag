@@ -9,6 +9,10 @@ Inputs
   data/raw/fert_wb.json        World Bank Pink Sheet fertilizer history (urea, DAP, TSP, potash, phosphate rock), USD/t, monthly
   data/raw/fx.json             USD/THB (pulled by fetch_prices.py)
   src/static/data/prices.json  Thai paddy price (for "kg of paddy to buy a bag")
+  data/dit_fert.json           DIT recommended retail prices by province (tools/dit_fert_ocr.py)
+  data/fert_reports.json       provincial office / news shop prices, logged by hand
+  data/raw/coop_thabo.json     Tha Bo co-op price list (pipeline/coop_prices.py, pulled here)
+  data/raw/dit_watch.json      new DIT announcements not yet read (pipeline/dit_watch.py, checked here)
 
 Writes src/static/data/fertilizer.json, which build.py renders into /fertilizer/ and /th/fertilizer/.
 A failure here never touches the rice prices.
@@ -198,7 +202,17 @@ def build(shops, wb_store, fx_store, prices):
                 survey=shops.get('survey', {}), market=shops.get('market', []), formulas=formulas, nutrients=nutrient_costs(formulas),
                 world=world, fx=dict(date=fx_d, thb=fx), paddy=dict(baht_per_kg=round(paddy_kg, 2) if paddy_kg else None,
                                                                     kg_per_urea_bag=per_bag, world_hist=hist),
-                status=wb_store.get('status', {}))
+                status=wb_store.get('status', {}), local=local_block(formulas, shops.get('survey', {})))
+
+
+def local_block(formulas, survey):
+    try:
+        sys.path.insert(0, str(ROOT / 'pipeline'))
+        import fert_local
+        return fert_local.build(formulas, survey)
+    except Exception:
+        traceback.print_exc()
+        return None
 
 
 def main():
@@ -218,6 +232,13 @@ def main():
             print(f'fertilizer: World Bank FAILED: {st["last_error"]}', file=sys.stderr)
             traceback.print_exc()
         (RAW / 'fert_wb.json').write_text(json.dumps(store, separators=(',', ':')), encoding='utf-8')
+        for name in ('coop_prices', 'dit_watch'):   # each keeps its old data on failure
+            try:
+                sys.path.insert(0, str(ROOT / 'pipeline'))
+                from fetch_prices import get
+                __import__(name).update(get)
+            except Exception:
+                traceback.print_exc()
     out = build(load(SHOPS, {}), store, load(RAW / 'fx.json', {}), load(OUT.parent / 'prices.json', {}))
     OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     print(f"fertilizer: {len(out['formulas'])} formulas, world series: {', '.join(out['world']) or 'none yet'}")

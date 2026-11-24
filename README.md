@@ -75,3 +75,21 @@ Cloudflare Web Analytics (cookieless, filters most bots). Create a site in Cloud
 - Daily urea futures (CME) are licensed and TradingView's free widget refuses them, so the page links out instead.
 - Pages (all EN + TH, built by `build.py` with `fertpages.py`): `/fertilizer/` (prices, nutrient cost, calculators, world prices, rice-vs-urea since 1960, cheapest month, FAQ, price-report form), `/fertilizer/<formula>/` (every formula at 3+ brands plus the straights and rice formulas), `/fertilizer/brand/<slug>/` (brands in `BRANDS`), `/fertilizer/blend/`, `/fertilizer/rice/` (Rice Department rates in `RICE_PLAN`), `/fertilizer/world/<urea|dap|potash|tsp|phosphate-rock>/`. Embeds at `/embed/fertilizer-<slug>/`; CSV at `/static/data/fertilizer_world.csv`.
 - Tests (offline): `python3 tests/test_fertilizer.py`
+
+## Thai fertilizer prices from every source (Nov 2026)
+
+`/fertilizer/` puts every dated Thai bag price side by side (pipeline/fert_local.py), and adds
+`/fertilizer/province/<slug>/` (77 provinces), `/fertilizer/province/` and `/fertilizer/reports/` (tracker charts).
+
+- **DIT recommended retail prices** (`data/dit_fert.json`): scanned PDFs from the Department of Internal Trade, 77 provinces x brands.
+  The daily job checks the DIT page for a new one (`pipeline/dit_watch.py`); the site then says a newer list is out.
+  To add it, download the PDF, check the column order of one table page by eye, and run (needs tesseract + Thai, poppler):
+  `python3 tools/dit_fert_ocr.py FILE.pdf --no N --date YYYY-MM-DD --url PDF_URL --layout "A=dist|46-0-0:..." --layout "B=..."`
+  (see the docstring for the No.9 example). It refuses to write if the two tables disagree on a province.
+- **Tha Bo co-op, Nong Khai** (`data/raw/coop_thabo.json`): pulled daily by `pipeline/coop_prices.py`; each new list is kept by date.
+- **Reports** (`data/fert_reports.json`): provincial commerce office checks and news, entered by hand with the source link. Add new ones at the top.
+- OAE's fertilizer price tables (oae.go.th) were offline when checked (Nov 2026); the mirror only has 2012-2018.
+
+## Share images, fonts (Nov 2026)
+- `og.py` draws a 1200x630 share image with today's number for every priced page at build time (`dist/og/*.png`), using IBM Plex Sans Thai in `og/` (OFL). Needs Pillow (in `requirements.txt`); without it, pages fall back to `static/img/og.png`.
+- Fonts are self-hosted from Fontsource (`src/static/fonts/`, `src/static/css/fonts.css`, OFL); no request to Google Fonts.

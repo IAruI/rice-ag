@@ -1,0 +1,1067 @@
+{
+ "announcements": [
+  {
+   "no": 4,
+   "date": "2026-04-29",
+   "url": "https://www.dit.go.th/media/ov2fbsju/20260429164941_8549.pdf",
+   "base": {
+    "46-0-0": {
+     "rabbit": 918,
+     "cow-plough": 898,
+     "top-one": 1283,
+     "crown": 1078
+    },
+    "18-46-0": {
+     "cow-plough": 1478,
+     "top-one": 1513,
+     "rung-arun": 1478,
+     "crown": 1533
+    },
+    "0-0-60": {
+     "rabbit": 908,
+     "cow-plough": 823,
+     "top-one": 833,
+     "rung-arun": 828,
+     "crown": 853
+    },
+    "21-0-0": {
+     "rabbit": 678,
+     "cow-plough": 543,
+     "top-one": 623,
+     "rung-arun": 678,
+     "crown": 583
+    },
+    "15-15-15": {
+     "rabbit": 1168,
+     "cow-plough": 1093,
+     "top-one": 1118,
+     "rung-arun": 1078,
+     "crown": 1058
+    },
+    "16-20-0": {
+     "rabbit": 908,
+     "cow-plough": 988,
+     "top-one": 968
+    }
+   },
+   "prov": {
+    "bangkok": [
+     0,
+     null
+    ],
+    "kanchanaburi": [
+     10,
+     null
+    ],
+    "chai-nat": [
+     6,
+     null
+    ],
+    "nakhon-pathom": [
+     7,
+     null
+    ],
+    "nonthaburi": [
+     -1,
+     null
+    ],
+    "pathum-thani": [
+     -3,
+     null
+    ],
+    "prachuap-khiri-khan": [
+     37,
+     null
+    ],
+    "ayutthaya": [
+     -10,
+     null
+    ],
+    "phetchaburi": [
+     17,
+     null
+    ],
+    "ratchaburi": [
+     12,
+     null
+    ],
+    "lopburi": [
+     -1,
+     null
+    ],
+    "samut-songkhram": [
+     10,
+     null
+    ],
+    "samut-sakhon": [
+     6,
+     null
+    ],
+    "saraburi": [
+     -2,
+     null
+    ],
+    "sing-buri": [
+     -1,
+     null
+    ],
+    "suphan-buri": [
+     -2,
+     null
+    ],
+    "ang-thong": [
+     -6,
+     null
+    ],
+    "uthai-thani": [
+     9,
+     null
+    ],
+    "chanthaburi": [
+     32,
+     null
+    ],
+    "chachoengsao": [
+     7,
+     null
+    ],
+    "chon-buri": [
+     11,
+     null
+    ],
+    "trat": [
+     41,
+     null
+    ],
+    "nakhon-nayok": [
+     2,
+     null
+    ],
+    "prachin-buri": [
+     6,
+     null
+    ],
+    "rayong": [
+     23,
+     null
+    ],
+    "samut-prakan": [
+     5,
+     null
+    ],
+    "sa-kaeo": [
+     17,
+     null
+    ],
+    "chiang-rai": [
+     84,
+     null
+    ],
+    "chiang-mai": [
+     70,
+     null
+    ],
+    "nan": [
+     67,
+     null
+    ],
+    "phayao": [
+     75,
+     null
+    ],
+    "phrae": [
+     52,
+     null
+    ],
+    "mae-hong-son": [
+     95,
+     null
+    ],
+    "lampang": [
+     59,
+     null
+    ],
+    "lamphun": [
+     66,
+     null
+    ],
+    "uttaradit": [
+     50,
+     null
+    ],
+    "kamphaeng-phet": [
+     27,
+     null
+    ],
+    "tak": [
+     35,
+     null
+    ],
+    "nakhon-sawan": [
+     11,
+     null
+    ],
+    "phichit": [
+     24,
+     null
+    ],
+    "phitsanulok": [
+     46,
+     null
+    ],
+    "phetchabun": [
+     27,
+     null
+    ],
+    "sukhothai": [
+     42,
+     null
+    ],
+    "kalasin": [
+     51,
+     null
+    ],
+    "khon-kaen": [
+     43,
+     null
+    ],
+    "chaiyaphum": [
+     27,
+     null
+    ],
+    "nakhon-phanom": [
+     80,
+     null
+    ],
+    "nakhon-ratchasima": [
+     18,
+     null
+    ],
+    "bueng-kan": [
+     82,
+     null
+    ],
+    "buri-ram": [
+     35,
+     null
+    ],
+    "maha-sarakham": [
+     45,
+     null
+    ],
+    "mukdahan": [
+     67,
+     null
+    ],
+    "yasothon": [
+     54,
+     null
+    ],
+    "roi-et": [
+     51,
+     null
+    ],
+    "loei": [
+     53,
+     null
+    ],
+    "si-sa-ket": [
+     55,
+     null
+    ],
+    "sakon-nakhon": [
+     68,
+     null
+    ],
+    "surin": [
+     40,
+     null
+    ],
+    "nong-khai": [
+     65,
+     null
+    ],
+    "nong-bua-lam-phu": [
+     53,
+     null
+    ],
+    "amnat-charoen": [
+     61,
+     null
+    ],
+    "udon-thani": [
+     57,
+     null
+    ],
+    "ubon-ratchathani": [
+     63,
+     null
+    ],
+    "krabi": [
+     101,
+     null
+    ],
+    "chumphon": [
+     61,
+     null
+    ],
+    "trang": [
+     108,
+     null
+    ],
+    "nakhon-si-thammarat": [
+     101,
+     null
+    ],
+    "narathiwat": [
+     148,
+     null
+    ],
+    "pattani": [
+     135,
+     null
+    ],
+    "phang-nga": [
+     90,
+     null
+    ],
+    "phatthalung": [
+     110,
+     null
+    ],
+    "phuket": [
+     110,
+     null
+    ],
+    "yala": [
+     139,
+     null
+    ],
+    "ranong": [
+     75,
+     null
+    ],
+    "songkhla": [
+     126,
+     null
+    ],
+    "satun": [
+     127,
+     null
+    ],
+    "surat-thani": [
+     84,
+     null
+    ]
+   }
+  },
+  {
+   "no": 6,
+   "date": "2026-05-11",
+   "url": "https://www.dit.go.th/media/adpdcifu/20260514092954_6148.pdf",
+   "base": {
+    "46-0-0": {
+     "cow-plough": 968,
+     "top-one": 1288,
+     "crown": 1083
+    },
+    "18-46-0": {
+     "cow-plough": 1523,
+     "top-one": 1518,
+     "rung-arun": 1483,
+     "crown": 1538
+    },
+    "0-0-60": {
+     "rabbit": 913,
+     "cow-plough": 893,
+     "top-one": 838,
+     "rung-arun": 833,
+     "crown": 858
+    },
+    "21-0-0": {
+     "rabbit": 683,
+     "cow-plough": 613,
+     "top-one": 628,
+     "rung-arun": 683,
+     "crown": 588
+    },
+    "15-15-15": {
+     "rabbit": 1173,
+     "cow-plough": 1138,
+     "top-one": 1123,
+     "rung-arun": 1083,
+     "crown": 1103
+    },
+    "16-20-0": {
+     "rabbit": 1068,
+     "cow-plough": 1033,
+     "top-one": 973
+    }
+   },
+   "prov": {
+    "bangkok": [
+     0,
+     78
+    ],
+    "kanchanaburi": [
+     5,
+     154
+    ],
+    "chai-nat": [
+     1,
+     122
+    ],
+    "nakhon-pathom": [
+     2,
+     128
+    ],
+    "nonthaburi": [
+     0,
+     70
+    ],
+    "pathum-thani": [
+     0,
+     50
+    ],
+    "prachuap-khiri-khan": [
+     32,
+     364
+    ],
+    "ayutthaya": [
+     0,
+     0
+    ],
+    "phetchaburi": [
+     12,
+     206
+    ],
+    "ratchaburi": [
+     7,
+     173
+    ],
+    "lopburi": [
+     0,
+     73
+    ],
+    "samut-songkhram": [
+     5,
+     155
+    ],
+    "samut-sakhon": [
+     1,
+     120
+    ],
+    "saraburi": [
+     0,
+     65
+    ],
+    "sing-buri": [
+     0,
+     70
+    ],
+    "suphan-buri": [
+     0,
+     60
+    ],
+    "ang-thong": [
+     0,
+     28
+    ],
+    "uthai-thani": [
+     4,
+     144
+    ],
+    "chanthaburi": [
+     27,
+     321
+    ],
+    "chachoengsao": [
+     2,
+     133
+    ],
+    "chon-buri": [
+     6,
+     161
+    ],
+    "trat": [
+     36,
+     391
+    ],
+    "nakhon-nayok": [
+     1,
+     95
+    ],
+    "prachin-buri": [
+     1,
+     123
+    ],
+    "rayong": [
+     18,
+     251
+    ],
+    "samut-prakan": [
+     0,
+     117
+    ],
+    "sa-kaeo": [
+     12,
+     204
+    ],
+    "chiang-rai": [
+     79,
+     720
+    ],
+    "chiang-mai": [
+     65,
+     616
+    ],
+    "nan": [
+     62,
+     593
+    ],
+    "phayao": [
+     70,
+     656
+    ],
+    "phrae": [
+     47,
+     477
+    ],
+    "mae-hong-son": [
+     90,
+     807
+    ],
+    "lampang": [
+     54,
+     528
+    ],
+    "lamphun": [
+     61,
+     587
+    ],
+    "uttaradit": [
+     45,
+     460
+    ],
+    "kamphaeng-phet": [
+     22,
+     283
+    ],
+    "tak": [
+     30,
+     347
+    ],
+    "nakhon-sawan": [
+     6,
+     165
+    ],
+    "phichit": [
+     19,
+     258
+    ],
+    "phitsanulok": [
+     41,
+     430
+    ],
+    "phetchabun": [
+     22,
+     282
+    ],
+    "sukhothai": [
+     37,
+     400
+    ],
+    "kalasin": [
+     46,
+     472
+    ],
+    "khon-kaen": [
+     38,
+     404
+    ],
+    "chaiyaphum": [
+     22,
+     288
+    ],
+    "nakhon-phanom": [
+     75,
+     692
+    ],
+    "nakhon-ratchasima": [
+     13,
+     213
+    ],
+    "bueng-kan": [
+     77,
+     709
+    ],
+    "buri-ram": [
+     30,
+     345
+    ],
+    "maha-sarakham": [
+     40,
+     424
+    ],
+    "mukdahan": [
+     62,
+     595
+    ],
+    "yasothon": [
+     49,
+     494
+    ],
+    "roi-et": [
+     46,
+     466
+    ],
+    "loei": [
+     48,
+     485
+    ],
+    "si-sa-ket": [
+     50,
+     499
+    ],
+    "sakon-nakhon": [
+     63,
+     601
+    ],
+    "surin": [
+     35,
+     388
+    ],
+    "nong-khai": [
+     60,
+     574
+    ],
+    "nong-bua-lam-phu": [
+     48,
+     482
+    ],
+    "amnat-charoen": [
+     56,
+     549
+    ],
+    "udon-thani": [
+     52,
+     515
+    ],
+    "ubon-ratchathani": [
+     58,
+     560
+    ],
+    "krabi": [
+     96,
+     856
+    ],
+    "chumphon": [
+     56,
+     547
+    ],
+    "trang": [
+     103,
+     911
+    ],
+    "nakhon-si-thammarat": [
+     96,
+     856
+    ],
+    "narathiwat": [
+     143,
+     1217
+    ],
+    "pattani": [
+     130,
+     1119
+    ],
+    "phang-nga": [
+     85,
+     767
+    ],
+    "phatthalung": [
+     105,
+     925
+    ],
+    "phuket": [
+     105,
+     920
+    ],
+    "yala": [
+     134,
+     1144
+    ],
+    "ranong": [
+     70,
+     655
+    ],
+    "songkhla": [
+     121,
+     1045
+    ],
+    "satun": [
+     122,
+     1056
+    ],
+    "surat-thani": [
+     79,
+     720
+    ]
+   }
+  },
+  {
+   "no": 9,
+   "date": "2026-06-26",
+   "url": "https://www.dit.go.th/media/dtyjro0q/20260627102448_6738.pdf",
+   "base": {
+    "46-0-0": {
+     "rung-arun": 1233,
+     "top-one": 1238,
+     "cow-plough": 1258,
+     "rabbit": 1273
+    },
+    "18-46-0": {
+     "top-one": 1588,
+     "rung-arun": 1483,
+     "crown": 1628
+    },
+    "0-0-60": {
+     "rabbit": 913,
+     "cow-plough": 928,
+     "top-one": 908,
+     "rung-arun": 858,
+     "crown": 933
+    },
+    "21-0-0": {
+     "rabbit": 758,
+     "cow-plough": 673,
+     "top-one": 698,
+     "rung-arun": 683,
+     "crown": 758
+    },
+    "15-15-15": {
+     "rabbit": 1173,
+     "cow-plough": 1188,
+     "top-one": 1213,
+     "rung-arun": 1083,
+     "crown": 1143
+    },
+    "16-20-0": {
+     "rabbit": 1068,
+     "cow-plough": 1083,
+     "top-one": 1073
+    }
+   },
+   "prov": {
+    "bangkok": [
+     0,
+     78
+    ],
+    "kanchanaburi": [
+     5,
+     154
+    ],
+    "chai-nat": [
+     1,
+     122
+    ],
+    "nakhon-pathom": [
+     2,
+     128
+    ],
+    "nonthaburi": [
+     0,
+     70
+    ],
+    "pathum-thani": [
+     0,
+     50
+    ],
+    "prachuap-khiri-khan": [
+     32,
+     364
+    ],
+    "ayutthaya": [
+     0,
+     0
+    ],
+    "phetchaburi": [
+     12,
+     206
+    ],
+    "ratchaburi": [
+     7,
+     173
+    ],
+    "lopburi": [
+     0,
+     73
+    ],
+    "samut-songkhram": [
+     5,
+     155
+    ],
+    "samut-sakhon": [
+     1,
+     120
+    ],
+    "saraburi": [
+     0,
+     65
+    ],
+    "sing-buri": [
+     0,
+     70
+    ],
+    "suphan-buri": [
+     0,
+     60
+    ],
+    "ang-thong": [
+     0,
+     28
+    ],
+    "uthai-thani": [
+     4,
+     144
+    ],
+    "chanthaburi": [
+     27,
+     321
+    ],
+    "chachoengsao": [
+     2,
+     133
+    ],
+    "chon-buri": [
+     6,
+     161
+    ],
+    "trat": [
+     36,
+     391
+    ],
+    "nakhon-nayok": [
+     1,
+     95
+    ],
+    "prachin-buri": [
+     1,
+     123
+    ],
+    "rayong": [
+     18,
+     251
+    ],
+    "samut-prakan": [
+     0,
+     117
+    ],
+    "sa-kaeo": [
+     12,
+     204
+    ],
+    "chiang-rai": [
+     79,
+     720
+    ],
+    "chiang-mai": [
+     65,
+     616
+    ],
+    "nan": [
+     62,
+     593
+    ],
+    "phayao": [
+     70,
+     656
+    ],
+    "phrae": [
+     47,
+     477
+    ],
+    "mae-hong-son": [
+     90,
+     807
+    ],
+    "lampang": [
+     54,
+     528
+    ],
+    "lamphun": [
+     61,
+     587
+    ],
+    "uttaradit": [
+     45,
+     460
+    ],
+    "kamphaeng-phet": [
+     22,
+     283
+    ],
+    "tak": [
+     30,
+     347
+    ],
+    "nakhon-sawan": [
+     6,
+     165
+    ],
+    "phichit": [
+     19,
+     258
+    ],
+    "phitsanulok": [
+     41,
+     430
+    ],
+    "phetchabun": [
+     22,
+     282
+    ],
+    "sukhothai": [
+     37,
+     400
+    ],
+    "kalasin": [
+     46,
+     472
+    ],
+    "khon-kaen": [
+     38,
+     404
+    ],
+    "chaiyaphum": [
+     22,
+     288
+    ],
+    "nakhon-phanom": [
+     75,
+     692
+    ],
+    "nakhon-ratchasima": [
+     13,
+     213
+    ],
+    "bueng-kan": [
+     77,
+     709
+    ],
+    "buri-ram": [
+     30,
+     345
+    ],
+    "maha-sarakham": [
+     40,
+     424
+    ],
+    "mukdahan": [
+     62,
+     595
+    ],
+    "yasothon": [
+     49,
+     494
+    ],
+    "roi-et": [
+     46,
+     466
+    ],
+    "loei": [
+     48,
+     485
+    ],
+    "si-sa-ket": [
+     50,
+     499
+    ],
+    "sakon-nakhon": [
+     63,
+     601
+    ],
+    "surin": [
+     35,
+     388
+    ],
+    "nong-khai": [
+     60,
+     574
+    ],
+    "nong-bua-lam-phu": [
+     48,
+     482
+    ],
+    "amnat-charoen": [
+     56,
+     549
+    ],
+    "udon-thani": [
+     52,
+     515
+    ],
+    "ubon-ratchathani": [
+     58,
+     560
+    ],
+    "krabi": [
+     96,
+     856
+    ],
+    "chumphon": [
+     56,
+     547
+    ],
+    "trang": [
+     103,
+     911
+    ],
+    "nakhon-si-thammarat": [
+     96,
+     856
+    ],
+    "narathiwat": [
+     143,
+     1217
+    ],
+    "pattani": [
+     130,
+     1119
+    ],
+    "phang-nga": [
+     85,
+     767
+    ],
+    "phatthalung": [
+     105,
+     925
+    ],
+    "phuket": [
+     105,
+     920
+    ],
+    "yala": [
+     134,
+     1144
+    ],
+    "ranong": [
+     70,
+     655
+    ],
+    "songkhla": [
+     121,
+     1045
+    ],
+    "satun": [
+     122,
+     1056
+    ],
+    "surat-thani": [
+     79,
+     720
+    ]
+   }
+  }
+ ]
+}

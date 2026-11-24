@@ -6,7 +6,7 @@ on:
     - cron: '7 23 * * *'    # 06:07 Bangkok backup: GitHub sometimes skips scheduled runs
   push:                     # re-pull when the pipeline itself changes (the bot's own data commits don't re-trigger)
     branches: [main]
-    paths: ['pipeline/**', '.github/workflows/prices.yml', 'data/brief_notes.json', 'data/fertilizer_shops.json']
+    paths: ['pipeline/**', '.github/workflows/prices.yml', 'data/brief_notes.json', 'data/fertilizer_shops.json', 'data/fert_reports.json', 'data/dit_fert.json']
   workflow_dispatch:
     inputs:
       backfill:
@@ -38,9 +38,9 @@ jobs:
       - name: Build weekly brief (pulls NOAA El Niño index)
         continue-on-error: true   # a brief problem must never stop the price update
         run: python3 tests/test_brief.py && python3 pipeline/brief.py
-      - name: Fertilizer prices (World Bank + shop survey)
+      - name: Fertilizer prices (World Bank, Tha Bo co-op, DIT watch, shop survey)
         continue-on-error: true   # a fertilizer problem must never stop the price update
-        run: python3 tests/test_fertilizer.py && python3 pipeline/fertilizer.py
+        run: python3 tests/test_fertilizer.py && python3 tests/test_fert_local.py && python3 pipeline/fertilizer.py
       - name: Commit (Netlify rebuilds the site on push)
         run: |
           git config user.name "rice.ag price bot"

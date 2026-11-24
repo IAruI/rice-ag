@@ -22,3 +22,8 @@
   Content-Type: application/rss+xml; charset=utf-8
 /th/brief/feed.xml
   Content-Type: application/rss+xml; charset=utf-8
+
+# Fonts never change under the same name: cache for a year.
+/static/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
