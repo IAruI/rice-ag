@@ -1,0 +1,76 @@
+{% from '_px.html' import fert_nav %}
+{% set th = lang == 'th' %}
+{% set P = pf %}
+{% set D = F.local.dit %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › <a href="{{ prefix }}/fertilizer/province/">{{ 'รายจังหวัด' if th else 'By province' }}</a> › {{ P.name }}</p>
+    <h1>{{ ('ราคาปุ๋ย' ~ P.name) if th else ('Fertilizer prices in ' ~ P.name) }}</h1>
+    <p class="lead px-lead">{{ P.lead }}{{ ' (' ~ ('ประกาศ ' if th else 'announced ') ~ (D.date | pxdate(lang)) ~ ')' }}.</p>
+    <p class="fine">{% if th %}ราคาจำหน่ายปลีกแนะนำปุ๋ยเคมี ประกาศสำนักงานคณะกรรมการกลางว่าด้วยราคาสินค้าและบริการ ฉบับที่ {{ D.no }} ซึ่งคิดจากราคาหน้าโรงงานบวกค่าขนส่งถึงอำเภอเมือง กระสอบ 50 กก.{% else %}Recommended retail prices from the Department of Internal Trade (price committee announcement No.{{ D.no }}), worked out as the ex-factory price plus delivery to the provincial capital. 50 kg bags.{% endif %}
+      <a href="{{ D.url }}" rel="nofollow">PDF</a></p>
+    {{ fert_nav(prefix, lang) }}
+
+    {% if F.local.dit_new %}<p class="card px-note">{{ 'กรมการค้าภายในออกประกาศราคาแนะนำฉบับใหม่แล้ว rice.ag กำลังอัปเดตตัวเลข' if th else 'DIT has published a newer recommended-price list; rice.ag is updating these numbers.' }}</p>{% endif %}
+
+    <ul class="px-kg">
+      {% for t in P.table[:4] %}
+      <li class="card px-kgc"><span class="px-kgn"><a href="{{ prefix }}/fertilizer/{{ t.npk }}/">{{ t.npk }}</a></span>
+        <span class="px-kgv"><b>{{ t.low | pxnum }}{% if t.high != t.low %}–{{ t.high | pxnum }}{% endif %}</b> {{ 'บาท/กระสอบ' if th else 'baht/bag' }}</span>
+        <span class="px-kgs">{{ t['items'] | length }} {{ 'ยี่ห้อ' if th else 'brands' }}</span></li>
+      {% endfor %}
+    </ul>
+
+    {% set L = F.local %}{% set ur = L.latest['46-0-0'] if L.latest else none %}
+    {% if ur and ur.date > D.date %}
+    <div class="card px-verdict">
+      <h2>{{ 'ราคาตลาดล่าสุด' if th else 'The market since then' }}</h2>
+      {% set u = P.table | selectattr('npk', 'equalto', '46-0-0') | first %}
+      <p>{% if th %}ราคาแนะนำนี้ประกาศเมื่อ {{ D.date | pxdate(lang) }} ราคาที่มีรายงานล่าสุดอาจต่างออกไป: ยูเรีย 46-0-0 {{ ur.low | pxnum }}{% if ur.high and ur.high != ur.low %}–{{ ur.high | pxnum }}{% endif %} บาทต่อกระสอบ ({{ ur.date | pxdate(lang) }}, {{ 'สหกรณ์ท่าบ่อ หนองคาย' if ur.src == 'coop' else ('สำรวจของ rice.ag' if ur.src == 'survey' else 'รายงานหน้าร้าน') }}){% if u and ur.low < u.low %} ต่ำกว่าราคาแนะนำที่ถูกที่สุดของ{{ P.name }} {{ (u.low - ur.low) | pxnum }} บาท{% endif %} ก่อนซื้อควรเทียบราคาหลายร้าน{% else %}These recommended prices date from {{ D.date | pxdate(lang) }}. The latest price we hold elsewhere: urea 46-0-0 at {{ ur.low | pxnum }}{% if ur.high and ur.high != ur.low %}–{{ ur.high | pxnum }}{% endif %} baht a bag ({{ ur.date | pxdate(lang) }}, {{ 'Tha Bo co-op, Nong Khai' if ur.src == 'coop' else ('rice.ag survey' if ur.src == 'survey' else 'a shop report') }}){% if u and ur.low < u.low %}, {{ (u.low - ur.low) | pxnum }} baht below the cheapest recommended price in {{ P.name }}{% endif %}. Compare a few shops before you buy.{% endif %}
+        <a href="{{ prefix }}/fertilizer/#latest">{{ 'ราคาจากทุกแหล่ง' if th else 'Every source' }} →</a></p>
+    </div>
+    {% endif %}
+
+    <h2>{{ 'ราคาแนะนำแยกตามสูตรและยี่ห้อ' if th else 'Recommended price by formula and brand' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ราคาแนะนำแยกตามสูตรและยี่ห้อ' if th else 'Recommended price by formula and brand' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'สูตร' if th else 'Formula' }}</th><th scope="col">{{ 'ยี่ห้อ' if th else 'Brand' }}</th><th scope="col" class="num">{{ 'บาท/กระสอบ' if th else 'Baht/bag' }}</th><th scope="col" class="num">{{ 'บาท/กก.' if th else 'Baht/kg' }}</th></tr></thead>
+      <tbody>{% for t in P.table %}{% for i in t['items'] %}<tr>{% if loop.first %}<th scope="rowgroup" rowspan="{{ t['items'] | length }}"><a href="{{ prefix }}/fertilizer/{{ t.npk }}/">{{ t.npk }}</a></th>{% endif %}<td>{{ i.name }}</td><td class="num">{{ i.price | pxnum }}</td><td class="num">{{ '%.2f' % (i.price / 50) }}</td></tr>{% endfor %}{% endfor %}</tbody>
+    </table></div>
+
+    <div class="card px-verdict">
+      <h2>{{ 'ค่าขนส่งทำให้ราคาต่างกันแค่ไหน' if th else 'How much delivery adds here' }}</h2>
+      <p>{% if th %}ราคาแนะนำของ{{ P.name }}{% if P.row.delta > 0 %}สูงกว่าจังหวัดที่ถูกที่สุด {{ P.row.delta - P.cheapest_delta }} บาทต่อกระสอบ{% else %}อยู่ในกลุ่มที่ถูกที่สุด{% endif %}{% if P.row.km %} (ระยะทาง {{ P.row.km | pxnum }} กม. จากพระนครศรีอยุธยาตามประกาศ){% endif %} เป็นอันดับที่ {{ P.rank }} จาก {{ P.n }} จังหวัด เรียงจากถูกไปแพง ทุกยี่ห้อและทุกสูตรบวกเท่ากันในจังหวัดเดียวกัน{% else %}{{ P.name }}'s recommended prices are {% if P.row.delta > 0 %}{{ P.row.delta - P.cheapest_delta }} baht a bag above the cheapest province{% else %}among the cheapest in Thailand{% endif %}{% if P.row.km %} ({{ P.row.km | pxnum }} km from Ayutthaya, as listed in the announcement){% endif %}, ranked {{ P.rank }} of {{ P.n }} from cheapest. The same delivery amount is added to every brand and formula in a province.{% endif %}</p>
+    </div>
+
+    {% if P.coop %}
+    <h2>{{ 'ราคาสหกรณ์ในจังหวัด' if th else 'Co-op shop prices in this province' }}</h2>
+    <p>{{ P.coop.name_th if th else P.coop.name_en }}, {{ P.coop.area_th if th else P.coop.area_en }} · {{ 'อัปเดต' if th else 'updated' }} {{ P.coop.date | pxdate(lang) }} · <a href="{{ P.coop.url }}" rel="nofollow">{{ 'ที่มา' if th else 'source' }}</a></p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ราคาสหกรณ์' if th else 'Co-op prices' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'สูตร' if th else 'Formula' }}</th><th scope="col">{{ 'ยี่ห้อ' if th else 'Brand' }}</th><th scope="col" class="num">{{ 'บาท/กระสอบ' if th else 'Baht/bag' }}</th></tr></thead>
+      <tbody>{% for i in P.coop['items'] | sort(attribute='npk') %}<tr><th scope="row">{{ i.npk }}</th><td>{{ i.brand | fbrand(lang) }}</td><td class="num">{% if i.out %}{{ 'หมด' if th else 'out of stock' }}{% else %}{{ i.price | pxnum }}{% endif %}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% endif %}
+
+    {% if P.reports %}
+    <h2>{{ 'ราคาหน้าร้านที่มีรายงาน' if th else 'Reported shop prices' }}</h2>
+    {% for r in P.reports %}
+    <div class="card fl-rep">
+      <p><b>{{ r.date | pxdate(lang) }}</b> · {{ r.area_th if th else r.area_en }} · <a href="{{ r.url }}" rel="nofollow">{{ r.source }}</a></p>
+      <p>{% for p in r.prices %}{{ p.npk }}{% if p.brand %} ({{ p.brand | fbrand(lang) }}){% endif %} <b>{{ p.low | pxnum }}{% if p.high != p.low %}–{{ p.high | pxnum }}{% endif %}</b>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+      {% if r.note_en %}<p class="fine">{{ r.note_th if th else r.note_en }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <h2>{{ 'จังหวัดใกล้เคียงในภาคเดียวกัน' if th else 'Other provinces in the region' }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'จังหวัดใกล้เคียง' if th else 'Nearby provinces' }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'จังหวัด' if th else 'Province' }}</th><th scope="col" class="num">{{ 'ยูเรีย ถูกสุด' if th else 'Cheapest urea' }}</th><th scope="col" class="num">16-20-0</th><th scope="col" class="num">15-15-15</th></tr></thead>
+      <tbody>{% for r in P.region %}<tr><th scope="row"><a href="{{ prefix }}/fertilizer/province/{{ r.slug }}/">{{ r.th if th else r.en }}</a></th><td class="num">{{ r.cheap['46-0-0'] | pxnum }}</td><td class="num">{{ r.cheap['16-20-0'] | pxnum }}</td><td class="num">{{ r.cheap['15-15-15'] | pxnum }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    <p><a href="{{ prefix }}/fertilizer/province/">{{ 'ทุก 77 จังหวัด' if th else 'All 77 provinces' }} →</a></p>
+
+    <div class="narrow">
+      <p class="fine">{% if th %}ราคาแนะนำเป็นราคาอ้างอิงที่ร้านค้าควรขายไม่เกิน ราคาจริงหน้าร้านอาจต่ำกว่านี้เมื่อราคาตลาดลดลงหลังวันประกาศ ดูราคาล่าสุดจากแหล่งอื่นที่{% else %}The recommended price is a reference shops are expected to stay under. Real shop prices can be lower when the market has fallen since the announcement. For the latest prices from other sources see{% endif %} <a href="{{ prefix }}/fertilizer/#latest">{{ 'หน้าราคาปุ๋ย' if th else 'the fertilizer page' }}</a>.</p>
+    </div>
+  </div>
+</section>

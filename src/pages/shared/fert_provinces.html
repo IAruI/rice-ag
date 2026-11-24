@@ -1,0 +1,34 @@
+{% from '_px.html' import fert_nav %}
+{% set th = lang == 'th' %}
+{% set D = F.local.dit %}
+{% set REG = {'central': ('Central', 'ภาคกลาง'), 'east': ('East', 'ภาคตะวันออก'), 'north': ('North', 'ภาคเหนือ'), 'northeast': ('Northeast', 'ภาคตะวันออกเฉียงเหนือ'), 'south': ('South', 'ภาคใต้')} %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › {{ 'รายจังหวัด' if th else 'By province' }}</p>
+    <h1>{{ 'ราคาปุ๋ยรายจังหวัด ทั้ง 77 จังหวัด' if th else 'Fertilizer prices by province, all 77' }}</h1>
+    <p class="lead px-lead">{% set u = D.national['46-0-0'] %}{% if th %}ยูเรีย 46-0-0 ราคาแนะนำ {{ u.low | pxnum }}–{{ u.high | pxnum }} บาทต่อกระสอบ ถูกที่สุดในภาคกลางใกล้คลังปุ๋ย และแพงขึ้นตามระยะทาง ส่วนต่างระหว่างจังหวัดถูกสุดกับแพงสุดคือ {{ D.provinces[-1].delta - D.provinces[0].delta }} บาทต่อกระสอบ{% else %}Recommended urea 46-0-0 prices run {{ u.low | pxnum }}–{{ u.high | pxnum }} baht a bag. They are lowest in the central provinces near the fertilizer depots and rise with distance; the cheapest and dearest provinces are {{ D.provinces[-1].delta - D.provinces[0].delta }} baht a bag apart.{% endif %}</p>
+    <p class="fine">{% if th %}ราคาจำหน่ายปลีกแนะนำ กรมการค้าภายใน ฉบับที่ {{ D.no }} ประกาศ {{ D.date | pxdate(lang) }} · ตัวเลขในตารางคือยี่ห้อที่ถูกที่สุดของแต่ละสูตร{% else %}DIT recommended retail prices, announcement No.{{ D.no }} of {{ D.date | pxdate(lang) }} · the table shows the cheapest brand of each formula.{% endif %} <a href="{{ D.url }}" rel="nofollow">PDF</a></p>
+    {{ fert_nav(prefix, lang, 'prov') }}
+
+    <form class="fl-pick" action="#" onsubmit="var v=this.p.value;if(v)location.href=v;return false">
+      <label for="fl-p">{{ 'เลือกจังหวัด' if th else 'Choose a province' }}</label>
+      <select id="fl-p" name="p" onchange="if(this.value)location.href=this.value">
+        <option value="">—</option>
+        {% for r in D.provinces | sort(attribute=('th' if th else 'en')) %}<option value="{{ prefix }}/fertilizer/province/{{ r.slug }}/">{{ r.th if th else r.en }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit">{{ 'ไป' if th else 'Go' }}</button></noscript>
+    </form>
+
+    {% for key, nm in REG.items() %}
+    <h2 id="{{ key }}">{{ nm[1] if th else nm[0] }}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ nm[1] if th else nm[0] }}"><table class="px-table">
+      <thead><tr><th scope="col">{{ 'จังหวัด' if th else 'Province' }}</th><th scope="col" class="num">46-0-0</th><th scope="col" class="num">16-20-0</th><th scope="col" class="num">15-15-15</th><th scope="col" class="num">0-0-60</th><th scope="col" class="num">21-0-0</th><th scope="col" class="num">{{ '+ค่าส่ง' if th else '+Delivery' }}</th></tr></thead>
+      <tbody>{% for r in D.provinces | selectattr('region', 'equalto', key) | sort(attribute=('th' if th else 'en')) %}<tr><th scope="row"><a href="{{ prefix }}/fertilizer/province/{{ r.slug }}/">{{ r.th if th else r.en }}</a></th>{% for f in ['46-0-0', '16-20-0', '15-15-15', '0-0-60', '21-0-0'] %}<td class="num">{{ r.cheap[f] | pxnum }}</td>{% endfor %}<td class="num">{{ r.delta - D.provinces[0].delta }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% endfor %}
+    <p class="fine">{{ '+ค่าส่ง: บาทต่อกระสอบที่บวกเพิ่มจากจังหวัดที่ถูกที่สุด เท่ากันทุกยี่ห้อและทุกสูตร' if th else '+Delivery: baht a bag above the cheapest province, the same for every brand and formula.' }}</p>
+    <div class="narrow">
+      <p class="fine">{% if th %}ราคาแนะนำเป็นราคาอ้างอิง ราคาจริงหน้าร้านอาจต่ำกว่าเมื่อตลาดลดลงหลังวันประกาศ ดูราคาล่าสุดจากแหล่งอื่นที่{% else %}Recommended prices are a reference; shop prices can be lower when the market has fallen since the announcement. For the latest from other sources see{% endif %} <a href="{{ prefix }}/fertilizer/#latest">{{ 'หน้าราคาปุ๋ย' if th else 'the fertilizer page' }}</a>.</p>
+    </div>
+  </div>
+</section>

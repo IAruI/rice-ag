@@ -62,6 +62,11 @@ env.filters.update(fdate=fdate, spark=spark, onibars=onibars,
                    pxmonth=lambda d, lang='en': pp.fdate(datetime.date.fromisoformat(str(d)[:10]), lang, monthly=True))
 PRICES = pp.load_prices()
 env.globals.update(hubs=pp.HUBS)
+_PROV = {r[2]: (r[1], r[0]) for r in json.loads((ROOT / 'data/provinces.json').read_text(encoding='utf-8'))} if (ROOT / 'data/provinces.json').exists() else {}
+env.filters.update(
+    daysago=lambda d: (datetime.date.today() - datetime.date.fromisoformat(str(d)[:10])).days if d else None,
+    fbrand=lambda b, lang='en': fp.bname(b, lang, ((FERT.get('local') or {}).get('brand_names') or {})),
+    provname=lambda slug, lang='en': (_PROV.get(slug, (slug, slug))[1] if lang == 'th' else _PROV.get(slug, (slug, slug))[0]))
 # Cloudflare Web Analytics: set CF_ANALYTICS_TOKEN in Netlify (Site configuration > Environment variables).
 # Empty = no analytics script on the site.
 CF_ANALYTICS_TOKEN = os.environ.get('CF_ANALYTICS_TOKEN', '').strip()
@@ -263,6 +268,31 @@ if FERT.get('formulas'):
 else:
     FPAGES, BLENDT, RICE, BRANDS, AFFORD, WORLDS = [], {}, {}, [], None, []
 
+LOCAL = FERT.get('local') or {}
+PROVS = fp.province_pages(FERT)
+if PROVS:
+    _d = LOCAL['dit']; _u = _d['national']['46-0-0']
+    PAGES.append(dict(key='fprovs', path='/fertilizer/province/', src='shared/fert_provinces.html', section='fertilizer',
+        title={'en': f"Fertilizer prices by province, all 77: recommended urea {_u['low']:,}–{_u['high']:,} baht a bag | rice.ag",
+               'th': f"ราคาปุ๋ยรายจังหวัด 77 จังหวัด ราคาแนะนำยูเรียกระสอบละ {_u['low']:,}–{_u['high']:,} บาท | rice.ag"},
+        desc={'en': f"Official recommended retail fertilizer prices for every Thai province (DIT No.{_d['no']}): urea, 16-20-0, 15-15-15, 0-0-60, 21-0-0 and DAP by brand, and how much delivery adds.",
+              'th': f"ราคาจำหน่ายปลีกแนะนำปุ๋ยเคมีทุกจังหวัด (กรมการค้าภายใน ฉบับที่ {_d['no']}) ยูเรีย 16-20-0 15-15-15 0-0-60 21-0-0 และ 18-46-0 แยกยี่ห้อ พร้อมค่าขนส่งที่บวกเพิ่ม"}))
+    for _r in PROVS:
+        _pf = {l: fp.province_fill(_r, FERT, l) for l in ('en', 'th')}
+        _t = next((t for t in _pf['en']['table'] if t['npk'] == '46-0-0'), None)
+        _rng = f"{_t['low']:,}–{_t['high']:,}" if _t else ''
+        PAGES.append(dict(key='fprov', pf=_pf, path=f"/fertilizer/province/{_r['slug']}/", src='shared/fert_province.html', section='fertilizer',
+            title={'en': f"Fertilizer prices in {_r['en']}: recommended urea {_rng} baht a bag, 16-20-0, 15-15-15 | rice.ag",
+                   'th': f"ราคาปุ๋ย{_r['th']} ราคาแนะนำยูเรียกระสอบละ {_rng} บาท 16-20-0 15-15-15 | rice.ag"},
+            desc={'en': f"Recommended retail prices of urea, 16-20-0, 15-15-15, 0-0-60, 21-0-0 and DAP in {_r['en']} by brand, from the Department of Internal Trade, with reported shop prices and nearby provinces.",
+                  'th': f"ราคาจำหน่ายปลีกแนะนำปุ๋ยยูเรีย 16-20-0 15-15-15 0-0-60 21-0-0 และ 18-46-0 จังหวัด{_r['th']} แยกยี่ห้อ จากกรมการค้าภายใน พร้อมราคาหน้าร้านที่มีรายงานและจังหวัดใกล้เคียง"}))
+if LOCAL.get('reports') or LOCAL.get('coop'):
+    PAGES.append(dict(key='freports', path='/fertilizer/reports/', src='shared/fert_reports.html', section='fertilizer',
+        title={'en': 'Thai fertilizer price tracker 2026: shop prices reported by province, co-op and DIT | rice.ag',
+               'th': 'ติดตามราคาปุ๋ยปี 2569: ราคาหน้าร้านรายจังหวัด สหกรณ์ และราคาแนะนำกรมการค้าภายใน | rice.ag'},
+        desc={'en': 'Every dated Thai fertilizer shop price we can find, with links: provincial commerce office checks, news, a co-op price list and the official recommended prices, charted by formula.',
+              'th': 'ราคาปุ๋ยหน้าร้านทุกรายการที่หาได้ พร้อมวันที่และลิงก์ที่มา จากสำนักงานพาณิชย์จังหวัด ข่าว สหกรณ์ และราคาแนะนำของทางการ แสดงเป็นกราฟแยกตามสูตร'}))
+
 if FERT.get('formulas'):
     PAGES.append(dict(key='fguide', path='/learn/rice-basal-fertilizer/', src='fert_soil', section='learn', kind='article',
         title={'en': '16-20-0 or 16-16-8? Choosing basal fertilizer for rice by soil, with prices | rice.ag',
@@ -328,6 +358,16 @@ def og_spec(p, lang):
         return (w['wp']['title_th'] if th else w['wp']['title_en'], f"${pp.num(w['usd'])}", ('ต่อตัน' if th else 'per tonne'),
                 (f"ธนาคารโลก · {pp.fdate(datetime.date.fromisoformat(w['date']), 'th', True)} · ย้อนหลังถึงปี {int(w['first'][:4]) + 543}" if th else
                  f"World Bank · {datetime.date.fromisoformat(w['date']).strftime('%B %Y')} · history since {w['first'][:4]}"), TAGF)
+    if k == 'fprov':
+        P = p['pf'][lang]; t = next((x for x in P['table'] if x['npk'] == '46-0-0'), None)
+        if t:
+            return ((f"ราคาปุ๋ย{P['name']}" if th else f"Fertilizer prices, {P['name']}"), f"{pp.num(t['low'])}–{pp.num(t['high'])}", ('บาท/กระสอบ' if th else 'baht a bag'),
+                    (f"ยูเรีย 46-0-0 ราคาแนะนำ กรมการค้าภายใน · {pp.fdate(datetime.date.fromisoformat(LOCAL['dit']['date']), 'th', True)}" if th else
+                     f"Urea 46-0-0, DIT recommended price · {datetime.date.fromisoformat(LOCAL['dit']['date']).strftime('%-d %b %Y')}"), TAGF)
+    if k == 'fprovs':
+        u = LOCAL['dit']['national']['46-0-0']
+        return (('ราคาปุ๋ยรายจังหวัด' if th else 'Fertilizer prices by province'), f"{pp.num(u['low'])}–{pp.num(u['high'])}", ('บาท/กระสอบ' if th else 'baht a bag'),
+                ('ยูเรีย 46-0-0 · 77 จังหวัด · ราคาแนะนำ กรมการค้าภายใน' if th else 'Urea 46-0-0 · 77 provinces · DIT recommended price'), TAGF)
     if k == 'frice' and RICE.get('examples'):
         c = [e['cost'] for e in RICE['examples']]
         return (('ค่าปุ๋ยนาข้าวต่อไร่' if th else 'Rice fertilizer cost per rai'), f"{pp.num(min(c))}–{pp.num(max(c))}", ('บาท/ไร่' if th else 'baht/rai'),
@@ -385,7 +425,7 @@ def jsonld(p, lang, url):
                       "url": BASE_URL + url, "inLanguage": lang, "datePublished": "2026-09-26", "dateModified": TODAY,
                       "author": {"@id": ORG["@id"]}, "publisher": {"@id": ORG["@id"]},
                       "image": BASE_URL + "/static/img/og.png", "isPartOf": {"@id": BASE_URL + "/#site"}})
-    if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice', 'fbrand', 'fworld'):
+    if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice', 'fbrand', 'fworld', 'fprov', 'fprovs', 'freports'):
         th = lang == 'th'
         items = [('ราคาปุ๋ย' if th else 'Fertilizer prices', url_for('/fertilizer/', lang))]
         if p['key'] == 'fformula':
@@ -398,6 +438,13 @@ def jsonld(p, lang, url):
             items.append(('ผสมปุ๋ยใช้เอง' if th else 'Blend your own', url))
         elif p['key'] == 'frice':
             items.append(('ปุ๋ยนาข้าว' if th else 'Rice fertilizer', url))
+        elif p['key'] == 'fprovs':
+            items.append(('รายจังหวัด' if th else 'By province', url))
+        elif p['key'] == 'fprov':
+            items.append(('รายจังหวัด' if th else 'By province', url_for('/fertilizer/province/', lang)))
+            items.append((p['pf'][lang]['name'], url))
+        elif p['key'] == 'freports':
+            items.append(('ติดตามราคา' if th else 'Price tracker', url))
         graph.append({"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": i + 1, "name": n, "item": BASE_URL + u} for i, (n, u) in enumerate(items)]})
     return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
@@ -491,13 +538,18 @@ def main():
             if p['key'] in ('hub', 'prices') and FERT.get('urea'):
                 ctx.update(fert_mini=dict(urea=FERT['urea']['median'], kg=(FERT.get('paddy') or {}).get('kg_per_urea_bag'),
                                           rice=(fp.rice_defaults(FERT)['examples'] or [None])[0]))
-            if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice', 'fbrand', 'fworld'):
+            if p['key'] in ('fertilizer', 'fformula', 'fblend', 'frice', 'fbrand', 'fworld', 'fprov', 'fprovs', 'freports'):
                 _paddy = (FERT.get('paddy') or {}).get('baht_per_kg')
                 ctx.update(F=dict(FERT), fert=dict(FERT, lead=fert_lead(FERT, lang)), fpages=FPAGES,
                            fpage_keys=[x['npk'] for x in FPAGES], paddy_kg=_paddy, brands=BRANDS, afford=AFFORD,
                            faqs=fp.faq(FERT, lang, BLENDT, RICE, AFFORD), worlds=WORLDS, season=fp.seasonality(FERT, 'urea'))
             if p['key'] == 'fbrand':
                 ctx.update(brand=p['brand'])
+            if p['key'] == 'fprov':
+                ctx.update(pf=p['pf'][lang])
+            if p['key'] in ('fertilizer', 'fformula', 'freports') and LOCAL.get('tracker'):
+                ctx.update(track={k: fp.tracker_svg(v, lang, (f'ราคาปุ๋ย {k} จากทุกแหล่ง' if lang == 'th' else f'{k} prices from every source'))
+                                  for k, v in LOCAL['tracker'].items()})
             if p['key'] == 'fguide':
                 ctx.update(fg=dict(med=FERT['calc']['formulas'], urea=(FERT.get('urea') or {}).get('median'),
                                    paddy=(FERT.get('paddy') or {}).get('baht_per_kg'), shops=FERT['survey'].get('shops'),

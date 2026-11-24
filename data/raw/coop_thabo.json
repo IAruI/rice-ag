@@ -1,0 +1,334 @@
+{
+ "lists": {
+  "2026-10-16": [
+   {
+    "brand": "rabbit",
+    "npk": "16-16-8",
+    "price": 1220,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "16-20-0",
+    "price": 1130,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "15-15-15",
+    "price": 1220,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "46-0-0",
+    "price": 1020,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "16-8-8",
+    "price": 1040,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "21-0-0",
+    "price": 770,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "yara",
+    "npk": "13-13-21",
+    "price": 1360,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "yara",
+    "npk": "16-16-16",
+    "price": 1480,
+    "size_kg": 50,
+    "out": false
+   }
+  ],
+  "2026-11-16": [
+   {
+    "brand": "rabbit",
+    "npk": "16-16-8",
+    "price": 1220,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "16-20-0",
+    "price": 1130,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "15-15-15",
+    "price": 1220,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "46-0-0",
+    "price": 1020,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "16-8-8",
+    "price": 1040,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "rabbit",
+    "npk": "21-0-0",
+    "price": 770,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "16-16-8",
+    "price": 1220,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "16-20-0",
+    "price": 1130,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "15-15-15",
+    "price": 1200,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "16-8-8",
+    "price": 1060,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "13-13-21",
+    "price": 1420,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "6-18-24",
+    "price": 1260,
+    "size_kg": 25,
+    "out": false
+   },
+   {
+    "brand": "cow-plough",
+    "npk": "0-0-50",
+    "price": null,
+    "size_kg": 25,
+    "out": true
+   },
+   {
+    "brand": "yara",
+    "npk": "13-13-21",
+    "price": 1360,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "yara",
+    "npk": "16-16-16",
+    "price": 1480,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "yara",
+    "npk": "15-15-15",
+    "price": 1480,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "yara",
+    "npk": "25-7-7",
+    "price": 1240,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "16-8-8",
+    "price": 1000,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "16-16-8",
+    "price": 1200,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "12-12-17",
+    "price": 820,
+    "size_kg": 25,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "15-15-15",
+    "price": 1160,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "30-20-0",
+    "price": 1300,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "0-0-60",
+    "price": 940,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "46-0-0",
+    "price": null,
+    "size_kg": 50,
+    "out": true
+   },
+   {
+    "brand": "other",
+    "npk": "25-7-7",
+    "price": 1360,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "16-8-8",
+    "price": 970,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "13-13-21",
+    "price": 1350,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "0-0-60",
+    "price": 950,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "46-0-0",
+    "price": 1280,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "15-15-15",
+    "price": 1220,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "16-16-8",
+    "price": 1200,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "16-8-8",
+    "price": 1000,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "top-one",
+    "npk": "22-5-18",
+    "price": 1350,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "top-one",
+    "npk": "15-15-15",
+    "price": 1240,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "top-one",
+    "npk": "27-12-6",
+    "price": 1350,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "12-12-17",
+    "price": 1600,
+    "size_kg": 50,
+    "out": false
+   },
+   {
+    "brand": "other",
+    "npk": "20-20-0",
+    "price": null,
+    "size_kg": 50,
+    "out": true
+   },
+   {
+    "brand": "entec",
+    "npk": "12-12-17",
+    "price": 1050,
+    "size_kg": 25,
+    "out": false
+   }
+  ]
+ },
+ "status": {
+  "last_ok": "2026-11-24T07:00:00Z",
+  "note": "2026-10-16 list partial (from a search-engine copy of the page)"
+ }
+}

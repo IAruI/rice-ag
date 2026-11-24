@@ -1,0 +1,56 @@
+{# Thai fertilizer prices from every source (pipeline/fert_local.py). #}
+
+{% macro age(d, lang) -%}{% set n = d | daysago %}{% if n is none %}{% elif n <= 0 %}{{ 'วันนี้' if lang == 'th' else 'today' }}{% elif n < 45 %}{{ n }} {{ 'วันก่อน' if lang == 'th' else ('day ago' if n == 1 else 'days ago') }}{% else %}{{ (n / 30.4) | round | int }} {{ 'เดือนก่อน' if lang == 'th' else 'months ago' }}{% endif %}{%- endmacro %}
+
+{% macro latest_table(L, F, lang, prefix, only=None) %}
+{% set th = lang == 'th' %}
+{% set coop = L.coop %}
+<div class="table-scroll" tabindex="0" role="region" aria-label="{{ 'ราคาล่าสุดจากทุกแหล่ง' if th else 'Latest price from every source' }}"><table class="px-table fl-latest">
+  <thead><tr>
+    <th scope="col">{{ 'สูตร' if th else 'Formula' }}</th>
+    <th scope="col" class="num">{{ 'สำรวจ rice.ag' if th else 'rice.ag survey' }}<br><small>{{ F.survey.month_th if th else F.survey.month_en }}</small></th>
+    {% if coop %}<th scope="col" class="num">{{ 'สหกรณ์ท่าบ่อ' if th else 'Tha Bo co-op' }}<br><small>{{ coop.date | pxdate(lang) }}</small></th>{% endif %}
+    <th scope="col" class="num">{{ 'รายงานล่าสุด' if th else 'Latest report' }}</th>
+    {% if L.dit %}<th scope="col" class="num">{{ 'ราคาแนะนำ กรมการค้าภายใน' if th else 'DIT recommended' }}<br><small>{{ L.dit.date | pxdate(lang) }}</small></th>{% endif %}
+  </tr></thead>
+  <tbody>
+  {% for npk in (only or ['46-0-0', '16-20-0', '15-15-15', '0-0-60', '21-0-0', '18-46-0']) %}
+    {% set s = (F.formulas | selectattr('npk', 'equalto', npk) | first) %}
+    {% set c = coop['items'] | selectattr('npk', 'equalto', npk) | rejectattr('out') | map(attribute='price') | list if coop else [] %}
+    {% set rp = L.tracker[npk] | selectattr('src', 'equalto', 'report') | list %}
+    {% set r = rp[-1] if rp else none %}
+    {% set d = L.dit.national[npk] if L.dit and npk in L.dit.national else none %}
+    <tr>
+      <th scope="row"><a href="{{ prefix }}/fertilizer/{{ npk }}/">{{ npk }}</a></th>
+      <td class="num">{% if s %}{{ s.median | pxnum }}{% else %}–{% endif %}</td>
+      {% if coop %}<td class="num">{% if c %}{{ c | min | pxnum }}{% if c | max != c | min %}–{{ c | max | pxnum }}{% endif %}{% else %}–{% endif %}</td>{% endif %}
+      <td class="num">{% if r %}{{ r.low | pxnum }}{% if r.high and r.high != r.low %}–{{ r.high | pxnum }}{% endif %}<br><small>{{ r.date | pxdate(lang) }}</small>{% else %}–{% endif %}</td>
+      {% if L.dit %}<td class="num">{% if d %}{{ d.low | pxnum }}–{{ d.high | pxnum }}{% else %}–{% endif %}</td>{% endif %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% endmacro %}
+
+{% macro sources(L, F, lang, prefix) %}
+{% set th = lang == 'th' %}
+<ul class="fl-src">
+  <li><b>{{ 'สำรวจหน้าร้านของ rice.ag' if th else 'rice.ag shop survey' }}</b> · {{ F.survey.month_th if th else F.survey.month_en }} · {{ F.survey.shops }} {{ 'ร้าน' if th else 'shops' }}{% if F.survey.area_th %} ({{ F.survey.area_th if th else F.survey.area_en }}){% endif %}</li>
+  {% if L.coop %}<li><b>{{ L.coop.name_th if th else L.coop.name_en }}</b> ({{ L.coop.area_th if th else L.coop.area_en }}) · {{ 'อัปเดต' if th else 'updated' }} {{ L.coop.date | pxdate(lang) }} ({{ age(L.coop.date, lang) }}) · {{ 'rice.ag ดึงอัตโนมัติทุกวัน' if th else 'rice.ag checks it daily' }} · <a href="{{ L.coop.url }}" rel="nofollow">{{ 'ที่มา' if th else 'source' }}</a></li>{% endif %}
+  {% if L.reports %}<li><b>{{ 'สำนักงานพาณิชย์จังหวัดและข่าว' if th else 'Provincial commerce offices and news' }}</b> · {{ L.reports | length }} {{ 'รายงาน' if th else 'reports' }}, {{ 'ล่าสุด' if th else 'latest' }} {{ L.reports[0].date | pxdate(lang) }} · <a href="{{ prefix }}/fertilizer/reports/">{{ 'ดูทั้งหมด' if th else 'see all' }}</a></li>{% endif %}
+  {% if L.dit %}<li><b>{{ 'ราคาจำหน่ายปลีกแนะนำ กรมการค้าภายใน' if th else 'DIT recommended retail price' }}</b> · {{ 'ฉบับที่' if th else 'No.' }} {{ L.dit.no }}, {{ L.dit.date | pxdate(lang) }} ({{ age(L.dit.date, lang) }}) · 77 {{ 'จังหวัด' if th else 'provinces' }} · <a href="{{ prefix }}/fertilizer/province/">{{ 'รายจังหวัด' if th else 'by province' }}</a>{% if L.dit_new %} · <b>{{ 'มีฉบับใหม่ กำลังอัปเดต' if th else 'a newer list is out, being added' }}</b>{% endif %}</li>{% endif %}
+  {% if F.world.urea %}<li><b>{{ 'ราคาโลก ธนาคารโลก' if th else 'World prices, World Bank' }}</b> · {{ F.world.urea.date | pxmonth(lang) }} · {{ 'รายเดือน' if th else 'monthly' }}</li>{% endif %}
+</ul>
+{% endmacro %}
+
+{% macro report_cards(reports, lang, npk=None, limit=6) %}
+{% set th = lang == 'th' %}
+{% set n = namespace(k=0) %}
+{% for r in reports %}{% if n.k < limit and (not npk or (r.prices | selectattr('npk', 'equalto', npk) | list)) %}{% set n.k = n.k + 1 %}
+<div class="card fl-rep">
+  <p><b>{{ r.date | pxdate(lang) }}</b> · {% if r.province %}<a href="{{ '/th' if th else '' }}/fertilizer/province/{{ r.province }}/">{{ r.province | provname(lang) }}</a>, {% endif %}{{ r.area_th if th else r.area_en }} · <a href="{{ r.url }}" rel="nofollow">{{ r.source }}</a></p>
+  <p>{% for p in r.prices if not npk or p.npk == npk %}{{ p.npk }}{% if p.brand %} ({{ p.brand | fbrand(lang) }}){% endif %} <b>{{ p.low | pxnum }}{% if p.high != p.low %}–{{ p.high | pxnum }}{% endif %}</b>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+  {% if r.note_en %}<p class="fine">{{ r.note_th if th else r.note_en }}</p>{% endif %}
+</div>
+{% endif %}{% endfor %}
+{% endmacro %}

@@ -1,4 +1,5 @@
 {% from '_px.html' import fert_nav %}
+{% from '_fl.html' import latest_table, report_cards %}
 {% set th = lang == 'th' %}
 {% set f = ff.f %}
 <section class="article prices fert">
@@ -26,6 +27,19 @@
       <tbody>{% for i in f['items'] %}<tr{% if i.flag %} class="fert-flag-row"{% endif %}><th scope="row">{{ (i.brand_th or i.brand) if th else i.brand }}{% if i.flag %} ⚠{% endif %}</th><td class="num">{{ i.price | pxnum }}</td><td class="num">{{ i.size_kg }} {{ 'กก.' if th else 'kg' }}</td><td class="num">{{ '%.2f' % (i.price / i.size_kg) }}</td><td>{{ i.shop }}</td></tr>{% endfor %}</tbody>
     </table></div>
     {% if f['items'] | selectattr('flag') | list %}<p class="fine">⚠ {{ 'ต่างจากราคากลางมาก อาจอ่านป้ายผิดหรือเป็นสินค้าพิเศษ ไม่นำมาคิดราคากลาง' if th else 'Far from the median: possibly a misread board or a special product, left out of the median.' }}</p>{% endif %}
+
+    {% set L = F.local %}
+    {% if L and (f.npk in L.tracker) and L.tracker[f.npk] %}
+    <h2 id="sources">{{ 'ราคาจากแหล่งอื่น' if th else 'Prices from other sources' }}</h2>
+    {{ latest_table(L, F, lang, prefix, [f.npk]) }}
+    {% if track[f.npk] %}<figure class="px-fig">{{ track[f.npk] | safe }}<figcaption class="fine">{{ f.npk }} {{ 'ตลอดปี 2569 จากทุกแหล่ง' if th else 'through 2026, every source' }}</figcaption></figure>{% endif %}
+    {% if L.dit and f.npk in L.dit.national %}{% set d = L.dit.national[f.npk] %}
+    <p>{% if th %}ราคาจำหน่ายปลีกแนะนำของกรมการค้าภายใน (ฉบับที่ {{ L.dit.no }}, {{ L.dit.date | pxdate(lang) }}) สำหรับ {{ f.npk }} อยู่ที่ {{ d.low | pxnum }}–{{ d.high | pxnum }} บาทต่อกระสอบ แล้วแต่จังหวัดและยี่ห้อ ยี่ห้อที่ถูกที่สุดคือ{{ d.cheapest_brand | fbrand(lang) }}{% else %}The Department of Internal Trade's recommended retail price (No.{{ L.dit.no }}, {{ L.dit.date | pxdate(lang) }}) for {{ f.npk }} is {{ d.low | pxnum }}–{{ d.high | pxnum }} baht a bag depending on province and brand; the cheapest brand is {{ d.cheapest_brand | fbrand(lang) }}.{% endif %}
+      <a href="{{ prefix }}/fertilizer/province/">{{ 'ดูรายจังหวัด' if th else 'See every province' }} →</a></p>
+    {% endif %}
+    {{ report_cards(L.reports, lang, f.npk, 4) }}
+    <p><a href="{{ prefix }}/fertilizer/reports/#f{{ f.npk }}">{{ 'รายงานราคาทั้งหมด' if th else 'All price reports' }} →</a></p>
+    {% endif %}
 
     {% if ff.world %}
     <div class="card px-verdict">

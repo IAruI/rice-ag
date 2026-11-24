@@ -1,0 +1,32 @@
+{% from '_px.html' import fert_nav %}
+{% from '_fl.html' import latest_table, sources, report_cards %}
+{% set th = lang == 'th' %}
+{% set L = F.local %}
+{% set NM = {'46-0-0': ('Urea', 'ยูเรีย'), '16-20-0': ('Rice starter', 'สูตรรองพื้นนาข้าว'), '15-15-15': ('Balanced NPK', 'สูตรเสมอ'),
+             '0-0-60': ('Potash', 'โพแทส'), '21-0-0': ('Ammonium sulfate', 'แอมโมเนียมซัลเฟต'), '18-46-0': ('DAP', 'ไดแอมโมเนียมฟอสเฟต')} %}
+<section class="article prices fert">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ prefix }}/fertilizer/">{{ 'ราคาปุ๋ย' if th else 'Fertilizer prices' }}</a> › {{ 'ติดตามราคา' if th else 'Price tracker' }}</p>
+    <h1>{{ 'ติดตามราคาปุ๋ยหน้าร้านปี 2569' if th else 'Thai fertilizer price tracker, 2026' }}</h1>
+    <p class="lead px-lead">{% if th %}ราคาปุ๋ยต่อกระสอบที่มีวันที่และที่มาชัดเจนทุกรายการที่ rice.ag หาได้ จากสำนักงานพาณิชย์จังหวัด ข่าว สหกรณ์ ราคาแนะนำของกรมการค้าภายใน และการสำรวจของเราเอง รวมไว้ในกราฟเดียวต่อสูตร{% else %}Every dated, sourced Thai fertilizer bag price rice.ag can find: provincial commerce office checks, news, a co-op price list, the official recommended prices and our own survey, on one chart per formula.{% endif %}</p>
+    {{ fert_nav(prefix, lang, 'track') }}
+
+    <h2>{{ 'ราคาล่าสุดจากแต่ละแหล่ง' if th else 'Latest price from each source' }}</h2>
+    {{ latest_table(L, F, lang, prefix) }}
+    {{ sources(L, F, lang, prefix) }}
+
+    {% for k in ['46-0-0', '16-20-0', '15-15-15', '0-0-60', '21-0-0', '18-46-0'] if track[k] %}
+    <h2 id="f{{ k }}">{{ k }} <small>{{ NM[k][1] if th else NM[k][0] }}</small></h2>
+    <figure class="px-fig">{{ track[k] | safe }}</figure>
+    {% endfor %}
+    <p class="fine">{% if th %}แท่ง: ช่วงราคาแนะนำทั้ง 77 จังหวัดทุกยี่ห้อ · เส้น: ช่วงราคาที่สำนักงานพาณิชย์จังหวัดหรือข่าวรายงาน · วงกลม: สหกรณ์ท่าบ่อ · ข้าวหลามตัด: สำรวจของ rice.ag · ราคาจากแต่ละที่มาไม่ได้มาจากร้านเดียวกัน จึงเหมาะดูทิศทาง ไม่ใช่เทียบรายร้าน{% else %}Bars: range of recommended prices across all 77 provinces and brands · lines: range reported by a provincial office or the news · circles: Tha Bo co-op · diamonds: rice.ag survey. The sources are different shops, so read the direction, not shop-by-shop differences.{% endif %}</p>
+
+    <h2 id="reports">{{ 'รายงานราคาทั้งหมด' if th else 'All price reports' }}</h2>
+    {{ report_cards(L.reports, lang, none, 200) }}
+
+    <div class="card px-cite" id="report">
+      <h2>{{ 'เห็นราคาปุ๋ยในพื้นที่ของคุณ?' if th else 'Seen a fertilizer price near you?' }}</h2>
+      <p>{% if th %}ส่งรูปป้ายราคาหรือราคาต่อกระสอบ พร้อมอำเภอและวันที่ มาที่{% else %}Send a photo of the price board, or the price per bag with the district and date, to{% endif %} <a href="mailto:aryan@wildfield.org?subject={{ 'ราคาปุ๋ย' if th else 'Fertilizer price' }}">aryan@wildfield.org</a></p>
+    </div>
+  </div>
+</section>
