@@ -38,10 +38,11 @@
       <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2E5B3A"/><path d="M32 12c9 6 12 16 9 27-2 7-6 11-9 13-3-2-7-6-9-13-3-11 0-21 9-27z" fill="#F6F1E7"/><path d="M32 17v31" stroke="#C9A55C" stroke-width="2.4" stroke-linecap="round"/></svg>
       <span>rice.ag<small>{{ T.by_wildfield }}</small></span>
     </a>
+    <a class="hdr-cta" href="{{ prefix }}/fertilizer/"{% if section == 'fertilizer' %} aria-current="page"{% endif %}>{{ 'ราคาปุ๋ย' if lang == 'th' else 'Fertilizer prices' }}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">{{ T.menu }}</button>
     <nav class="nav" id="nav">
       <a href="{{ prefix }}/" {% if section == 'prices' %}aria-current="page"{% endif %}>{{ T.nav_prices }}</a>
-      <a href="{{ prefix }}/fertilizer/" {% if section == 'fertilizer' %}aria-current="page"{% endif %}>{{ 'ราคาปุ๋ย' if lang == 'th' else 'Fertilizer' }}</a>
+      <a class="nav-cta" href="{{ prefix }}/fertilizer/" {% if section == 'fertilizer' %}aria-current="page"{% endif %}>{{ 'ราคาปุ๋ย' if lang == 'th' else 'Fertilizer prices' }}</a>
       <a href="{{ prefix }}/learn/" {% if section == 'learn' %}aria-current="page"{% endif %}>{{ T.nav_learn }}</a>
       <a href="{{ prefix }}/about/" {% if section == 'about' %}aria-current="page"{% endif %}>{{ T.nav_about }}</a>
       <a class="lang" href="{{ alt_url }}" hreflang="{{ alt_lang }}" lang="{{ alt_lang }}">{{ T.switch_to }}</a>
